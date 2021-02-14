@@ -4,7 +4,7 @@ stages:
 default:
   before_script:
     - apt-get update -qy
-    - apt-get install -y python-dev python-pip
+    - apt-get install -y python python-pip3
     #- apk update 
     #- apk add python py-pip
 test:
