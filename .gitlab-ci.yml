@@ -3,7 +3,6 @@ stages:
   - test
 default:
   before_script:
-    - apt clean
     - apt-get update -qy
     - apt-get install -y python python3-pip
     #- apk update 
