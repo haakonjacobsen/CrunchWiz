@@ -1,15 +1,11 @@
 stages:
   - test
-
+default:
+  before_script:
+    - apk update
 test:
   stage: test
   script:
-    - apk update
-    - apk add git
     - pip install -r requirements.txt
-    - pytest --junitxml=report.xml
-  artifacts:
-    when: always
-    reports:
-      junit: report.xml
+    - pytest
 
