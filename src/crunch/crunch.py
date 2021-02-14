@@ -1,6 +1,7 @@
 import time
-class Cruncher:
 
+
+class Cruncher:
 
     def __init__(self, dict_of_queues):
         self.dict_of_queues = dict_of_queues
@@ -18,4 +19,3 @@ class Cruncher:
 
     def get_last_point(self):
         return self.last_point
-
