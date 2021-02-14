@@ -1,5 +1,5 @@
 # driver code for project.
-# import crunch, dashboard, preprocessing
+# import test_crunch, dashboard, preprocessing
 # Spawns 4 threads:
 # 3 producers: eyetracker, wristband, skeletal.  APIs and preprocessing runs in these threads
 # 1 consumer: Crunch. reads preprocessed data from producers (doesnt require locking), syncs, computes measurements,
@@ -15,7 +15,7 @@ import time
 from multiprocessing import Queue, Process
 
 from crunch.crunch import Cruncher
-from preprocessing.dummyCallbackFunction import callback
+from preprocessing.dummy_callback_function import callback
 
 
 def main():
