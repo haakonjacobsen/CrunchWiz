@@ -1,12 +1,12 @@
-image: "ubuntu"
+image: "alpine:latest"
 stages:
   - test
 default:
   before_script:
-    - apt-get update -qy
-    - apt-get install -y python python3-pip
-    #- apk update 
-    #- apk add python py-pip
+    #- apt-get update -qy
+    #- apt-get install -y python python3-pip
+    - apk update 
+    - apk add python py-pip
 test:
   stage: test
   script:
