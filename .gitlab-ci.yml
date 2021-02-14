@@ -12,7 +12,4 @@ test:
   script:
     - pip3 install -r requirements.txt
     - pytest --cov=src/ test/
-    - coverage xml
-  artifacts:
-    reports:
-      cobertura: coverage.xml
+    - coverage html
