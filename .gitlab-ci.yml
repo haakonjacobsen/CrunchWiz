@@ -2,7 +2,7 @@ stages:
   - test
 default:
   before_script:
-    - apk update
+    - apk update && apk add python pyton-dev python pip
 test:
   stage: test
   script:
