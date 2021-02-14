@@ -4,8 +4,8 @@ stages:
 test:
   stage: test
   script:
-    - apt-get update -qy
-    - apt-get install -y python-dev python-pip
+    - apk update
+    - apk add git
     - pip install -r requirements.txt
     - pytest --junitxml=report.xml
   artifacts:
