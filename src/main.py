@@ -1,5 +1,4 @@
-from preprocessing.dummyProducer import DummyProducer
-from preprocessing.dummyCallbackFunction import callback
+from preprocessing import callback
 from crunch.crunch import Cruncher
 from multiprocessing import Queue, Process
 import time
