@@ -2,8 +2,10 @@ stages:
   - test
 default:
   before_script:
-    - apk update 
-    - apk add python py-pip
+    - apt-get update -qy
+    - apt-get install -y python-dev python-pip
+    #- apk update 
+    #- apk add python py-pip
 test:
   stage: test
   script:
