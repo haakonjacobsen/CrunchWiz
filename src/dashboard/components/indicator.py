@@ -4,8 +4,8 @@ import dash_html_components as html
 import pandas as pd
 
 
-def show_status(devicename, reciving):
-    if reciving:
+def show_status(devicename, receiving):
+    if receiving:
         color = "#A4F456"
     else:
         color = "#F45656"
