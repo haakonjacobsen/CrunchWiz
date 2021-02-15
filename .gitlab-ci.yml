@@ -6,7 +6,7 @@ default:
     #- apt-get update -qy
     #- apt-get install -y python python3-pip
     - apk update
-    - apk add --no-cache python3 py3-pip
+    - apk add --no-cache python3.8 py3-pip
 test:
   stage: test
   script:
