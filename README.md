@@ -10,4 +10,3 @@ From root:
 
 - Windows: `cd src/dashboard && python app.py`
 - Mac: `cd src/dashboard && python3 app.py`
-
