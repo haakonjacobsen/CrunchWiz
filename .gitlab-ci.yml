@@ -1,15 +1,22 @@
-image: "python:3.8.7-alpine"
+image: python:latest
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
 stages:
   - test
-default:
-  before_script:
-    #- apt-get update -qy
-    #- apt-get install -y python3.8 python3-pip
-    - apk update
-    - apk add --no-cache python3.8 py3-pip py-numpy
+
+before_script:
+  - python -V  
+  - pip install virtualenv
+  - virtualenv venv
+  - source venv/bin/activate
+
 test:
   stage: test
   script:
-    - pip3 install -r requirements.txt
+    - pip install -r requirements.txt
     - pytest --cov=src/ test/
     - coverage html
+    # - pip install tox flake8  # you can also use tox
+    # - tox -e py36,flake8
