@@ -1,7 +1,7 @@
 import backend.preprocessing.dummy_producer as dp
 
 
-class MyTestCase:
+class TestPrpducer:
     def test_producer(self):
         x = dp.DummyProducer()
         assert (x.f() == "hei")
