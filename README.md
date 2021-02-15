@@ -10,3 +10,6 @@ From root:
 
 - Windows: `cd src/dashboard && python app.py`
 - Mac: `cd src/dashboard && python3 app.py`
+
+## Test
+Run tests with `pytest --cov=backend/ --cov=frontend/` 
