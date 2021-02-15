@@ -1,4 +1,4 @@
-import src.preprocessing.dummy_producer as dp
+import backend.preprocessing.dummy_producer as dp
 
 
 class MyTestCase:
