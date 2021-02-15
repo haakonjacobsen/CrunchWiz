@@ -1,12 +1,12 @@
-image: "ubuntu:20.04"
+image: "python:3.8.7-alpine"
 stages:
   - test
 default:
   before_script:
-    - apt-get update -qy
-    - apt-get install -y python3.8 python3-pip
-    #- apk update
-    #- apk add --no-cache python3.8 py3-pip
+    #- apt-get update -qy
+    #- apt-get install -y python3.8 python3-pip
+    - apk update
+    - apk add --no-cache python3.8 py3-pip py-numpy
 test:
   stage: test
   script:
