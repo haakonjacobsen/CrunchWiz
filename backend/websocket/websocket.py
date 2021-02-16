@@ -1,7 +1,8 @@
 import asyncio
-import websockets
-import random
 import json
+import random
+
+import websockets
 
 
 async def handler(websocket, path):
