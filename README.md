@@ -6,7 +6,7 @@ CrunchWiz computes measurements from devices like tobi eyetrakers, Empatica E4 w
 
 ### Start dashboard
 
-- `cd frontend && yarn run`
+- `cd frontend && yarn start`
 
 ### Start websocket
 
