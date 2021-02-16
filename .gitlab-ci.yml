@@ -1,22 +1,38 @@
-image: python:3.8.7-buster
-
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
 stages:
+  - analysis
   - test
 
-before_script:
-  - python -V  
-  - pip install virtualenv
-  - virtualenv venv
-  - source venv/bin/activate
-
-test:
-  stage: test
+frontend-lint:
+  stage: analysis
+  image: node:alpine
+  before_script:
+    - cd frontend
+    - apk add --no-cache git
+    - yarn
   script:
+    - yarn lint
+
+lint-python:
+  stage: analysis
+  image: python:3.8.7-buster
+  before_script:
+    - pip3 install isort flake8
+  script:
+    - flake8
+    - isort .
+
+backend-test:
+  stage: test
+  image: python:3.8.7-buster
+  before_script:
+    - cd backend
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
     - pip3 install -r requirements.txt
-    - pytest --cov=backend/ --cov=frontend/ 
+  script:
+    - pytest --cov=backend/
     - coverage html
-    # - pip install tox flake8  # you can also use tox
-    # - tox -e py36,flake8
