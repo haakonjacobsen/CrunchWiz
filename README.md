@@ -6,10 +6,11 @@ CrunchWiz computes measurements from devices like tobi eyetrakers, Empatica E4 w
 
 ### Start dashboard
 
-From root:
+- `cd frontend && yarn run`
 
-- Windows: `cd src/dashboard && python app.py`
-- Mac: `cd src/dashboard && python3 app.py`
+### Start websocket
+
+- `cd backend/websocket && python3 websocket.py`
 
 ## Test
-Run tests with `pytest --cov=backend/ --cov=frontend/` 
+Run tests with `pytest --cov=backend/` 
