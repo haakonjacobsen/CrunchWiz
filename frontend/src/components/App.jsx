@@ -6,11 +6,13 @@ const App = () => {
   const [state, setState] = useState(null);
   const webSocket = useRef(null);
 
+  const receiveMessage = (message) => {
+    setState(JSON.parse(message.data));
+  };
+
   useEffect(() => {
     webSocket.current = new WebSocket('ws://127.0.0.1:8888/');
-    webSocket.current.onmessage = (e) => {
-      setState(JSON.parse(e.data));
-    };
+    webSocket.current.onmessage = (message) => receiveMessage(message);
     return () => webSocket.current.close();
   }, []);
 
