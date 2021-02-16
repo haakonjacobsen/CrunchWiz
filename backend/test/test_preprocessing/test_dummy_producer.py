@@ -6,8 +6,6 @@ class TestPrpducer:
         x = dp.DummyProducer()
         assert (x.f() == "hei")
 
-
     def test_DummyProducerThatStoresTheStream(self):
         x = dp.DummyProducerThatStoresTheStream()
         assert (x.f() == "hello world")
-

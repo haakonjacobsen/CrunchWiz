@@ -27,7 +27,8 @@ def main():
             time.sleep(0.5)
             print(q.get())
 
-    # Eventually 1 queue per device, where each queue element is a dict or tuple.
+    # Eventually 1 queue per device,
+    # where each queue element is a dict or tuple.
     temperature_q = Queue()
     cruncher = Cruncher({"e4_q": temperature_q})
     p1 = Process(target=callback, args=(temperature_q,))
