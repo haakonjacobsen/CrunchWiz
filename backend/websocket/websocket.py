@@ -10,15 +10,15 @@ async def handler(websocket, path):
     while True:
         data = [
             {
-                "name": "Eye tracker data",
+                "name": "Eye tracker",
                 "number": random.randint(0, 1000)
             },
             {
-                "name": "wristband tracker data",
+                "name": "Wristband",
                 "number": random.randint(0, 100)
             },
             {
-                "name": "Eye tracker data",
+                "name": "Motion sensor",
                 "number": random.randint(-10, -5)
             },
         ]

@@ -7,6 +7,8 @@ const App = () => {
   const webSocket = useRef(null);
 
   const receiveMessage = (message) => {
+    // Eventually we will have multiple states which we assign to,
+    // For example state for each sensor
     setState(JSON.parse(message.data));
   };
 
@@ -15,8 +17,6 @@ const App = () => {
     webSocket.current.onmessage = (message) => receiveMessage(message);
     return () => webSocket.current.close();
   }, []);
-
-  console.log(state);
 
   return (
     <div className="App">
@@ -37,6 +37,18 @@ const App = () => {
         >
           Learn React
         </a>
+        <p>
+          Reading from websocket:
+        </p>
+        <p>
+          {state && `Data from the ${state[0].name}:${state[0].number}`}
+        </p>
+        <p>
+          {state && `Data from the ${state[1].name}:${state[1].number}`}
+        </p>
+        <p>
+          {state && `Data from the ${state[2].name}:${state[2].number}`}
+        </p>
       </header>
     </div>
   );
