@@ -8,12 +8,14 @@ def main():
     eyetracker_q = Queue()
     skeleton_q = Queue()
     empatica_q = Queue()
-    cruncher = Cruncher({"empatica_q": empatica_q, "eyetracker_q":eyetracker_q, "skeleton_q":skeleton_q})
+    cruncher = Cruncher({
+        "empatica_q": empatica_q,
+        "eyetracker_q": eyetracker_q,
+        "skeleton_q": skeleton_q})
     p1 = Process(target=eyetracker_callback, args=(eyetracker_q,))
     p1.start()
     cruncher.crunch_flow_control()
     p1.join()
-
 
 
 if __name__ == '__main__':

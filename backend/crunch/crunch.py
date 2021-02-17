@@ -10,11 +10,9 @@ class Cruncher:
         self.eyetracker_q = self.dict_of_queues["eyetracker_q"]
         self.skeleton_q = self.dict_of_queues["skeleton_q"]
 
-
-
     def crunch_flow_control(self):
         time.sleep(1)
-        if self.empatica_q.empty(): # TODO: set boolean values for each device
+        if self.empatica_q.empty():  # TODO: set boolean values for each device
             print("empatica wristband is not producing data")
         if self.eyetracker_q.empty():
             print("the eyetracker is not producing data")
@@ -31,6 +29,3 @@ class Cruncher:
     # test
     def hello_crunch(self):
         print("hello")
-
-
-

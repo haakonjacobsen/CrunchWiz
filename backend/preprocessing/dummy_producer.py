@@ -12,7 +12,7 @@ class DummyProducer:
         return self.last_point
 
     def process_next_point(self):
-        last_point = self.my_wristband.readline()
+        self.last_point = self.my_wristband.readline()
         return self.last_point
 
     def callback(self):
@@ -36,7 +36,8 @@ class DummyProducer:
 
     def connect_to_raw_data(self):
         print(2)
-        self.my_wristband = open(os.path.dirname(__file__) + r"\\TEMP.csv", "r")
+        self.my_wristband = open(os.path.dirname(__file__)
+                                 + r"\\TEMP.csv", "r")
         print(self.my_wristband.readline())
         print(self.my_wristband.readline())
 
