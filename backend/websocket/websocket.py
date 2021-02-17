@@ -1,31 +1,23 @@
 import asyncio
 import json
 import random
-
+import functools
 import websockets
 
 
-async def handler(websocket, path):
+async def handler(websocket, path, queue):
     print("Established connection with client")
     while True:
-        data = [
-            {
-                "name": "Eye tracker",
-                "number": random.randint(0, 1000)
-            },
-            {
-                "name": "Wristband",
-                "number": random.randint(0, 100)
-            },
-            {
-                "name": "Motion sensor",
-                "number": random.randint(-10, -5)
-            },
-        ]
-        await websocket.send(json.dumps(data))
-        await asyncio.sleep(1)
+        data = []
+        while not queue.empty():
+            data.append(queue.get())
+        if data:
+            print(data)
+            await websocket.send(json.dumps(data))
+        await asyncio.sleep(0.1)
 
 
-start_server = websockets.serve(handler, "127.0.0.1", 8888)
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+def start_websocket(queue):
+    start_server = websockets.serve(functools.partial(handler, queue=queue), "127.0.0.1", 8888)
+    asyncio.get_event_loop().run_until_complete(start_server)
+    asyncio.get_event_loop().run_forever()

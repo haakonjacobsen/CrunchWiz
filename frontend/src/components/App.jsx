@@ -4,7 +4,7 @@ import './App.css';
 
 const App = () => {
   const [state, setState] = useState(null);
-  const webSocket = useRef(null);
+  const webSocket = useRef();
 
   const receiveMessage = (message) => {
     // Eventually we will have multiple states which we assign to,
@@ -17,7 +17,7 @@ const App = () => {
     webSocket.current.onmessage = (message) => receiveMessage(message);
     return () => webSocket.current.close();
   }, []);
-
+  console.log(state);
   return (
     <div className="App">
       <header className="App-header">
@@ -41,13 +41,7 @@ const App = () => {
           Reading from websocket:
         </p>
         <p>
-          {state && `Data from the ${state[0].name}:${state[0].number}`}
-        </p>
-        <p>
-          {state && `Data from the ${state[1].name}:${state[1].number}`}
-        </p>
-        <p>
-          {state && `Data from the ${state[2].name}:${state[2].number}`}
+          {state && state[0] && `Data from the ${state[0].device}:${state[0].data_frame[0]}`}
         </p>
       </header>
     </div>
