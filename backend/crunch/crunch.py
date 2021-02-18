@@ -19,12 +19,17 @@ class Cruncher:
         if self.skeleton_q.empty():
             print("not receiving skeletal data")
         while True:
-            time.sleep(0.5)
-            print(self.eyetracker_q.get())
-            # TODO: call functions that compute measurements here
-            # print(self.eyetracker_q.get())
-            # print(self.skeleton_q.get())
-    # TODO: Functions that compute measurements here
+            if not self.empatica_q.empty():
+                print(self.empatica_q.get())
+                #  Call empatica calculations
+            if not self.eyetracker_q.empty():
+                print(self.eyetracker_q.get())
+                #  call eyetracker stuff
+            if not self.empatica_q.empty():
+                print(self.eyetracker_q.get())
+                #  call skeleton stuff
+
+    # TODO: Define functions that compute measurements here
 
     # test
     def hello_crunch(self):
