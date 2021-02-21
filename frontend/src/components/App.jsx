@@ -13,6 +13,10 @@ const App = () => {
     setState(JSON.parse(message.data));
   };
 
+  function handleClick(measurment) {
+    console.log(measurment);
+  }
+
   useEffect(() => {
     webSocket.current = new WebSocket('ws://127.0.0.1:8888/');
     webSocket.current.onmessage = (message) => receiveMessage(message);
@@ -86,7 +90,7 @@ const App = () => {
       </header>
       <div className="Main-content">
         {state.map((measurment) => (
-          <div className="Measurment">
+          <div className="Measurment" role="button" tabIndex={0} value={measurment.name} onClick={handleClick(measurment.name)} onKeyDown={handleClick}>
             <div className="Measurment-number-wrapper">
               <h3 className="Measurment-number">{measurment.number}</h3>
             </div>

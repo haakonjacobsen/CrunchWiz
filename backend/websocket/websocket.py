@@ -7,19 +7,25 @@ import websockets
 
 async def handler(websocket, path):
     print("Established connection with client")
+    eye_baseline = 100
+    wristband_baseline = 100
+    montion_baseline = 5
     while True:
+        eye_baseline = eye_baseline + random.randint(-1, 1)
+        wristband_baseline = wristband_baseline + random.randint(-1, 1)
+        montion_baseline = montion_baseline + random.randint(-5, 5)
         data = [
             {
                 "name": "Eye tracker",
-                "number": random.randint(0, 1000)
+                "number": eye_baseline
             },
             {
                 "name": "Wristband",
-                "number": random.randint(0, 100)
+                "number": wristband_baseline
             },
             {
                 "name": "Motion sensor",
-                "number": random.randint(-10, -5)
+                "number": montion_baseline
             },
         ]
         await websocket.send(json.dumps(data))

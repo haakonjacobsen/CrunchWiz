@@ -79,6 +79,14 @@ body {
   margin: 15px;
   display: flex;
   flex-direction: column;
+  -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+}
+.Measurment:hover{
+  background-color: #eeeeea;
+  -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
 }
 .Measurment-number-wrapper{
   display: flex;
