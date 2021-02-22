@@ -1,38 +1,106 @@
-.App {
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: rgb(36, 36, 36);
+  font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+body {
+  height: 100vh;
+  width: 100vw;
+}
+/* Header */
+.App-header {
+  z-index: 100;
+  background-color: #fcfbe6;
+  color: white;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+  min-height: 120px;
+  max-height: 120px;
+  align-items: center;
+  -webkit-box-shadow: 0px 0px 10px 6px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 0px 10px 6px rgba(0, 0, 0, 0.25);
+}
+.Logo-wrapper {
+  height: 100%;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+}
+
+#logo {
+  height: 80%;
+}
+.Header-title {
+  font-size: 30px;
+  color: rgb(40, 40, 40);
+  margin: 10px;
+}
+
+.Device-status-nav{
+  display: flex;
+  position: absolute;
+  right: 10px;
+}
+.Device-status-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+  justify-content: center;
+}
+.Device-logo{
+  display: block;
+  margin: auto;
+}
+.Device-title {
+  font-size: 1.3em;
+  font-weight: 300;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/*Main Content*/
+.Main-content{
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.Measurment{
+  width: 250px;
+  height: 250px;
+  background-color: #F2F2F2;
+  border-radius: 10px;
+  margin: 15px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+}
+.Measurment:hover{
+  background-color: #eeeeea;
+  -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+.Measurment-number-wrapper{
+  display: flex;
+  flex: 3;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+}
+.Measurment-number{
+  font-size: 2.5em;
+}
+.Measurment-text{
+  display: inline-block;
+  vertical-align:middle;
+  flex: 1;
+  text-align: center;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
