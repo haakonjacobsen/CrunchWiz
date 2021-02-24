@@ -34,5 +34,4 @@ backend-test:
     - source venv/bin/activate
     - pip3 install -r requirements.txt
   script:
-    - cd backend
     - pytest --cov=crunch/
