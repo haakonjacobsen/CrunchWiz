@@ -5,4 +5,3 @@ def eyetracker_main():
     # preprocess
     # compute measurements
     # write to csv
-
