@@ -4,7 +4,7 @@ import time
 import pandas as pd
 import numpy as np 
 
-df = pd.read_csv("backend/preprocessing/dummy_data/skeleton/skeleton-S001.csv")
+df = pd.read_csv("backend\crunch\skeleton\skeleton-S001.csv")
 
 """ skele_container = [] #skele[jointtype][time][x,y,z]
 
@@ -41,17 +41,21 @@ def amountofMotion(t0,t1):
         sum += normByArray(returnByJoint(t1,i),returnByJoint(t0,i))
     return sum/24
 
-def run(t):
+def printAmountOfMotion(t):
     for i in range(t):
         print(amountofMotion(i,i+1))
 
+#printAmountofMotion(20)
 
-run(20)
+def stabilityOfMotion(t0,t1):
+    totalJoints = 24
+    sum = 0
+    for i in range(25):
+        sum += 1/(1+normByArray(returnByJoint(t1,i),returnByJoint(t0,i)))
+    return sum
 
-""" 
-print(returnByJoint(0,"all"))
-print(returnByJoint(4,1))
-print(returnByJoint(51,2)) 
-print(returnByJoint(300,3))
+def printStabilityOfMotion(t):
+    for i in range(t):
+        print(stabilityOfMotion(i,i+1))
 
- """
+printStabilityOfMotion(20)
