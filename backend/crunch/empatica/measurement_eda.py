@@ -15,15 +15,17 @@ https://www.researchgate.net/publication/272747425_Using_Electrodermal_Activity_
 From the tonic and phasic components of each child’s EDA
 signal, we extracted the following IF features: mean,
 standard deviation, area under the curve, relative positions
-of maximum and minimum values, slope (estimated by 
+of maximum and minimum values, slope (estimated by
 linear interpolation), average number of peaks, and average
 of the peaks amplitudes.
 
-slope is linear interpolation of 
-    1) min point 
+slope is linear interpolation of
+    1) min point
     2) (max point - min point) / 2
 
 """
+
+
 class EDA:
     # delta time, 20 second moving time window
     DT = 20
@@ -94,7 +96,7 @@ class EDA:
             peak_start[0] = 1
 
         # Find the onset and offset points
-        for i in range(self.NR_DATA_POINTS - 1): # CHECK I AND I + 1
+        for i in range(self.NR_DATA_POINTS - 1):
             # peak starts from the point it gets above the onset threshold
             if modified_phasic[i] < self.ONSET_THRESHOLD < modified_phasic[i + 1]:
                 peak_start[i + 1] = 1
@@ -138,7 +140,8 @@ class EDA:
             area_triangle = dy * x / 2
             auc += area_square + area_triangle
 
-        # TODO what value to return, either auc for 20 seconds, or normalized for 1 second, or normalized for 1 frequency (0.25 seconds)
+        # TODO what value to return, either auc for 20 seconds, or normalized for 1 second,
+        #  or normalized for 1 frequency (0.25 seconds)
         return auc / self.DT
 
     # TODO remove this when production ready
@@ -180,13 +183,14 @@ class EDA_handler:
         pass
 
 
-
 # TODO delete below when production ready
 # how to use the eda classes
 # - Send in data points when they are ready, using EDA_handler.add_eda_point()
 # - every 10 seconds, new measurements will be derived for arousal and engagement
 # does not require data points every 1/frequency seconds, however it requires data points in order
 # if there is a corrupt data point, we need to interpolate it's value
+
+
 if __name__ == "__main__":
     # READ DATA AND FORMAT
     data = pd.read_csv("S001/EDA.csv")

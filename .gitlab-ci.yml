@@ -19,6 +19,7 @@ lint-python:
   stage: analysis
   image: python:3.8.7-buster
   before_script:
+    - cd backend
     - pip3 install isort flake8
   script:
     - flake8
