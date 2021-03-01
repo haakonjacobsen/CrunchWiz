@@ -3,17 +3,12 @@ import numpy as np
 
 df = pd.read_csv("backend/crunch/skeleton/skeleton-S001.csv")
 
-"""  Main function to get numbers from csv """
 
-
-def returnByJoint(t, j):
+def get_joint_by_index(t, j):
     # time,jointnr
     skele = []
     for i in range(25):
-        temp = []
-        temp.append(df.iloc[i + 25 * t][1])
-        temp.append(df.iloc[i + 25 * t][2])
-        temp.append(df.iloc[i + 25 * t][3])
+        temp = [df.iloc[i + 25 * t][1], df.iloc[i + 25 * t][2], df.iloc[i + 25 * t][3]]
         skele.append(temp)
     if j == "all":
         # array jointnumber= indexnr i.e. skele[jointnr][x,y,z]
@@ -23,66 +18,58 @@ def returnByJoint(t, j):
         return skele[j]
 
 
-""" Calculateing the L2 norm  """
+def norm_by_array(a, b):
+    """ Calculating the L2 norm  """
+    norm_x = (a[0] - b[0]) ** 2
+    norm_y = (a[1] - b[1]) ** 2
+    norm_z = (a[2] - b[2]) ** 2
+
+    return np.sqrt(norm_x + norm_y + norm_z)
 
 
-def normByArray(a, b):
-    normX = (a[0] - b[0]) ** 2
-    normY = (a[1] - b[1]) ** 2
-    normZ = (a[2] - b[2]) ** 2
-
-    return np.sqrt(normX + normY + normZ)
-
-
-def amountofMotion(t0, t1):
-    totalJoints = 24
-    sum = 0
+def amount_of_motion(t0, t1):
+    total_joints = 24
+    total = 0
     for i in range(25):
-        sum += normByArray(returnByJoint(t1, i), returnByJoint(t0, i))
-    return sum / totalJoints
+        total += norm_by_array(get_joint_by_index(t1, i), get_joint_by_index(t0, i))
+    return total / total_joints
 
 
-def printAmountOfMotion(t):
-    for i in range(t):
-        print(amountofMotion(i, i + 1))
-
-
-def stabilityOfMotion(t0, t1):
-    totalJoints = 24
-    sum = 0
+def most_used_joints(t0, t1, list):
     for i in range(25):
-        euclid = normByArray(returnByJoint(t1, i), returnByJoint(t0, i))
-        sum += 1 / (1 + euclid)
-    return sum / totalJoints
-
-
-def printStabilityOfMotion(t):
-    for i in range(t):
-        print(stabilityOfMotion(i, i + 1))
-
-
-def mostUsedJoints(t0, t1, list):
-    for i in range(25):
-        list[i] += normByArray(returnByJoint(t1, i), returnByJoint(t0, i))
+        list[i] += norm_by_array(get_joint_by_index(t1, i), get_joint_by_index(t0, i))
     return list
 
 
-def printMostUsedJoints(t):
-    usedJointsList = [0] * 25
+def stability_of_motion(t0, t1):
+    total_joints = 24
+    total_distance = 0
+    for i in range(25):
+        euclid = norm_by_array(get_joint_by_index(t1, i), get_joint_by_index(t0, i))
+        total_distance += 1 / (1 + euclid)
+    return total_distance / total_joints
+
+
+def print_stability_of_motion(t):
     for i in range(t):
-        mostUsedJoints(i, i + 1, usedJointsList)
-    value = max(usedJointsList)
-    print(usedJointsList)
-    print("Joint nr:", usedJointsList.index(value), "moved:", value)
+        print(stability_of_motion(i, i + 1))
 
 
-"""  Simple print functions which prints
-out motions for the argument time ie.
-printAmountOfMotion(t) prints out
-motions in first 20 seconds
-"""
+def print_most_used_joints(t):
+    used_joints_list = [0] * 25
+    for i in range(t):
+        most_used_joints(i, i + 1, used_joints_list)
+    value = max(used_joints_list)
+    print(used_joints_list)
+    print("Joint nr:", used_joints_list.index(value), "moved:", value)
 
 
-printAmountOfMotion(20)
-printStabilityOfMotion(20)
-printMostUsedJoints(20)
+def print_amount_of_motion(t):
+    for i in range(t):
+        print(amount_of_motion(i, i + 1))
+
+
+# print measurements for first t seconds
+print_stability_of_motion(20)
+print_most_used_joints(20)
+print_amount_of_motion(20)
