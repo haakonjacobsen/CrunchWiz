@@ -3,10 +3,7 @@ import numpy as np
 
 df = pd.read_csv("backend/crunch/skeleton/skeleton-S001.csv")
 
-""" skele_container = [] #skele[jointtype][time][x,y,z]
-
-print(skele_container[1][1])
-print(skele_container) """
+"""  Main function to get numbers from csv """
 
 
 def returnByJoint(t, j):
@@ -24,6 +21,9 @@ def returnByJoint(t, j):
     else:
         # array [x,y,z] coordinates
         return skele[j]
+
+
+""" Calculateing the L2 norm  """
 
 
 def normByArray(a, b):
@@ -47,9 +47,6 @@ def printAmountOfMotion(t):
         print(amountofMotion(i, i + 1))
 
 
-# printAmountofMotion(20)
-
-
 def stabilityOfMotion(t0, t1):
     totalJoints = 24
     sum = 0
@@ -64,8 +61,6 @@ def printStabilityOfMotion(t):
         print(stabilityOfMotion(i, i + 1))
 
 
-# printStabilityOfMotion(20)
-
 def mostUsedJoints(t0, t1, list):
     for i in range(25):
         list[i] += normByArray(returnByJoint(t1, i), returnByJoint(t0, i))
@@ -73,12 +68,21 @@ def mostUsedJoints(t0, t1, list):
 
 
 def printMostUsedJoints(t):
-    usedJointsList = [0]*25
+    usedJointsList = [0] * 25
     for i in range(t):
-        mostUsedJoints(i, i+1, usedJointsList)
+        mostUsedJoints(i, i + 1, usedJointsList)
     value = max(usedJointsList)
     print(usedJointsList)
     print("Joint nr:", usedJointsList.index(value), "moved:", value)
 
 
-printMostUsedJoints(50)
+"""  Simple print functions which prints
+out motions for the argument time ie.
+printAmountOfMotion(t) prints out
+motions in first 20 seconds
+"""
+
+
+printAmountOfMotion(20)
+printStabilityOfMotion(20)
+printMostUsedJoints(20)
