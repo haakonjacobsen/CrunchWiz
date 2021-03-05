@@ -2,19 +2,27 @@ import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
 const App = () => {
-  const data = [{ name: 'Measurment', number: '0' }];
+  const data = [{ name: 'measurment', number: '0' }];
   const [state, setState] = useState(data);
   const webSocket = useRef(null);
-  // const history_data = []
+  const [showExtended, changeExtended] = useState(false);
+  const [selectedMeasurment, setMeasurment] = useState(null);
 
   const receiveMessage = (message) => {
-    // Eventually we will have multiple states which we assign to,
-    // For example state for each sensor
-    setState(JSON.parse(message.data));
+    const object = JSON.parse(message.data);
+    setState(object);
   };
 
-  function handleClick(measurment) {
-    console.log(measurment);
+  function toggleExtended(extendInfo, measurment) {
+    if (selectedMeasurment === null) {
+      setMeasurment(measurment);
+      changeExtended(!showExtended);
+    } else if (selectedMeasurment !== measurment && showExtended) {
+      setMeasurment(measurment);
+    } else {
+      setMeasurment(measurment);
+      changeExtended(!showExtended);
+    }
   }
 
   useEffect(() => {
@@ -89,14 +97,25 @@ const App = () => {
         </div>
       </header>
       <div className="Main-content">
-        {state.map((measurment) => (
-          <div className="Measurment" role="button" tabIndex={0} value={measurment.name} onClick={handleClick(measurment.name)} onKeyDown={handleClick}>
-            <div className="Measurment-number-wrapper">
-              <h3 className="Measurment-number">{measurment.number}</h3>
+        {showExtended
+          ? (
+            <div className="Extended-info">
+              <h3 className="Extended-title">
+                {selectedMeasurment}
+              </h3>
+              <div className="Extended-graph"> </div>
             </div>
-            <h3 className="Measurment-text">{measurment.name}</h3>
-          </div>
-        ))}
+          ) : <div> </div>}
+        <div className="Measurements-info">
+          {state.map((measurment) => (
+            <div className="Measurment" role="button" value={measurment.name} tabIndex={0} onClick={() => toggleExtended(true, measurment.name)} onKeyDown={() => toggleExtended}>
+              <div className="Measurment-number-wrapper">
+                <h3 className="Measurment-number">{measurment.number}</h3>
+              </div>
+              <h3 className="Measurment-text">{measurment.name}</h3>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
