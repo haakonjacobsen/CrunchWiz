@@ -1,16 +1,18 @@
 import pandas as pd
 import numpy as np
 import sympy as sym
-
-# Legge til skrive til csv
+import time
 
 df = pd.read_csv("backend/crunch/skeleton/skeleton-S001.csv")
+t = sym.symbols("t")
 
-# API
+"""
+Main function which reads rows/columns values
+and puts these into an array
+"""
 
 
 def get_joint_by_index(t, j):
-    # time,jointnr
     skele = []
     for i in range(25):
         temp = [df.iloc[i + 25 * t][1], df.iloc[i + 25 * t][2], df.iloc[i + 25 * t][3]]
@@ -30,9 +32,6 @@ def norm_by_array(a, b):
     norm_z = (a[2] - b[2]) ** 2
 
     return np.sqrt(norm_x + norm_y + norm_z)
-
-
-t = sym.symbols("t")
 
 
 def func(a, b):
@@ -73,17 +72,6 @@ def fatigue(t0, t1):
     return totalFatigue
 
 
-def printFatigue(t):
-    totalFatigue = 0
-    for i in range(t):
-        print(fatigue(i, i + 1))
-        totalFatigue += fatigue(i, i + 1)
-    print("Total fatigue: ", totalFatigue)
-
-
-printFatigue(120)
-
-
 def amount_of_motion(t0, t1):
     total_joints = 24
     total = 0
@@ -107,26 +95,73 @@ def stability_of_motion(t0, t1):
     return total_distance
 
 
-def print_stability_of_motion(t):
+def write_stability_of_motion(t):
+    timeArray = []
+    stabilityArray = []
     for i in range(t):
-        print(stability_of_motion(i, i + 1))
+        j = i + 1
+        timeArray.append(j)
+        stabilityArray.append(stability_of_motion(i, j))
+    dict = {"time": timeArray, "stability": stabilityArray}
+    df = pd.DataFrame(dict)
+    df.to_csv("backend/crunch/skeleton/data/StabilityOfMotion.csv", index=False)
 
 
-def print_most_used_joints(t):
+def write_most_used_joints(t):
+    timeArray = []
+    jointArray = []
+    valueArray = []
     used_joints_list = [0] * 25
     for i in range(t):
+        j = i + 1
         most_used_joints(i, i + 1, used_joints_list)
-    value = max(used_joints_list)
-    print(used_joints_list)
-    print("Joint nr:", used_joints_list.index(value), "moved:", value)
+        value = max(used_joints_list)
+        timeArray.append(j)
+        jointArray.append(used_joints_list.index(value))
+        valueArray.append(value)
+    dict = {"time": timeArray, "mostUsedJoint": jointArray, "value": valueArray}
+    df = pd.DataFrame(dict)
+    df.to_csv("backend/crunch/skeleton/data/MostUsedJoints.csv", index=False)
 
 
-def print_amount_of_motion(t):
+def write_amount_of_motion(t):
+    timeArray = []
+    motionArray = []
     for i in range(t):
-        print(amount_of_motion(i, i + 1))
+        j = i + 1
+        timeArray.append(j)
+        motionArray.append(amount_of_motion(i, j))
+    dict = {"time": timeArray, "motion": motionArray}
+    df = pd.DataFrame(dict)
+    df.to_csv("backend/crunch/skeleton/data/AmountOfMotion.csv", index=False)
 
 
-# print measurements for first t seconds
-# print_stability_of_motion(20)
-# print_most_used_joints(20)
-# print_amount_of_motion(20)
+def write_fatigue(t):
+    timeArray = []
+    fatigueArray = []
+    # totalFatigue = 0
+    for i in range(t):
+        j = i + 1
+        """
+        Applies accumulated fatige over time
+        totalFatigue += fatigue(i, j)
+        timeArray.append(j)
+        fatigueArray.append(totalFatigue)
+        """
+        timeArray.append(j)
+        fatigueArray.append(fatigue(i, j))
+    dict = {"time": timeArray, "fatigue": fatigueArray}
+    df = pd.DataFrame(dict)
+    df.to_csv("backend/crunch/skeleton/data/Fatigue.csv", index=False)
+
+
+def main(n):
+    write_stability_of_motion(n)
+    write_most_used_joints(n)
+    write_amount_of_motion(n)
+    write_fatigue(n)
+
+
+start_time = time.time()
+main(120)
+print("--- %s seconds ---" % (time.time() - start_time))
