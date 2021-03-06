@@ -276,4 +276,4 @@ dist
 .pnp.*
 
 # generated data
-./backend/crunch/skeleton/data/.*
+./backend/crunch/skeleton/data/*
