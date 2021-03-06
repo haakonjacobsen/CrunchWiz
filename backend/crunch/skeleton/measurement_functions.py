@@ -1,8 +1,12 @@
 import pandas as pd
 import numpy as np
-from sympy import symbols
+import sympy as sym
+
+# Legge til skrive til csv
 
 df = pd.read_csv("backend/crunch/skeleton/skeleton-S001.csv")
+
+# API
 
 
 def get_joint_by_index(t, j):
@@ -28,7 +32,7 @@ def norm_by_array(a, b):
     return np.sqrt(norm_x + norm_y + norm_z)
 
 
-t = symbols("t")
+t = sym.symbols("t")
 
 
 def func(a, b):
@@ -56,16 +60,37 @@ def finiteDiff(f, tstart, tend):
     return diff
 
 
-x, y, z = func([1, 3, 2], [-5, 0, 4])
-finiteDiff(x, 1, 2)
+def fatigue(t0, t1):
+    totalFatigue = 0
+    totalJoint = 24
+    for i in range(25):
+        jointFatigue = 0
+        x, y, z = func(get_joint_by_index(t0, i), get_joint_by_index(t1, i))
+        jointFatigue += np.abs(finiteDiff(x, t0, t1))
+        jointFatigue += np.abs(finiteDiff(y, t0, t1))
+        jointFatigue += np.abs(finiteDiff(z, t0, t1))
+        totalFatigue += jointFatigue / totalJoint
+    return totalFatigue
+
+
+def printFatigue(t):
+    totalFatigue = 0
+    for i in range(t):
+        print(fatigue(i, i + 1))
+        totalFatigue += fatigue(i, i + 1)
+    print("Total fatigue: ", totalFatigue)
+
+
+printFatigue(120)
 
 
 def amount_of_motion(t0, t1):
     total_joints = 24
     total = 0
     for i in range(25):
-        total += norm_by_array(get_joint_by_index(t1, i), get_joint_by_index(t0, i))
-    return total / total_joints
+        jointTotal = norm_by_array(get_joint_by_index(t1, i), get_joint_by_index(t0, i))
+        total += jointTotal / total_joints
+    return total
 
 
 def most_used_joints(t0, t1, list):
@@ -75,12 +100,11 @@ def most_used_joints(t0, t1, list):
 
 
 def stability_of_motion(t0, t1):
-    total_joints = 24
     total_distance = 0
     for i in range(25):
         euclid = norm_by_array(get_joint_by_index(t1, i), get_joint_by_index(t0, i))
         total_distance += 1 / (1 + euclid)
-    return total_distance / total_joints
+    return total_distance
 
 
 def print_stability_of_motion(t):
