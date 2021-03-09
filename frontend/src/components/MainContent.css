@@ -1,6 +1,8 @@
 /*Main Content*/
 .Main-content{
+  position: relative;
   width: 100%;
+  max-width: 1700px;
   height: 100%;
   padding: 20px;
   display: flex;

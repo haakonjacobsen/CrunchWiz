@@ -9,10 +9,14 @@ const MainContent = () => {
   const [state, setState] = useState(data);
   const [showExtended, changeExtended] = useState(false);
   const [selectedMeasurment, setMeasurment] = useState('');
+  const [graphData, addGraphData] = useState([]);
 
   const receiveMessage = (message) => {
     const object = JSON.parse(message.data);
     setState(object);
+    const dataPoint = object[Object.keys(object)[0]];
+    addGraphData((currGraphData) => [...currGraphData, dataPoint]);
+    console.log(dataPoint);
   };
   function toggleExtended(measurment) {
     if (measurment === selectedMeasurment) {
@@ -34,7 +38,7 @@ const MainContent = () => {
     <div className="Main-content">
       {showExtended
         ? (
-          <MeasurmentExpansion name={selectedMeasurment} />
+          <MeasurmentExpansion name={selectedMeasurment} graphData={graphData} />
         ) : <div> </div>}
       <div className="Measurements-info">
         {state.map((measurment) => (

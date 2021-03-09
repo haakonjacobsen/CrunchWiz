@@ -6,7 +6,9 @@ import MainContent from './MainContent';
 const App = () => (
   <div className="App">
     <Header />
-    <MainContent />
+    <div className="MainContentCentralizer">
+      <MainContent />
+    </div>
   </div>
 );
 
