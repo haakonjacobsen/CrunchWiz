@@ -14,7 +14,7 @@ const MainContent = () => {
   const receiveMessage = (message) => {
     const object = JSON.parse(message.data);
     setState(object);
-    const dataPoint = object[Object.keys(object)[0]];
+    const dataPoint = object[Object.keys(object)[2]];
     addGraphData((currGraphData) => [...currGraphData, dataPoint]);
     console.log(dataPoint);
   };
@@ -38,7 +38,11 @@ const MainContent = () => {
     <div className="Main-content">
       {showExtended
         ? (
-          <MeasurmentExpansion name={selectedMeasurment} graphData={graphData} />
+          <MeasurmentExpansion
+            name={selectedMeasurment}
+            graphData={graphData.length > 5
+              ? graphData.slice(Math.max(graphData.length - 5, 1)) : graphData}
+          />
         ) : <div> </div>}
       <div className="Measurements-info">
         {state.map((measurment) => (
