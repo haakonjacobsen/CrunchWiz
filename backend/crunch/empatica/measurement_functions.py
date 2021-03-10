@@ -46,5 +46,6 @@ def compute_stress(temps_list):
             continue
         temperature_sum += change
         if temperature_sum < temperature_threshold:
-            return round(temperature_sum, 2)
+            #  return abs(round(temperature_sum, 2))
+            return 1
     return 0.5
