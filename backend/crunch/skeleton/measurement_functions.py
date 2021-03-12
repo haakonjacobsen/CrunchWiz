@@ -1,18 +1,15 @@
 import pandas as pd
 import numpy as np
 import sympy as sym
-import time
 
 df = pd.read_csv("backend/crunch/skeleton/skeleton-S001.csv")
 t = sym.symbols("t")
 
-"""
-Main function which reads rows/columns values
-and puts these into an array
-"""
-
 
 def get_joint_by_index(t, j):
+    """
+    Main function which reads rows/columns values
+    and puts these into an array"""
     skele = []
     for i in range(25):
         temp = [df.iloc[i + 25 * t][1], df.iloc[i + 25 * t][2], df.iloc[i + 25 * t][3]]
@@ -30,11 +27,15 @@ def norm_by_array(a, b):
     norm_x = (a[0] - b[0]) ** 2
     norm_y = (a[1] - b[1]) ** 2
     norm_z = (a[2] - b[2]) ** 2
-
     return np.sqrt(norm_x + norm_y + norm_z)
 
 
 def func(a, b):
+    """Takes two point, and makes a direction vector,
+    then using said vector to calculate three
+    equations responsible for x,y,z.
+    Since they are dynamic, we use sympy
+    to create the mathematical expressions"""
     vector = [
         b[0] - a[0],
         b[1] - a[1],
@@ -47,6 +48,11 @@ def func(a, b):
 
 
 def finiteDiff(f, tstart, tend):
+    """Uses finite difference of the third
+    derivate, of second order to estimate jerk
+    error coefficient is ommited in this calculation
+    h is default set to 0.25, since an interval 1 second
+    it will get 4 evenly splits"""
     h = 0.25
     t0 = tstart
     t1 = tstart + h
@@ -60,11 +66,15 @@ def finiteDiff(f, tstart, tend):
 
 
 def fatigue(t0, t1):
+    """ Measures fatigue for every joint
+    by finding their functions, and applying
+    finite differences """
     totalFatigue = 0
     totalJoint = 24
     for i in range(25):
         jointFatigue = 0
         x, y, z = func(get_joint_by_index(t0, i), get_joint_by_index(t1, i))
+        # we apply absolute value since we are interested in positive movement
         jointFatigue += np.abs(finiteDiff(x, t0, t1))
         jointFatigue += np.abs(finiteDiff(y, t0, t1))
         jointFatigue += np.abs(finiteDiff(z, t0, t1))
@@ -73,6 +83,8 @@ def fatigue(t0, t1):
 
 
 def amount_of_motion(t0, t1):
+    """ Take norm of two points and
+    averageing, before summing them up """
     total_joints = 24
     total = 0
     for i in range(25):
@@ -82,12 +94,16 @@ def amount_of_motion(t0, t1):
 
 
 def most_used_joints(t0, t1, list):
+    """ Putting the norm in a list such that
+    list[0] = joint 0, list[1 = joint 1 etc.  """
     for i in range(25):
         list[i] += norm_by_array(get_joint_by_index(t1, i), get_joint_by_index(t0, i))
     return list
 
 
 def stability_of_motion(t0, t1):
+    """ Take norm of two points before applying
+    a formula, and summing them up """
     total_distance = 0
     for i in range(25):
         euclid = norm_by_array(get_joint_by_index(t1, i), get_joint_by_index(t0, i))
@@ -95,73 +111,36 @@ def stability_of_motion(t0, t1):
     return total_distance
 
 
-def write_stability_of_motion(t):
+def writeCSV(t0, t1):
+    """ Main function to write measurements to csv """
     timeArray = []
+    motionArray = []
+    fatigueArray = []
     stabilityArray = []
-    for i in range(t):
-        j = i + 1
-        timeArray.append(j)
-        stabilityArray.append(stability_of_motion(i, j))
-    dict = {"time": timeArray, "stability": stabilityArray}
-    df = pd.DataFrame(dict)
-    df.to_csv("backend/crunch/skeleton/data/StabilityOfMotion.csv", index=False)
-
-
-def write_most_used_joints(t):
-    timeArray = []
     jointArray = []
     valueArray = []
     used_joints_list = [0] * 25
-    for i in range(t):
-        j = i + 1
-        most_used_joints(i, i + 1, used_joints_list)
-        value = max(used_joints_list)
-        timeArray.append(j)
-        jointArray.append(used_joints_list.index(value))
-        valueArray.append(value)
-    dict = {"time": timeArray, "mostUsedJoint": jointArray, "value": valueArray}
-    df = pd.DataFrame(dict)
-    df.to_csv("backend/crunch/skeleton/data/MostUsedJoints.csv", index=False)
-
-
-def write_amount_of_motion(t):
-    timeArray = []
-    motionArray = []
-    for i in range(t):
+    i = t0
+    while i < t1:
         j = i + 1
         timeArray.append(j)
         motionArray.append(amount_of_motion(i, j))
-    dict = {"time": timeArray, "motion": motionArray}
-    df = pd.DataFrame(dict)
-    df.to_csv("backend/crunch/skeleton/data/AmountOfMotion.csv", index=False)
-
-
-def write_fatigue(t):
-    timeArray = []
-    fatigueArray = []
-    # totalFatigue = 0
-    for i in range(t):
-        j = i + 1
-        """
-        Applies accumulated fatige over time
-        totalFatigue += fatigue(i, j)
-        timeArray.append(j)
-        fatigueArray.append(totalFatigue)
-        """
-        timeArray.append(j)
+        stabilityArray.append(stability_of_motion(i, j))
         fatigueArray.append(fatigue(i, j))
-    dict = {"time": timeArray, "fatigue": fatigueArray}
+        most_used_joints(i, j, used_joints_list)
+        value = max(used_joints_list)
+        jointArray.append(used_joints_list.index(value))
+        valueArray.append(value)
+        i += 1
+    dict = {
+        "time": timeArray,
+        "motion": motionArray,
+        "stability": stabilityArray,
+        "fatigue": fatigueArray,
+        "most used joint": jointArray,
+        "value for most used joint": valueArray,
+    }
     df = pd.DataFrame(dict)
-    df.to_csv("backend/crunch/skeleton/data/Fatigue.csv", index=False)
-
-
-def main(n):
-    write_stability_of_motion(n)
-    write_most_used_joints(n)
-    write_amount_of_motion(n)
-    write_fatigue(n)
-
-
-start_time = time.time()
-main(120)
-print("--- %s seconds ---" % (time.time() - start_time))
+    # mode="a" appends, so we can add new data instead of wiping every time
+    # default path, change accordingly
+    df.to_csv("backend/crunch/skeleton/data/Skeleton.csv", mode="a", index=False)
