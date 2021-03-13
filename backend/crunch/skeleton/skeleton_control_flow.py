@@ -1,7 +1,10 @@
-# import measurement_functions
-def skeleton_main():
-    print("skeleton process succesfully started")
-    # api get raw data (callback function)
-    # preprocess
-    # compute measurements
-    # write to csv
+import measurement_functions as mf
+
+
+def main(tstart, tend):
+    """ Write measurement from skeleton data
+    from x seconds to y seconds """
+    mf.writeCSV(tstart, tend)
+
+
+main(50, 120)
