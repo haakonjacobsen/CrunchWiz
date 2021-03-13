@@ -108,3 +108,22 @@ def compute_entertainment(list_of_hr_values):
 
     return (normalize(avg_hr, 20, 200) + normalize(var_hr, 0, 1000) + normalize(max_hr, 20, 200)
             + normalize(min_hr, 20, 200) + normalize(d, 0, 180) + p1[0] + p1[1] + approximate_entropy + p[0][1]) / 8
+
+def compute_stress(temps_list):
+    """
+    Predicts acute stress based on GSR temperature
+    :param temps_list:
+    :return: 1 if acute stress event found, 0.5 otherwise
+    """
+    temperature_sum = 0
+    temperature_threshold = -0.02
+    for i, temp in enumerate(temps_list[:-1]):
+        change = temps_list[i+1] - temp
+        if change > 0:
+            temperature_sum = 0
+            continue
+        temperature_sum += change
+        if temperature_sum < temperature_threshold:
+            #  return abs(round(temperature_sum, 2))
+            return 1
+    return 0.5
