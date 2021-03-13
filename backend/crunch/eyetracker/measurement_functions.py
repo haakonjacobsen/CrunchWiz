@@ -13,7 +13,6 @@ def fixation_duration(start_time1, end_time1):
 
 def compute_information_processing_index(list_of_init_times, list_of_end_times):
     """
-    Kshitij presentation:
     ratio global/local
     Take a time window
     Count the number of the long fixations followed by short saccades
@@ -23,8 +22,6 @@ def compute_information_processing_index(list_of_init_times, list_of_end_times):
     Compute the ratio
     """
 
-    # Q: Is my interpretation that short/long fixations and short/long saccades are durations in ms, like
-    # the functions saccade_duration() and fixation_duration()? And not saccade movement?
     # Q: What qualifies as long fixations/saccades?
     # Q: Preferred window size?
     # Q: have I understood "vice versa correctly"
@@ -51,4 +48,5 @@ def compute_information_processing_index(list_of_init_times, list_of_end_times):
             global_ipi += 1
         prev_saccade_is_long = saccade_is_long
 
+    print(global_ipi / local_ipi)
     return global_ipi / local_ipi
