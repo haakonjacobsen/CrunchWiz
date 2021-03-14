@@ -1,44 +1,55 @@
-import asyncio
-import json
-import random
+# import asyncio
+# import json
+# import random
+#
+# import websockets
+# from datetime import datetime
 
-import websockets
-from datetime import datetime
-
-
-async def handler(websocket, path):
-    print("Established connection with client")
-    eye_baseline = 100
-    wristband_baseline = 100
-    montion_baseline = 5
-    while True:
-        eye_baseline = eye_baseline + random.randint(-1, 1)
-        wristband_baseline = wristband_baseline + random.randint(-1, 1)
-        montion_baseline = montion_baseline + random.randint(-5, 5)
-        now = datetime.now()
-        #time = now.strftime("%Y-%m-%d-T%H:%M:%S")
-        time = now.strftime("%H:%M:%S")
-        data = [
-            {
-                "name": "Eye tracker",
-                "number": eye_baseline,
-                "time": time
-            },
-            {
-                "name": "Wristband",
-                "number": wristband_baseline,
-                "time": time
-            },
-            {
-                "name": "Motion sensor",
-                "number": montion_baseline,
-                "time": time
-            },
-        ]
-        await websocket.send(json.dumps(data))
-        await asyncio.sleep(2)
+# connected = set()
 
 
-start_server = websockets.serve(handler, "127.0.0.1", 8888)
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+# async def producer():
+#     x = 100
+#     y = 100
+#     z = 5
+#     x += random.randint(-1, 1)
+#     y += random.randint(-1, 1)
+#     z += random.randint(-5, 5)
+#     now = datetime.now()
+#     time = now.strftime("%H:%M:%S")
+#     data = [
+#         {
+#             "name": "Eye tracker",
+#             "number": x,
+#             "time": time
+#         },
+#         {
+#             "name": "Wristband",
+#             "number": y,
+#             "time": time
+#         },
+#         {
+#             "name": "Motion sensor",
+#             "number": z,
+#             "time": time
+#         },
+#     ]
+#     await asyncio.sleep(2)
+#     return data
+#
+#
+# async def handler(websocket, path):
+#     connected.add(websocket)
+#     try:
+#         print("Established connection with client")
+#         while True:
+#             data = await producer()
+#             await asyncio.wait([ws.send(json.dumps(data)) for ws in connected])
+#     finally:
+#         connected.remove(websocket)
+#
+#
+# start_server = websockets.serve(handler, "127.0.0.1", 8888)
+# asyncio.get_event_loop().run_until_complete(start_server)
+# asyncio.get_event_loop().run_forever()
+#

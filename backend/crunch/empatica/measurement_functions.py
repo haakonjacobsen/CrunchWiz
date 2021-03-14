@@ -18,8 +18,10 @@ def compute_percentage_of_ibi_that_differ(list_of_ibi_values):
 
 
 def compute_rmssd(list_of_ibi_values):
-    """The root mean square of successive differences (RMSSD)
-    One of many measures of HRV"""
+    """
+    :param list_of_ibi_values:
+    :return: Root mean square of successive differences (RMSSD)
+    """
     window_size = 10
     assert list == type(list_of_ibi_values)
     assert len(list_of_ibi_values) > window_size
@@ -31,8 +33,9 @@ def compute_rmssd(list_of_ibi_values):
 
 def compute_normal_ibi(list_of_ibi_values):
     """
-    ”normal” Inter-Beat Interval (IBI) à remove too short and too large
-    intervals.
+    Removes IBI values that are too large or too small
+    :param list_of_ibi_values:
+    :return: list of normalized IBI values
     """
     min_ibi = 0.49  # Q: What is too short and too large?
     max_ibi = 0.52
@@ -42,6 +45,11 @@ def compute_normal_ibi(list_of_ibi_values):
 
 
 def compute_emotional_regulation(list_of_ibi_values):
+    """
+    Computes emotional regulation based on a list of IBI values
+    :param list_of_ibi_values:
+    :return:
+    """
     """
     mr K: "The root mean square of successive differences (RMSSD)
     ”normal” Inter-Beat Interval (IBI) à remove too short and too large
@@ -74,7 +82,7 @@ def compute_entertainment(list_of_hr_values):
 
     def ApEn(U, m, r) -> float:
         """
-        Approximate_entropy. Not our code. Source:
+        Approximate_entropy. Source:
         https://en.wikipedia.org/wiki/Approximate_entropy
         """
 
@@ -108,6 +116,7 @@ def compute_entertainment(list_of_hr_values):
 
     return (normalize(avg_hr, 20, 200) + normalize(var_hr, 0, 1000) + normalize(max_hr, 20, 200)
             + normalize(min_hr, 20, 200) + normalize(d, 0, 180) + p1[0] + p1[1] + approximate_entropy + p[0][1]) / 8
+
 
 def compute_stress(temps_list):
     """
