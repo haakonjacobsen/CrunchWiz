@@ -28,7 +28,7 @@ export default function MeasurmentExpansion({ name, graphData }) {
           >
             <XAxis dataKey="time" />
             <YAxis />
-            <Line animationEasing="ease-in-out" strokeWidth={3} type="monotone" dataKey="number" />
+            <Line isAnimationActive={false} animationEasing="ease-in-out" strokeWidth={3} type="monotone" dataKey="number" />
             <Tooltip />
             <ReferenceLine strokeWidth={3} y={0} label="Baseline" stroke="#959595" strokeDasharray="7" />
             <ReferenceLine strokeWidth={3} y={10} label="High" stroke="#F6C273" strokeDasharray="7" />
