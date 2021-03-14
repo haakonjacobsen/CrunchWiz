@@ -41,7 +41,7 @@ const MainContent = () => {
           <MeasurmentExpansion
             name={selectedMeasurment}
             graphData={graphData.length > 5
-              ? graphData.slice(Math.max(graphData.length - 5, 1)) : graphData}
+              ? graphData.slice(Math.max(graphData.length - 20, 1)) : graphData}
           />
         ) : <div> </div>}
       <div className="Measurements-info">

@@ -8,13 +8,13 @@ from datetime import datetime
 
 async def handler(websocket, path):
     print("Established connection with client")
-    eye_baseline = 100
-    wristband_baseline = 100
-    montion_baseline = 5
+    eye_baseline = 0
+    wristband_baseline = 0
+    montion_baseline = 0
     while True:
         eye_baseline = eye_baseline + random.randint(-1, 1)
         wristband_baseline = wristband_baseline + random.randint(-1, 1)
-        montion_baseline = montion_baseline + random.randint(-5, 5)
+        montion_baseline = montion_baseline + random.randint(-1, 1)
         now = datetime.now()
         #time = now.strftime("%Y-%m-%d-T%H:%M:%S")
         time = now.strftime("%H:%M:%S")
