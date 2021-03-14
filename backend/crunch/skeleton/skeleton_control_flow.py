@@ -17,5 +17,5 @@ def skeleton_main():
     :return: void
     """
     # TODO: Refactor to read data and write pdf here instead of in measurement_functions
-    print("eyetracker process succesfully started")
+    print("skeleton process succesfully started")
     calculate_measurements(50, 60)

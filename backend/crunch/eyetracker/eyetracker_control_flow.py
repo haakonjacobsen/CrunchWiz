@@ -13,7 +13,8 @@ def _compute_information_processing_index():
     for i in range(1, len(init), window_size):
         if len(init[i:]) >= window_size:
             ipi = compute_information_processing_index(init[i:i+window_size], end[i:i+window_size])
-            print("IPI", ipi)
+            if ipi:
+                pass
 
 
 def _compute_perceived_difficulty():
