@@ -1,4 +1,3 @@
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import deque
@@ -73,7 +72,7 @@ class EDA:
         auc = self._area_under_curve(tonic)
 
         # TODO remove this when we don't want to visualize
-        self._plot(tonic, phasic, peak_start, peak_end, amplitude, relevant_eda)
+        # self._plot(tonic, phasic, peak_start, peak_end, amplitude, relevant_eda)
 
         return amplitude, nr_peaks, auc
 
@@ -169,11 +168,12 @@ class EDA_handler:
     # public function that empatica control flow can call to add a new data point
     def add_eda_point(self, datapoint):
         self.eda_queue.append(datapoint)
-
         # calculate measurements if 10 seconds has passed, and we have enough data points (30 seconds worth)
         if self.counter % 40 == 0 and len(self.eda_queue) == 121:
             amplitude, nr_peaks, auc = self.eda.calculate_measurements(list(self.eda_queue))
             # TODO use below line when we have found arousal and engagement
+            # TODO: Return arousal and engagement instead
+            return auc
             # self._write_measurement_to_file(arousal, engagement)
 
         self.counter += 1
@@ -189,22 +189,3 @@ class EDA_handler:
 # - every 10 seconds, new measurements will be derived for arousal and engagement
 # does not require data points every 1/frequency seconds, however it requires data points in order
 # if there is a corrupt data point, we need to interpolate it's value
-
-
-if __name__ == "__main__":
-    # READ DATA AND FORMAT
-    data = pd.read_csv("S001/EDA.csv")
-    # startTime = pd.to_datetime(float(data.columns.values[0]), unit="s")
-    # sampleRate = float(data.iloc[0][0])
-    data = data[data.index != 0]
-    data.columns = ["EDA"]
-    # data.index = pd.date_range(start=startTime, periods=len(data), freq='250L')
-
-    # instantiate class
-    eda_handler = EDA_handler()
-
-    # add the first 161 data points, which is 40 seconds worth
-    # after 30 seconds will create first measurement
-    # after 10 more seconds (40 total) will create second measurement
-    for d in data["EDA"][0:161]:
-        eda_handler.add_eda_point(d)

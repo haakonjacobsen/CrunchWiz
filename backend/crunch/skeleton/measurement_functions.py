@@ -2,14 +2,15 @@ import pandas as pd
 import numpy as np
 import sympy as sym
 
-df = pd.read_csv("backend/crunch/skeleton/skeleton-S001.csv")
-t = sym.symbols("t")
+df = pd.read_csv("crunch/skeleton/skeleton-S001.csv")
 
 
 def get_joint_by_index(t, j):
     """
     Main function which reads rows/columns values
-    and puts these into an array"""
+    and puts these into an array
+    """
+    # TODO: Refactor to use array instead of directly referencing pandas dataframes
     skele = []
     for i in range(25):
         temp = [df.iloc[i + 25 * t][1], df.iloc[i + 25 * t][2], df.iloc[i + 25 * t][3]]
@@ -36,6 +37,7 @@ def func(a, b):
     equations responsible for x,y,z.
     Since they are dynamic, we use sympy
     to create the mathematical expressions"""
+    t = sym.symbols("t")
     vector = [
         b[0] - a[0],
         b[1] - a[1],
@@ -53,6 +55,7 @@ def finiteDiff(f, tstart, tend):
     error coefficient is ommited in this calculation
     h is default set to 0.25, since an interval 1 second
     it will get 4 evenly splits"""
+    t = sym.symbols("t")
     h = 0.25
     t0 = tstart
     t1 = tstart + h
@@ -113,6 +116,7 @@ def stability_of_motion(t0, t1):
 
 def writeCSV(t0, t1):
     """ Main function to write measurements to csv """
+    print("writing csv")
     timeArray = []
     motionArray = []
     fatigueArray = []
@@ -122,6 +126,7 @@ def writeCSV(t0, t1):
     used_joints_list = [0] * 25
     i = t0
     while i < t1:
+        print("Why is this so slow", i, " - ", t1)
         j = i + 1
         timeArray.append(j)
         motionArray.append(amount_of_motion(i, j))
@@ -143,4 +148,5 @@ def writeCSV(t0, t1):
     df = pd.DataFrame(dict)
     # mode="a" appends, so we can add new data instead of wiping every time
     # default path, change accordingly
-    df.to_csv("backend/crunch/skeleton/data/Skeleton.csv", mode="a", index=False)
+    print(dict)
+    df.to_csv("crunch/skeleton/data/Skeleton.csv", mode="a", index=False)
