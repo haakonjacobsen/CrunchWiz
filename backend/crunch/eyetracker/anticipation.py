@@ -11,14 +11,11 @@ class eyetracker:
 
     def updateVals(self, vals):
         enough_vals = -1
-        try:
-            for i in range(len(vals)):
-                self.vals.append(vals[i])
-            if len(self.vals) > 4:
-                enough_vals = 1
-        except:
-            print("Fail")
-        return 1
+        for i in range(len(vals)):
+            self.vals.append(vals[i])
+        if len(self.vals) > 4:
+            enough_vals = 1
+        return enough_vals
 
     def saccade_duration(self, start_time2, end_time1):
         return start_time2 - end_time1
