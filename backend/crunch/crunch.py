@@ -33,13 +33,13 @@ async def producer():
     Add to queue
     :return: void
     """
-    x = 100
-    y = 100
-    z = 5
+    x = 0
+    y = 0
+    z = 0
     while True:
         x += random.randint(-1, 1)
         y += random.randint(-1, 1)
-        z += random.randint(-5, 5)
+        z += random.randint(-1, 1)
         now = datetime.now()
         # time = now.strftime("%Y-%m-%d-T%H:%M:%S")
         time = now.strftime("%H:%M:%S")
@@ -64,7 +64,7 @@ async def producer():
             print(connected)
             print("ADDED DATA TO QUEUE")
             await queue.put(data)
-        await asyncio.sleep(1)
+        await asyncio.sleep(2)
 
 
 # TODO: Fix proper removal of closed clients
