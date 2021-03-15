@@ -48,7 +48,7 @@ const MainContent = () => {
         {state.map((measurment) => (
           <Measurement
             name={measurment.name}
-            number={measurment.number}
+            number={measurment.value}
             showExtended={toggleExtended}
           />
         ))}
