@@ -13,9 +13,8 @@ def _compute_ibi_measurements():
         if len(ibi_data[i:]) >= 11:
             em = compute_emotional_regulation(ibi_data[i:i+11])
             en = compute_entertainment(ibi_data[i:i+11])
-            print("ER: ", en)
-            print("EN: ", em)
-    print(ibi_data)
+            if em or en:
+                pass
 
 
 def _compute_eda_measurements():
@@ -35,7 +34,8 @@ def _compute_eda_measurements():
     # after 10 more seconds (40 total) will create second measurement
     for d in data["EDA"][0:161]:
         ret = eda_handler.add_eda_point(d)
-        print(ret)
+        if ret:
+            pass
 
 
 def _compute_stress():
@@ -49,9 +49,9 @@ def _compute_stress():
         if len(temperature_data[i:]) >= 8:
             stress = compute_stress(temperature_data[i:i+8])
             if stress != 0.5:
-                print("STRESSED")
+                pass
             else:
-                print("NOT STRESSED")
+                pass
 
 
 def empatica_main():

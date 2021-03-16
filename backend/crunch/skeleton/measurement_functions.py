@@ -116,7 +116,6 @@ def stability_of_motion(t0, t1):
 
 def writeCSV(t0, t1):
     """ Main function to write measurements to csv """
-    print("writing csv")
     timeArray = []
     motionArray = []
     fatigueArray = []
@@ -126,7 +125,6 @@ def writeCSV(t0, t1):
     used_joints_list = [0] * 25
     i = t0
     while i < t1:
-        print("Why is this so slow", i, " - ", t1)
         j = i + 1
         timeArray.append(j)
         motionArray.append(amount_of_motion(i, j))
@@ -148,5 +146,4 @@ def writeCSV(t0, t1):
     df = pd.DataFrame(dict)
     # mode="a" appends, so we can add new data instead of wiping every time
     # default path, change accordingly
-    print(dict)
     df.to_csv("crunch/skeleton/data/Skeleton.csv", mode="a", index=False)

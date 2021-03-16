@@ -27,9 +27,24 @@
   flex: 3;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 .Measurment-number{
+  opacity: 0;
   font-size: 2.5em;
+  transition: 0.3s;
+}
+.MeasurementIndicator{
+  position: absolute;
+  transition: 0.3s;
+  opacity: 100;
+}
+.Measurment:hover .MeasurementIndicator{
+  opacity: 0;
+  transform: scale(0.2);
+}
+.Measurment:hover .Measurment-number{
+  opacity: 100;
 }
 .Measurment-text{
   display: inline-block;
