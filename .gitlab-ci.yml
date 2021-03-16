@@ -29,10 +29,10 @@ backend-test:
   stage: test
   image: python:3.8.7-buster
   before_script:
-    - cd backend
     - pip install virtualenv
     - virtualenv venv
     - source venv/bin/activate
     - pip3 install -r requirements.txt
   script:
-    - pytest --cov=crunch/
+    - python -m pytest backend/test/ --cov=crunch/
+
