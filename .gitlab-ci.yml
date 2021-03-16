@@ -34,7 +34,7 @@ backend-test:
     - virtualenv venv
     - source venv/bin/activate
     - pip3 install -r requirements.txt
-    - cd ..
   script:
-    - python -m pytest backend/test/ --cov=crunch/
+    - pytest --cov=crunch/
+
 
