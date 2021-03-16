@@ -1,5 +1,4 @@
 from backend.crunch.eyetracker.measurement_functions import compute_information_processing_index
-from backend.crunch.empatica.measurement_functions import compute_emotional_regulation, compute_entertainment
 
 
 class TestCrunch:
