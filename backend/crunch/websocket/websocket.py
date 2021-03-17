@@ -16,7 +16,6 @@ async def watcher(queue):
         df = pd.read_csv(file_path).iloc[-1]
         # format how we send it to frontend
         data = {"name": file_path[16:-4], "value": df.value, "time": df.time}
-
         # put it queue so web socket can read
         await queue.put([data])
 

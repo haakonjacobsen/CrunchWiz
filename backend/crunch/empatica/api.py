@@ -1,27 +1,54 @@
-"""
-
-def api():
-    gets datapoints at different frequencies
-    when they get datapoint, pass them to handlers?
-"""
 import pandas as pd
-
-"""Mock api, reads from csv files and simulates real api, will be replaced by real api"""
+import time
 
 
 class MockApi:
-    def __init__(self):
-        pass
+    """
+    Mock api that reads from csv files instead of getting data from devices
+    """
+    eda_data = pd.read_csv("crunch/empatica/S001/EDA.csv")["EDA"]
+    ibi_data = pd.read_csv("crunch/empatica/S001/IBI.csv")["IBI"]
+    temp_data = pd.read_csv("crunch/empatica/S001/TEMP.csv")["TEMP"]
+    hr_data = pd.read_csv("crunch/empatica/S001/HR.csv")["HR"]
 
-    def connect(self, handler_eda):
-        eda_data = pd.read_csv("crunch/empatica/S001/EDA.csv")
-        eda_data = eda_data[eda_data.index != 0]
-        eda_data.columns = ["EDA"]
+    def __init__(self, handler_eda, handler_ibi, handler_temp, handler_hr):
+        self.handler_eda = handler_eda
+        self.handler_ibi = handler_ibi
+        self.handler_temp = handler_temp
+        self.handler_hr = handler_hr
 
-        for d in eda_data["EDA"][0:161]:
-            handler_eda.add_eda_point(d)
+    def connect(self):
+        """ Simulates connecting to the device, starts reading from csv files and push data to handlers """
+        for i in range(1000):
+            self._mock_eda_datapoint(i)
+            self._mock_temp_datapoint(i)
+            self._mock_ibi_datapoint(i)
+            self._mock_hr_datapoint(i)
+
+            # simulate delay of new data points by sleeping
+            time.sleep(0.1)
+
+    def _mock_ibi_datapoint(self, index):
+        if index < len(self.ibi_data):
+            data_point = self.ibi_data[index]
+            self.handler_ibi.add_data_point(data_point)
+
+    def _mock_eda_datapoint(self, index):
+        if index < len(self.eda_data):
+            data_point = self.eda_data[index]
+            self.handler_eda.add_data_point(data_point)
+
+    def _mock_temp_datapoint(self, index):
+        if index < len(self.temp_data):
+            data_point = self.temp_data[index]
+            self.handler_temp.add_data_point(data_point)
+
+    def _mock_hr_datapoint(self, index):
+        if index < len(self.hr_data):
+            data_point = self.hr_data[index]
+            self.handler_hr.add_data_point(data_point)
 
 
-# This is where we will create the real api
+# TODO implement real api
 class RealAPI:
     pass

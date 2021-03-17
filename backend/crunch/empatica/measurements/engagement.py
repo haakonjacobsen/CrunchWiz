@@ -1,7 +1,7 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
 """
+TODO remove this
 from article about engagement
 https://www.researchgate.net/publication/272747425_Using_Electrodermal_Activity_to_Recognize_Ease_of_Engagement_in_Children_during_Social_Interactions
 
@@ -15,63 +15,56 @@ of the peaks amplitudes.
 slope is linear interpolation of
     1) min point
     2) (max point - min point) / 2
-
 """
 
-# delta time, 20 second moving time window
-DT = 20
-# frequency of data points, 4 per seconds
-FQ = 4
-# The number of data points in our tonic and phasic measurements, i.e after mean filter
-NR_DATA_POINTS = DT * FQ + 1
-# The width (data points) of the mean kernel, so we only use the first and last 5 seconds for interpolation
-MEAN_KERNEL_WIDTH = 5 * FQ
-# The total number of data points before we have used mean kernel
-NR_DATA_POINTS_WITH_KERNEL = NR_DATA_POINTS + 2 * MEAN_KERNEL_WIDTH
-# the threshold in microsiemens required to classify an onset of a peak
-ONSET_THRESHOLD = 0.01
-# the threshold in microsiemens required to classify an offset of a peak
-OFFSET_THRESHOLD = 0
+""" Constants """
+DT = 20  # delta time, 20 second moving time window
+FQ = 4  # frequency of data points, 4 per seconds
+NR_DATA_POINTS = DT * FQ + 1  # The number of data points after mean filter is applied
+MEAN_KERNEL_WIDTH = 5 * FQ  # The width (data points) of the mean kernel
+NR_DATA_POINTS_WITH_KERNEL = NR_DATA_POINTS + 2 * MEAN_KERNEL_WIDTH  # The total number of data points before mean kernel
+ONSET_THRESHOLD = 0.01  # the threshold in microsiemens required to classify an onset of a peak
+OFFSET_THRESHOLD = 0  # the threshold in microsiemens required to classify an offset of a peak
 
 
-# Takes in a 121 data points (30 seconds)
-# Measures the tonic EDA from the middle 20 seconds
-# Uses the first 5 and last 5 seconds to interpolate the tonic signal more accurately
-def calculate_arousal(eda):
+def compute_engagement(eda) -> float:
+    """
+    Calculates the engagement based on EDA features
+
+    Takes in the last 121 data points, which corresponds ot 30 seconds of data. Extracts the tonic component of the
+    EDA data by using a mean moving window of length 10 seconds, and then removing first and last 5 seconds
+    worth of data. Extracts the phasic component from the difference of the eda signal and the tonic component.
+    From the phasic component we calculate peaks and slope, from the tonic component we calculate area under the curve.
+
+    :param eda: list of eda data points
+    :type eda: list
+    :return: engagement - sum of normalized features related to engagement
+    """
     assert len(eda) == NR_DATA_POINTS_WITH_KERNEL
 
-    # compute the mean with kernel of 5 second width, so we are left with 20 seconds in the middle
+    # find tonic and phasic components
     mean_arr = _mean_filter(eda)
-
-    # Get the middle 20 seconds of the EDA
     relevant_eda = eda[MEAN_KERNEL_WIDTH: -MEAN_KERNEL_WIDTH]
-
-    # Tonic is the mean shifted so it is below eda
     tonic = mean_arr - abs(min(relevant_eda - mean_arr))
-
-    # phasic is difference of eda and tonic
     phasic = relevant_eda - tonic
 
-    # finds the peak from the data points
+    # features
     peak_start, peak_end = _find_peaks(relevant_eda - mean_arr)
-
-    # finds the total amplitude, also called EDA positive change
     amplitude = _find_amplitude(peak_start, peak_end, phasic)
-
-    # The number of peaks in the 20 second window, counted from the number of peak starts we find
     nr_peaks = sum(peak_start)
-
-    # area under curve of the tonic EDA, normalized for per second
     auc = _area_under_curve(tonic)
 
     # TODO remove this when we don't want to visualize
     # _plot(tonic, phasic, peak_start, peak_end, amplitude, relevant_eda)
 
-    return amplitude, nr_peaks, auc
+    # TODO fix proper calculation and normalization and stuff
+    engagement = nr_peaks + auc
+
+    return engagement
 
 
-# Compute mean filter from the eda, reduce from 30 seconds of data points to 20 seconds, because of kernel width
-def _mean_filter(eda):
+def _mean_filter(eda) -> np.array:
+    """ Compute the mean eda signal, using a mean kernel of 10 seconds width """
     mean_arr = np.array([])
     for i in range(MEAN_KERNEL_WIDTH, NR_DATA_POINTS_WITH_KERNEL - MEAN_KERNEL_WIDTH):
         mean = np.mean(eda[i - MEAN_KERNEL_WIDTH: i + MEAN_KERNEL_WIDTH + 1])
@@ -79,33 +72,33 @@ def _mean_filter(eda):
     return mean_arr
 
 
-# Finds the position of the start and end of peaks
-# modified phasic is basically the same as phasic, except it is centered around 0 (ish)
-def _find_peaks(modified_phasic):
+def _find_peaks(modified_phasic) -> (np.ndarray, np.ndarray):
+    """ Find the position of peak start and peak ends on the phasic signal """
     peak_start = np.zeros(NR_DATA_POINTS)
     peak_end = np.zeros(NR_DATA_POINTS)
+    rising = False
 
-    # separate logic for the start, since we want to classify start of the peak even if it starts above threshold
+    # identify if start is peak
     if ONSET_THRESHOLD < modified_phasic[0] < modified_phasic[1]:
         peak_start[0] = 1
+        rising = True
 
-    # Find the onset and offset points
     for i in range(NR_DATA_POINTS - 1):
         # peak starts from the point it gets above the onset threshold
-        if modified_phasic[i] < ONSET_THRESHOLD < modified_phasic[i + 1]:
+        if modified_phasic[i] < ONSET_THRESHOLD < modified_phasic[i + 1] and not rising:
             peak_start[i + 1] = 1
-        # last point was above offset threshold and current point is below
-        elif modified_phasic[i] > OFFSET_THRESHOLD > modified_phasic[i + 1]:
+            rising = True
+        # peak ends from the point it dips below the offset threshold
+        elif modified_phasic[i] > OFFSET_THRESHOLD > modified_phasic[i + 1] and rising:
             peak_end[i + 1] = 1
+            rising = False
 
     return peak_start, peak_end
 
 
-def _find_amplitude(peak_start, peak_end, phasic):
-    # total amplitude of the peaks
+def _find_amplitude(peak_start, peak_end, phasic) -> float:
+    """ Find the total amplitude of the highest points of each peak """
     amplitude = 0
-
-    # find amplitudes
     for i in range(NR_DATA_POINTS):
         # if we found a peak start
         if peak_start[i] == 1:
@@ -119,9 +112,9 @@ def _find_amplitude(peak_start, peak_end, phasic):
     return amplitude
 
 
-def _area_under_curve(tonic):
+def _area_under_curve(tonic) -> float:
+    """ Computes the area under the curve of the tonic signal, using trigonometry """
     auc = 0
-    # goes through adjacent pairs of data points, compute auc using linear trigonometry
     for i in range(NR_DATA_POINTS - 1):
         # first data point
         y1 = tonic[i]
@@ -136,12 +129,11 @@ def _area_under_curve(tonic):
         area_triangle = dy * dx / 2
         auc += area_square + area_triangle
 
-    # TODO what value to return, either auc for 20 seconds, or normalized for 1 second,
-    #  or normalized for 1 frequency (0.25 seconds)
     return auc / DT
 
 
 """
+import matplotlib.pyplot as plt
 # Mostly for debugging purposes, to visualize eda, tonic, phasic, peaks and amplitude
 def _plot(tonic, phasic, peak_start, peak_end, amplitude, eda):
     # TIME AXIS

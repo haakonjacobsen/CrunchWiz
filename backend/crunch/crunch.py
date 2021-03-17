@@ -10,7 +10,7 @@ def start_processes():
     p2 = Process(target=eyetracker_main)
     p3 = Process(target=skeleton_main)
     p1.start()
-    #p2.start()
-    #p3.start()
+    p2.start()
+    p3.start()
 
-    #start_websocket()
+    start_websocket()

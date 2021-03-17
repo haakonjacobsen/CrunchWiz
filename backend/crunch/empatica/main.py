@@ -1,8 +1,13 @@
 from .api import MockApi
-from .handler import HandlerEDA
+from .handler import HandlerEDA, HandlerIBI, HandlerTemp, HandlerHR
 
-# reason we have api=MockApi() in default argument, is so we can replace it when testing.
-# In producting we will have real api as default argument, and test will call start_empatica with mockapi
-def start_empatica(api=MockApi()):
-    # send the datapoint handler to the api
-    api.connect(HandlerEDA())
+
+def start_empatica(api=MockApi):
+    """
+    start the empatica process control flow.
+    TODO change default api argument to realAPI, and use MockApi when integration testing only
+    """
+    # Instantiate the api with all the handlers supplied
+    api = api(HandlerEDA(), HandlerIBI(), HandlerTemp(), HandlerHR())
+    # start up the api
+    api.connect()
