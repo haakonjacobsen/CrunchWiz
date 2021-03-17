@@ -127,13 +127,13 @@ def _area_under_curve(tonic):
         y1 = tonic[i]
         # second datapoint
         y2 = tonic[i + 1]
-        # chance in y
+        # change in y
         dy = y2 - y1
         # change in x
-        x = 1 / FQ
+        dx = 1 / FQ
 
-        area_square = y1 * x
-        area_triangle = dy * x / 2
+        area_square = y1 * dx
+        area_triangle = dy * dx / 2
         auc += area_square + area_triangle
 
     # TODO what value to return, either auc for 20 seconds, or normalized for 1 second,
@@ -142,7 +142,6 @@ def _area_under_curve(tonic):
 
 
 """
-# TODO remove this when production ready
 # Mostly for debugging purposes, to visualize eda, tonic, phasic, peaks and amplitude
 def _plot(tonic, phasic, peak_start, peak_end, amplitude, eda):
     # TIME AXIS
