@@ -1,94 +1,54 @@
-from collections import deque
-from .measurements import compute_engagement, compute_arousal, \
-    compute_emotional_regulation, compute_entertainment, compute_stress
 import csv
-
-# TODO fix handlers for all data point types.
-# TODO replace hardcoded 10 with timestamp
-# TODO since all handlers are so similar, we might make just one handler class, which takes compute_fucntion etc as parameter
+import datetime
+from collections import deque
 
 
-class HandlerEDA:
+class DataHandler:
     """
-    Receives EDA data points from the api,
-    calls appropriate measurement functions when it has enough data points
+    Class that subscribes to a specific raw data stream,
+    handles storing the data,
+    preprocessing the data,
+    and calculating measurements from the data
     """
-    eda_queue = deque(maxlen=121)
-    counter = 0
-
-    # TODO normalize, sum, and divide by number of values
-    def add_data_point(self, datapoint):
-        self.eda_queue.append(datapoint)
-        # calculate measurements if 10 seconds has passed, and we have enough data points (30 seconds worth)
-        if self.counter % 40 == 0 and len(self.eda_queue) == 121:
-            # calculate engagement and write to csv
-            engagement = compute_engagement(list(self.eda_queue))
-            write_csv("Engagement", [10, engagement])
-            # calculate arousal and write to csv
-            arousal = compute_arousal(list(self.eda_queue))
-            write_csv("Arousal", [15, arousal])
-        self.counter += 1
-
-
-class HandlerIBI:
-    """
-    Receives IBI data points from the api,
-    calls appropriate measurement functions when it has enough data points
-    """
-    ibi_queue = deque(maxlen=12)
-    counter = 0
+    def __init__(self, measurement_func=None, measurement_path=None, window_length=None, window_step=None):
+        """
+        :param measurement_func: the function we call to compute measurements from the raw data
+        :type measurement_func: list -> float
+        :param measurement_path: path to the output csv file
+        :type measurement_path: str
+        :param window_length: length of the window, i.e number of data points for the function
+        :type window_length: int
+        :param window_step: how many steps for a new window, i.e for 6 steps, a new measurement is computed every 6 data points
+        :type window_step: int
+        """
+        assert window_length and window_step and measurement_func and measurement_path, "Need to supply the required parameters"
+        self.data_queue = deque(maxlen=window_length)
+        self.data_counter = 0
+        self.window_step = window_step
+        self.window_length = window_length
+        self.measurement_func = measurement_func
+        self.measurement_path = measurement_path
+        self.time = datetime.datetime.now()
 
     def add_data_point(self, datapoint):
-        self.ibi_queue.append(datapoint)
-        if self.counter % 12 == 0 and len(self.ibi_queue) == 12:
-            # calculate emotional regulation and write to csv
-            emotional_regulation = compute_emotional_regulation(list(self.ibi_queue))
-            write_csv("Emotional_Regulation", [10, emotional_regulation])
-        self.counter += 1
+        """ Receive a new data point, and call appropriate measurement function when we have enough points """
+        # TODO call eventual preprocessing here
+        self.data_queue.append(datapoint)
+        if self.data_counter % self.window_step == 0 and len(self.data_queue) == self.window_length:
+            measurement = self.measurement_func(list(self.data_queue))
+            delta_time = self._get_delta_time()
+            self._write_csv(self.measurement_path, [delta_time, measurement])
+        self.data_counter += 1
 
+    def _get_delta_time(self):
+        """ finds delta time from last computed measurement """
+        new_time = datetime.datetime.now()
+        delta_time = (new_time - self.time).total_seconds()
+        self.time = new_time
+        return delta_time
 
-class HandlerTemp:
-    """
-    Receives HR data points from the api,
-    calls appropriate measurement functions when it has enough data points
-    """
-    temp_queue = deque(maxlen=10)
-    counter = 0
-
-    def add_data_point(self, datapoint):
-        self.temp_queue.append(datapoint)
-        if self.counter % 10 == 0 and len(self.temp_queue) == 10:
-            # calculate emotional regulation and write to csv
-            stress = compute_stress(list(self.temp_queue))
-            write_csv("Stress", [10, stress])
-        self.counter += 1
-
-
-class HandlerHR:
-    """
-    Receives HR data points from the api,
-    calls appropriate measurement functions when it has enough data points
-    """
-    hr_queue = deque(maxlen=20)
-    counter = 0
-
-    def add_data_point(self, datapoint):
-        self.hr_queue.append(datapoint)
-        if self.counter % 20 == 0 and len(self.hr_queue) == 20:
-            # calculate emotional regulation and write to csv
-            entertainment = compute_entertainment(list(self.hr_queue))
-            write_csv("Entertainment", [10, entertainment])
-        self.counter += 1
-
-
-"""
-No measurement using bvp
-class HandlerBVP:
-    pass
-"""
-
-
-def write_csv(path, row):
-    with open("crunch/output/" + path + ".csv", "a", newline="") as csvfile:
-        writer = csv.writer(csvfile, delimiter=",")
-        writer.writerow(row)
+    def _write_csv(self, path, row):
+        """ write result to csv file """
+        with open("crunch/output/" + path, "a", newline="") as csvfile:
+            writer = csv.writer(csvfile, delimiter=",")
+            writer.writerow(row)
