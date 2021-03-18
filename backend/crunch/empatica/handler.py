@@ -22,6 +22,7 @@ class DataHandler:
         :type window_step: int
         """
         assert window_length and window_step and measurement_func and measurement_path, "Need to supply the required parameters"
+
         self.data_queue = deque(maxlen=window_length)
         self.data_counter = 0
         self.window_step = window_step
@@ -32,7 +33,7 @@ class DataHandler:
 
     def add_data_point(self, datapoint):
         """ Receive a new data point, and call appropriate measurement function when we have enough points """
-        # TODO call eventual preprocessing here
+        # TODO call eventual preprocessing here, should also take preprocessing function as argument in init
         self.data_queue.append(datapoint)
         if self.data_counter % self.window_step == 0 and len(self.data_queue) == self.window_length:
             measurement = self.measurement_func(list(self.data_queue))
