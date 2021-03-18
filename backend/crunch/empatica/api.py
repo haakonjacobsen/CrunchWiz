@@ -7,10 +7,10 @@ class MockApi:
     """
     Mock api that reads from csv files instead of getting data from devices
     """
-    eda_data = pd.read_csv("crunch/empatica/S001/EDA.csv")["EDA"]
-    ibi_data = pd.read_csv("crunch/empatica/S001/IBI.csv")["IBI"]
-    temp_data = pd.read_csv("crunch/empatica/S001/TEMP.csv")["TEMP"]
-    hr_data = pd.read_csv("crunch/empatica/S001/HR.csv")["HR"]
+    eda_data = pd.read_csv("crunch/empatica/mock_data/EDA.csv")["EDA"]
+    ibi_data = pd.read_csv("crunch/empatica/mock_data/IBI.csv")["IBI"]
+    temp_data = pd.read_csv("crunch/empatica/mock_data/TEMP.csv")["TEMP"]
+    hr_data = pd.read_csv("crunch/empatica/mock_data/HR.csv")["HR"]
 
     subscribers = {"EDA": [], "IBI": [], "TEMP": [], "HR": []}
 
