@@ -1,1 +1,1 @@
-from .main import start_empatica
+from .main import start_empatica  # noqa

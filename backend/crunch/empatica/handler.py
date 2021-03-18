@@ -18,10 +18,12 @@ class DataHandler:
         :type measurement_path: str
         :param window_length: length of the window, i.e number of data points for the function
         :type window_length: int
-        :param window_step: how many steps for a new window, i.e for 6 steps, a new measurement is computed every 6 data points
+        :param window_step: how many steps for a new window, i.e for 6 steps,
+        a new measurement is computed every 6 data points
         :type window_step: int
         """
-        assert window_length and window_step and measurement_func and measurement_path, "Need to supply the required parameters"
+        assert window_length and window_step and measurement_func and measurement_path, \
+            "Need to supply the required parameters"
 
         self.data_queue = deque(maxlen=window_length)
         self.data_counter = 0

@@ -22,7 +22,7 @@ DT = 20  # delta time, 20 second moving time window
 FQ = 4  # frequency of data points, 4 per seconds
 NR_DATA_POINTS = DT * FQ + 1  # The number of data points after mean filter is applied
 MEAN_KERNEL_WIDTH = 5 * FQ  # The width (data points) of the mean kernel
-NR_DATA_POINTS_WITH_KERNEL = NR_DATA_POINTS + 2 * MEAN_KERNEL_WIDTH  # The total number of data points before mean kernel
+NR_DATA_POINTS_WITH_KERNEL = NR_DATA_POINTS + 2 * MEAN_KERNEL_WIDTH  # The number of data points before mean kernel
 ONSET_THRESHOLD = 0.01  # the threshold in microsiemens required to classify an onset of a peak
 OFFSET_THRESHOLD = 0  # the threshold in microsiemens required to classify an offset of a peak
 
@@ -46,11 +46,11 @@ def compute_engagement(eda) -> float:
     mean_arr = _mean_filter(eda)
     relevant_eda = eda[MEAN_KERNEL_WIDTH: -MEAN_KERNEL_WIDTH]
     tonic = mean_arr - abs(min(relevant_eda - mean_arr))
-    phasic = relevant_eda - tonic
+    # phasic = relevant_eda - tonic
 
     # features
     peak_start, peak_end = _find_peaks(relevant_eda - mean_arr)
-    amplitude = _find_amplitude(peak_start, peak_end, phasic)
+    # amplitude = _find_amplitude(peak_start, peak_end, phasic)
     nr_peaks = sum(peak_start)
     auc = _area_under_curve(tonic)
 

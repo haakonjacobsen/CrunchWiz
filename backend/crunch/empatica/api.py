@@ -1,6 +1,6 @@
 import pandas as pd
 import time
-from .handler import DataHandler
+from .handler import DataHandler  # noqa
 
 
 class MockApi:

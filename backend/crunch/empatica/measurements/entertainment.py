@@ -3,6 +3,7 @@ import statsmodels.api as sm
 
 
 def compute_entertainment(list_of_hr_values):
+
     """
     This function only computes features that can be used as input to supervised learning.
     Currently outputs a placeholder value between 0 and 1.
@@ -23,8 +24,10 @@ def compute_entertainment(list_of_hr_values):
         Approximate_entropy. Source:
         https://en.wikipedia.org/wiki/Approximate_entropy
         """
+
         def _maxdist(x_i, x_j):
             return max([abs(ua - va) for ua, va in zip(x_i, x_j)])
+
         def _phi(m):
             x = [[U[j] for j in range(i, i + m - 1 + 1)] for i in range(N - m + 1)]
             C = [
@@ -34,8 +37,10 @@ def compute_entertainment(list_of_hr_values):
             return (N - m + 1.0) ** (-1) * sum(np.log(C))
         N = len(U)
         return abs(_phi(m + 1) - _phi(m))
+
     def normalize(value, min_range, max_range):
         return (value - min_range) / (max_range - min_range)
+
     list_of_hr_values = np.asarray(list_of_hr_values)
     avg_hr = np.average(list_of_hr_values)
     var_hr = np.var(list_of_hr_values)

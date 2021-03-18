@@ -1,1 +1,1 @@
-from .crunch import start_processes
+from .crunch import start_processes  # noqa
