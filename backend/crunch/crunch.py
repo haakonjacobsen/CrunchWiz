@@ -2,12 +2,7 @@ from multiprocessing import Process
 from .empatica.empatica_control_flow import empatica_main
 from .eyetracker.eyetracker_control_flow import eyetracker_main
 from .skeleton.skeleton_control_flow import skeleton_main
-
-import asyncio
-import json
-import random
-import websockets
-from datetime import datetime
+from .websocket.websocket import start_websocket
 
 
 def start_processes():
@@ -19,76 +14,3 @@ def start_processes():
     p3.start()
 
     start_websocket()
-
-
-connected = set()
-loop = asyncio.get_event_loop()
-queue = asyncio.Queue(loop=loop)
-
-
-async def producer():
-    """
-    Get data from measurements
-    Create JSON structure
-    Add to queue
-    :return: void
-    """
-    x = 0
-    y = 0
-    z = 0
-    while True:
-        x += random.randint(-1, 1)
-        y += random.randint(-1, 1)
-        z += random.randint(-1, 1)
-        now = datetime.now()
-        # time = now.strftime("%Y-%m-%d-T%H:%M:%S")
-        time = now.strftime("%H:%M:%S")
-        data = [
-            {
-                "name": "Stress",
-                "number": x,
-                "time": time
-            },
-            {
-                "name": "Arousal",
-                "number": y,
-                "time": time
-            },
-            {
-                "name": "Entertainment",
-                "number": z,
-                "time": time
-            },
-        ]
-        if connected:
-            print(connected)
-            print("ADDED DATA TO QUEUE")
-            await queue.put(data)
-        await asyncio.sleep(2)
-
-
-# TODO: Fix proper removal of closed clients
-async def handler(websocket, path):
-    """
-    Automatically sends items from the queue to connected clients.
-    :param websocket:
-    :param path:
-    :return: void
-    """
-    connected.add(websocket)
-    try:
-        print("Established connection with client")
-        while True:
-            data = await queue.get()
-            print(data)
-            await asyncio.wait([ws.send(json.dumps(data)) for ws in connected])
-    finally:
-        connected.remove(websocket)
-
-
-def start_websocket():
-    start_server = websockets.serve(handler, "127.0.0.1", 8888)
-    loop.run_until_complete(asyncio.gather(
-        start_server,
-        producer(),
-    ))
