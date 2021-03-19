@@ -1,5 +1,4 @@
 import pandas as pd
-import time
 from .handler import DataHandler  # noqa
 
 
@@ -23,6 +22,7 @@ class MockApi:
         :param requested_data: The specific raw data that the data handler subscribes to
         :type requested_data: str
         """
+        assert requested_data in self.subscribers.keys()
         self.subscribers[requested_data].append(data_handler)
 
     def connect(self):
@@ -34,7 +34,7 @@ class MockApi:
             self._mock_hr_datapoint(i)
 
             # simulate delay of new data points by sleeping
-            time.sleep(0.1)
+            # time.sleep(0.1)
 
     def _mock_ibi_datapoint(self, index):
         if index < len(self.ibi_data):
