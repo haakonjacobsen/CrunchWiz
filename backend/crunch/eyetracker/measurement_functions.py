@@ -58,8 +58,8 @@ def compute_information_processing_index(list_of_init_times, list_of_end_times, 
     assert type(list_of_init_times) == type(list_of_end_times) == list
     assert len(list_of_init_times) == len(list_of_end_times) == len(list_of_fx) == len(list_of_fy)
     div = ipi_helper(list_of_init_times, list_of_end_times, list_of_fx, list_of_fy)
-
-    return np.sum(np.asarray(div) < short_threshold) / np.sum(np.asarray(div) > long_threshold)
+    number_of_long_f_short_s = max(np.sum(np.asarray(div) > long_threshold), 1)
+    return np.sum(np.asarray(div) < short_threshold) / number_of_long_f_short_s
 
 
 def compute_ipi_thresholds(list_of_init_times, list_of_end_times, list_of_fx, list_of_fy):
