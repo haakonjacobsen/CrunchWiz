@@ -23,7 +23,7 @@ lint-python:
     - pip3 install isort flake8
   script:
     - flake8
-    - isort .
+    - isort -c
 
 backend-test:
   stage: test
