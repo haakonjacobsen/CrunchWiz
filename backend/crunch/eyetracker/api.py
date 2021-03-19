@@ -1,5 +1,3 @@
-import time
-
 import pandas as pd
 
 from .handler import DataHandler  # noqa

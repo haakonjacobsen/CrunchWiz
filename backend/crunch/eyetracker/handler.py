@@ -10,7 +10,8 @@ class DataHandler:
     preprocessing the data,
     and calculating measurements from the data
     """
-    def __init__(self, measurement_func=None, measurement_path=None, window_length=None, window_step=None, listen_on=None, baseline={}):
+    def __init__(self, measurement_func=None, measurement_path=None,
+                 window_length=None, window_step=None, listen_on=None, baseline={}):
         """
         :param measurement_func: the function we call to compute measurements from the raw data
         :type measurement_func: (list) -> float
@@ -44,8 +45,12 @@ class DataHandler:
         for key, value in data.items():
             self.data_queues[key].append(value)
 
-        if self.data_counter % self.window_step == 0 and all(len(queue) == self.window_length for _, queue in self.data_queues.items()):
-            measurement = self.measurement_func(**{key: list(queue) for key, queue in self.data_queues.items()}, **self.baseline)
+        if self.data_counter % self.window_step == 0 \
+                and all(len(queue) == self.window_length for _, queue in self.data_queues.items()):
+            measurement = self.measurement_func(
+                **{key: list(queue) for key, queue in self.data_queues.items()},
+                **self.baseline
+            )
             delta_time = self._get_delta_time()
             self._write_csv(self.measurement_path, [delta_time, measurement])
         self.data_counter += 1

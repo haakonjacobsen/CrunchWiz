@@ -1,14 +1,14 @@
 import numpy as np
 
 
-def ipi_helper(initTime, endTime, fx, fy):
+def ipi_helper(init_time, end_time, fx, fy):
     """
     Returns a list of (fixation duration/saccade length)
     Used by both compute_information_processing_index and compute_ipi_thresholds.
     """
     div = []
-    for i in range(min(len(initTime), len(endTime)) - 1):
-        current_fixation_duration = fixation_duration(initTime[i], endTime[i])
+    for i in range(min(len(init_time), len(end_time)) - 1):
+        current_fixation_duration = fixation_duration(init_time[i], end_time[i])
         current_saccade_length = saccade_length(fx[i], fy[i], fx[i + 1], fy[i + 1])
         div.append(current_fixation_duration / current_saccade_length)
     return div
