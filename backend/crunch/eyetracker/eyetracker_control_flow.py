@@ -42,6 +42,7 @@ def eyetracker_main():
     Get data from Tobii eye tracker API
     Preprocess
     Write to csv
+
     :return: void
     """
     print("eyetracker process succesfully started")
