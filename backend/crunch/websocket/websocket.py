@@ -8,17 +8,18 @@ from watchgod import awatch
 
 async def watcher(queue):
     async for changes in awatch('./crunch/output/'):
+        file_paths = []
         # get file path of changed file
         for a in changes:
-            file_path = a[1]
+            file_paths.append(a[1])
 
-        # get last row of changed file
-        df = pd.read_csv(file_path).iloc[-1]
-        # format how we send it to frontend
-        data = {"name": file_path[16:-4], "value": df.value, "time": df.time}
-
-        # put it queue so web socket can read
-        await queue.put([data])
+        for file_path in file_paths:
+            # get last row of changed file
+            df = pd.read_csv(file_path).iloc[-1]
+            # format how we send it to frontend
+            data = {"name": file_path[16:-4], "value": df.value, "time": df.time}
+            # put it queue so web socket can read
+            await queue.put([data])
 
 
 # TODO: Fix proper removal of closed clients
