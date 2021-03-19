@@ -144,6 +144,7 @@ def writeCSV(t0, t1):
         "value for most used joint": valueArray,
     }
     df = pd.DataFrame(dict)
+    print(df)
     # mode="a" appends, so we can add new data instead of wiping every time
     # default path, change accordingly
-    df.to_csv("crunch/skeleton/data/Skeleton.csv", mode="a", index=False)
+    # df.to_csv("crunch/skeleton/data/Skeleton.csv", mode="a", index=False)
