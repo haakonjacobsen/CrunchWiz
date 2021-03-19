@@ -17,7 +17,7 @@ def _compute_information_processing_index():
     for i in range(1, len(init), window_size):
         if len(init[i:]) >= window_size:
             ipi = compute_information_processing_index(init[i:i+window_size], end[i:i+window_size],
-                                                       fx[i:i + window_size], fy[i:i + window_size]
+                                                       fx[i:i + window_size], fy[i:i + window_size], 0.8, 3.2
                                                        )
             if ipi:
                 pass
