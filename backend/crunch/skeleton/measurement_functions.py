@@ -9,7 +9,7 @@ def get_joint_by_index(t, j):
     """
     Main function which reads rows/columns values
     and puts these into an array
-    Paramters:
+    Parameters:
         t (int): Time in second
         j (int): Joint number ranges from 0 to 24
     Returns:
@@ -31,7 +31,7 @@ def get_joint_by_index(t, j):
 
 def norm_by_array(a, b):
     """ Calculating the L2 norm of two given lists
-    Paramters:
+    Parameters:
         a (list): List 1
         b (list): List 2
     Returns:
@@ -49,7 +49,7 @@ def func(a, b):
     equations responsible for x,y,z.
     Since they are dynamic, we use sympy
     to create the mathematical expressions
-    Paramters:
+    Parameters:
         a (list): List of coordinates for point 1
         b (list): List of coordinates for point 2
     Returns:
@@ -73,8 +73,8 @@ def finiteDiff(f, tstart, tend):
     error coefficient is ommited in this calculation
     h is default set to 0.25, since an interval 1 second
     it will get 4 evenly splits
-    Paramters:
-        f (list): A sympy function with respect to t
+    Parameters:
+        f (expression): A sympy function with respect to t
         tstart (int): Start time
         tend (int):  End time
     Returns:
@@ -97,13 +97,13 @@ def fatigue(t0, t1):
     """ Measures fatigue for every joint
     by finding their functions, and applying
     finite differences
-    Paramters:
+    Parameters:
         t0 (int): Start time
         t1 (int): End time
     Returns:
         totalFatigue (float): Fatigue for all joint for given time interval
     """
-    totalFatigue = 0
+    totalFatigue = 0.0
     totalJoint = 24
     for i in range(25):
         jointFatigue = 0
@@ -119,7 +119,7 @@ def fatigue(t0, t1):
 def amount_of_motion(t0, t1):
     """ Take norm of two points and
     averageing, before summing them up
-    Paramters:
+    Parameters:
         t0 (int): Start time
         t1 (int): End time
     Returns:
@@ -132,11 +132,12 @@ def amount_of_motion(t0, t1):
         total += jointTotal / total_joints
     return total
 
+print(amount_of_motion(1, 20))
 
 def most_used_joints(t0, t1, list):
     """ Putting the norm in a list such that
     list[0] = joint 0, list[1 = joint 1 etc.
-    Paramters:
+    Parameters:
         t0 (int): Start time
         t1 (int): End time
         list (list): List requires an empty list to append values to
@@ -151,7 +152,7 @@ def most_used_joints(t0, t1, list):
 def stability_of_motion(t0, t1):
     """ Take norm of two points before applying
     a formula, and summing them up
-    Paramters:
+    Parameters:
         t0 (int): Start time
         t1 (int): End time
     Returns:
