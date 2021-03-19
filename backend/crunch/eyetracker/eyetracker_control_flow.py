@@ -7,12 +7,18 @@ from .measurement_functions import compute_information_processing_index
 def _compute_information_processing_index():
     init = pd.read_csv("crunch/eyetracker/ET-data-S001.csv", usecols=["initTime"])
     end = pd.read_csv("crunch/eyetracker/ET-data-S001.csv", usecols=["endTime"])
+    fx = pd.read_csv("crunch/eyetracker/ET-data-S001.csv", usecols=["fx"])
+    fy = pd.read_csv("crunch/eyetracker/ET-data-S001.csv", usecols=["fy"])
     init = init.values.flatten().tolist()
     end = end.values.flatten().tolist()
+    fx = fx.values.flatten().tolist()
+    fy = fy.values.flatten().tolist()
     window_size = 10
     for i in range(1, len(init), window_size):
         if len(init[i:]) >= window_size:
-            ipi = compute_information_processing_index(init[i:i+window_size], end[i:i+window_size])
+            ipi = compute_information_processing_index(init[i:i+window_size], end[i:i+window_size],
+                                                       fx[i:i + window_size], fy[i:i + window_size], 0.8, 3.2
+                                                       )
             if ipi:
                 pass
 
