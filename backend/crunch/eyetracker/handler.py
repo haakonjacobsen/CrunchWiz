@@ -21,6 +21,8 @@ class DataHandler:
         :param window_step: how many steps for a new window, i.e for 6 steps,
         a new measurement is computed every 6 data points
         :type window_step: int
+        :param listen_on: list of all the raw data to listen on
+        :type listen_on: list of string
         """
         assert window_length and window_step and measurement_func and measurement_path and listen_on, \
             "Need to supply the required parameters"
