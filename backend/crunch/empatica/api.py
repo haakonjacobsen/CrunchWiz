@@ -1,5 +1,7 @@
-import pandas as pd
 import time
+
+import pandas as pd
+
 from .handler import DataHandler  # noqa
 
 
@@ -35,7 +37,7 @@ class MockApi:
             self._mock_hr_datapoint(i)
 
             # simulate delay of new data points by sleeping
-            # time.sleep(0.1)
+            time.sleep(0.1)
 
     def _mock_ibi_datapoint(self, index):
         if index < len(self.ibi_data):

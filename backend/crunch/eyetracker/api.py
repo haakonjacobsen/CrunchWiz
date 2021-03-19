@@ -1,5 +1,7 @@
-import pandas as pd
 import time
+
+import pandas as pd
+
 from .handler import DataHandler  # noqa
 
 
@@ -11,7 +13,6 @@ class MockApi:
     """
     eyetracker_data = pd.read_csv("crunch/eyetracker/mock_data/ET-data-S001.csv")
 
-    # TODO key = handler, value is list of what they want
     raw_data = ["initTime", "endTime", "fx", "fy"]
     subscribers = []
 

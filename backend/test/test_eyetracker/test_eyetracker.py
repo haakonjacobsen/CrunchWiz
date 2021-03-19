@@ -1,4 +1,5 @@
-from backend.crunch.eyetracker.measurement_functions import compute_information_processing_index, compute_ipi_thresholds
+from backend.crunch.eyetracker.measurement_functions import (compute_information_processing_index,
+                                                             compute_ipi_thresholds)
 
 
 class TestCrunch:
