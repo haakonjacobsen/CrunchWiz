@@ -9,8 +9,6 @@ from watchgod import awatch
 
 async def watcher(queue):
     async for changes in awatch('./crunch/output/'):
-        file_paths = []
-        # get file path of changed file
         for a in changes:
             file_path = a[1]
             # get last row of changed file
