@@ -1,1 +1,2 @@
-from .crunch import start_processes  # noqa
+# flake8: noqa
+from .crunch import start_processes

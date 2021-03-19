@@ -1,1 +1,2 @@
-from .main import start_empatica  # noqa
+# flake8: noqa
+from .main import start_empatica
