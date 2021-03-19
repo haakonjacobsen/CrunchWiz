@@ -2,13 +2,19 @@ import pandas as pd
 import numpy as np
 import sympy as sym
 
-df = pd.read_csv("crunch/skeleton/skeleton-S001.csv")
+df = pd.read_csv("backend/crunch/skeleton/skeleton-S001.csv")
 
 
 def get_joint_by_index(t, j):
     """
     Main function which reads rows/columns values
     and puts these into an array
+    Paramters:
+        t (int): Time in second
+        j (int): Joint number ranges from 0 to 24
+    Returns:
+        skele (list): A list of all skeleton joints
+        skele[j] (float): A value for specific joint
     """
     # TODO: Refactor to use array instead of directly referencing pandas dataframes
     skele = []
@@ -24,7 +30,13 @@ def get_joint_by_index(t, j):
 
 
 def norm_by_array(a, b):
-    """ Calculating the L2 norm  """
+    """ Calculating the L2 norm of two given lists
+    Paramters:
+        a (list): List 1
+        b (list): List 2
+    Returns:
+        norm (float): L2 norm
+    """
     norm_x = (a[0] - b[0]) ** 2
     norm_y = (a[1] - b[1]) ** 2
     norm_z = (a[2] - b[2]) ** 2
@@ -36,7 +48,13 @@ def func(a, b):
     then using said vector to calculate three
     equations responsible for x,y,z.
     Since they are dynamic, we use sympy
-    to create the mathematical expressions"""
+    to create the mathematical expressions
+    Paramters:
+        a (list): List of coordinates for point 1
+        b (list): List of coordinates for point 2
+    Returns:
+        x,y,z (float): Three functions with respect to x,y,z
+    """
     t = sym.symbols("t")
     vector = [
         b[0] - a[0],
@@ -54,7 +72,14 @@ def finiteDiff(f, tstart, tend):
     derivate, of second order to estimate jerk
     error coefficient is ommited in this calculation
     h is default set to 0.25, since an interval 1 second
-    it will get 4 evenly splits"""
+    it will get 4 evenly splits
+    Paramters:
+        f (list): A sympy function with respect to t
+        tstart (int): Start time
+        tend (int):  End time
+    Returns:
+        diff (float): Estimated jerk
+    """
     t = sym.symbols("t")
     h = 0.25
     t0 = tstart
@@ -71,7 +96,13 @@ def finiteDiff(f, tstart, tend):
 def fatigue(t0, t1):
     """ Measures fatigue for every joint
     by finding their functions, and applying
-    finite differences """
+    finite differences
+    Paramters:
+        t0 (int): Start time
+        t1 (int): End time
+    Returns:
+        totalFatigue (float): Fatigue for all joint for given time interval
+    """
     totalFatigue = 0
     totalJoint = 24
     for i in range(25):
@@ -87,7 +118,13 @@ def fatigue(t0, t1):
 
 def amount_of_motion(t0, t1):
     """ Take norm of two points and
-    averageing, before summing them up """
+    averageing, before summing them up
+    Paramters:
+        t0 (int): Start time
+        t1 (int): End time
+    Returns:
+        total (float): Total motion for given interval
+    """
     total_joints = 24
     total = 0
     for i in range(25):
@@ -98,7 +135,14 @@ def amount_of_motion(t0, t1):
 
 def most_used_joints(t0, t1, list):
     """ Putting the norm in a list such that
-    list[0] = joint 0, list[1 = joint 1 etc.  """
+    list[0] = joint 0, list[1 = joint 1 etc.
+    Paramters:
+        t0 (int): Start time
+        t1 (int): End time
+        list (list): List requires an empty list to append values to
+    Returns:
+        list (list): The inputted array with used joints appended
+    """
     for i in range(25):
         list[i] += norm_by_array(get_joint_by_index(t1, i), get_joint_by_index(t0, i))
     return list
@@ -106,44 +150,15 @@ def most_used_joints(t0, t1, list):
 
 def stability_of_motion(t0, t1):
     """ Take norm of two points before applying
-    a formula, and summing them up """
+    a formula, and summing them up
+    Paramters:
+        t0 (int): Start time
+        t1 (int): End time
+    Returns:
+        total_distance (float): Distance for all joints given an interval
+    """
     total_distance = 0
     for i in range(25):
         euclid = norm_by_array(get_joint_by_index(t1, i), get_joint_by_index(t0, i))
         total_distance += 1 / (1 + euclid)
     return total_distance
-
-
-def writeCSV(t0, t1):
-    """ Main function to write measurements to csv """
-    timeArray = []
-    motionArray = []
-    fatigueArray = []
-    stabilityArray = []
-    jointArray = []
-    valueArray = []
-    used_joints_list = [0] * 25
-    i = t0
-    while i < t1:
-        j = i + 1
-        timeArray.append(j)
-        motionArray.append(amount_of_motion(i, j))
-        stabilityArray.append(stability_of_motion(i, j))
-        fatigueArray.append(fatigue(i, j))
-        most_used_joints(i, j, used_joints_list)
-        value = max(used_joints_list)
-        jointArray.append(used_joints_list.index(value))
-        valueArray.append(value)
-        i += 1
-    dict = {
-        "time": timeArray,
-        "motion": motionArray,
-        "stability": stabilityArray,
-        "fatigue": fatigueArray,
-        "most used joint": jointArray,
-        "value for most used joint": valueArray,
-    }
-    df = pd.DataFrame(dict)
-    # mode="a" appends, so we can add new data instead of wiping every time
-    # default path, change accordingly
-    df.to_csv("crunch/skeleton/data/Skeleton.csv", mode="a", index=False)
