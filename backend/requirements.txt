@@ -6,4 +6,4 @@ websockets==8.1
 watchgod==0.7
 pytest==6.2.2
 pytest-cov==2.11.1
-opencv-python=4.5.1.48
+opencv-python==4.5.1.48

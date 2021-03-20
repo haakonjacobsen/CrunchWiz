@@ -64,12 +64,12 @@ class DataHandler:
         return delta_time
 
 
-    def _write_csv(self, path, row):
-        """ write result to csv file """
-        file_exists = os.path.isfile(path)
-        with open("crunch/output/" + path, "a", newline="") as csvfile:
-            writer = csv.writer(csvfile, delimiter=",")
-            if not file_exists:
-                header = ['time', 'value']
-                writer.writerow(header)
-            writer.writerow(row)
+def _write_csv(path, row):
+    """ write result to csv file """
+    file_exists = os.path.isfile(path)
+    with open("crunch/output/" + path, "a", newline="") as csvfile:
+        writer = csv.writer(csvfile, delimiter=",")
+        if not file_exists:
+            header = ['time', 'value']
+            writer.writerow(header)
+        writer.writerow(row)
