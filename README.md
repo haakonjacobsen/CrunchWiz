@@ -43,11 +43,11 @@ Refer to the [official documentation](https://github.com/CMU-Perceptual-Computin
 	![](https://i.gyazo.com/fb25c8572c287d6ba026d9c81de14c62.png)
 	![](https://i.gyazo.com/73700a1f5f121e87e65d0649b22d19fa.png)
 	
-3. Download and install `CUDA v11.1`
+3. Download and install `[CUDA](https://developer.nvidia.com/cuda-toolkit-archive) v11.1` 
     - Make sure to install CUDA after Visual Studio
     
 
-4. Download `cuDNN v8.0.5` for CUDA v11.1
+4. Download `[cuDNN](https://developer.nvidia.com/cudnn) v8.0.5` for CUDA v11.1
     - To install cuDNN unzip and copy the content into the CUDA folder (C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1)
 
 5. Install python version `3.7.x` (`3.8` and `3.9` will likely cause compilation failure)
@@ -78,5 +78,5 @@ If you face any issues with this refer to the [official documentation](https://g
 3. Press `F5` to run the project with default settings.
 
 #### Running the python API
-Follow the (official documenation)[https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/03_python_api.md#installation]
+Follow the [official documenation](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/03_python_api.md#installation)
 1. Make sure there is a filed named `pyopenpose.cpXX-win_amd64.pyd` in `openpose\build\python\openpose\Release` and that the numbers match the python version you are trying to run (3.7). 
