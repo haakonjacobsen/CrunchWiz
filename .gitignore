@@ -3,7 +3,7 @@
 **/.DS_Store
 __pycache__/
 frontend/node_modules
-backend/crunch/output/
+backend/crunch/output/*.csv
 backend/openpose
 
 # Byte-compiled / optimized / DLL files
