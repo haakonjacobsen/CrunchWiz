@@ -56,10 +56,16 @@ Refer to the [official documentation](https://github.com/CMU-Perceptual-Computin
 
 6. Install `opencv-python (pip install opencv-python)`
 
-### installation
+### Installation
 If you face any issues with this refer to the [official documentation](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/installation/0_index.md#clone-openpose)
 
-If your Visual Studio version is 16.9.x replace `floor` with `floorf` in the following files before compiling:
+#### Clone openpose 
+```
+git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose
+cd openpose/
+git submodule update --init --recursive --remote
+```
+**If your Visual Studio version is 16.9.x replace `floor` with `floorf` in the following files before compiling:**
 - `openpose\include\openpose_private\gpu\cuda.hu`
 - `openpose\src\openpose\net\resizeAndMergeBase.cu`
 #### CMake configuration
@@ -78,7 +84,9 @@ If your Visual Studio version is 16.9.x replace `floor` with `floorf` in the fol
 
 #### Compilation
 1. In `Visual Studio` change the build configuration from `Debug` to `Release`
+
 ![](https://i.gyazo.com/e8645fe5b511a78d02748cc4376f39d7.png)
+
 2. Press `F7` to compile the project.
 3. Press `F5` to run the project with default settings.
 
