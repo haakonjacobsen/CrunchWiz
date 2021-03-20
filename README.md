@@ -43,12 +43,14 @@ Refer to the [official documentation](https://github.com/CMU-Perceptual-Computin
 	![](https://i.gyazo.com/fb25c8572c287d6ba026d9c81de14c62.png)
 	![](https://i.gyazo.com/73700a1f5f121e87e65d0649b22d19fa.png)
 	
-3. Download and install `[CUDA](https://developer.nvidia.com/cuda-toolkit-archive) v11.1` 
-    - Make sure to install CUDA after Visual Studio
+3. [Download](https://developer.nvidia.com/cuda-toolkit-archive)  and install `CUDA v11.1` 
+	
+	Make sure to install CUDA after Visual Studio
     
 
-4. Download `[cuDNN](https://developer.nvidia.com/cudnn) v8.0.5` for CUDA v11.1
-    - To install cuDNN unzip and copy the content into the CUDA folder (C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1)
+4. [Download](https://developer.nvidia.com/cudnn)  `cuDNN v8.0.5` for CUDA v11.1
+	
+	To install cuDNN unzip and copy the content into the CUDA folder (`C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1`)
 
 5. Install python version `3.7.x` (`3.8` and `3.9` will likely cause compilation failure)
 
@@ -57,6 +59,9 @@ Refer to the [official documentation](https://github.com/CMU-Perceptual-Computin
 ### installation
 If you face any issues with this refer to the [official documentation](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/installation/0_index.md#clone-openpose)
 
+If your Visual Studio version is 16.9.x replace `floor` with `floorf` in the following files before compiling:
+- `openpose\include\openpose_private\gpu\cuda.hu`
+- `openpose\src\openpose\net\resizeAndMergeBase.cu`
 #### CMake configuration
 1. Open CMake-GUI
 2. Select the `openpose` folder as source. Create an empty folder in the root folder named `build` and select that as the build folder
