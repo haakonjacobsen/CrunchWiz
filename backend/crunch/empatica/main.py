@@ -1,7 +1,8 @@
 from .api import MockApi
 from .handler import DataHandler
-from .measurements import compute_engagement, compute_arousal, \
-    compute_emotional_regulation, compute_entertainment, compute_stress
+from .measurements import (compute_arousal, compute_emotional_regulation,
+                           compute_engagement, compute_entertainment,
+                           compute_stress)
 
 
 def start_empatica(api=MockApi):
