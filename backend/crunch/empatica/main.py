@@ -1,3 +1,5 @@
+import os
+
 from .api import MockApi
 from .handler import DataHandler
 from .measurements import (compute_arousal, compute_emotional_regulation,
@@ -10,7 +12,9 @@ def start_empatica(api=MockApi):
     start the empatica process control flow.
     TODO change default api argument to realAPI, and use MockApi when integration testing only
     """
-    # Instantiate the api
+    print("Empatica process id: ", os.getpid())
+    print(os.path)
+# Instantiate the api
     api = api()
 
     # Instantiate the arousal data handler and subscribe to the api

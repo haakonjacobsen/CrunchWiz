@@ -1,3 +1,5 @@
+import os
+
 from .api import MockApi
 from .handler import DataHandler
 from .measurements import compute_ipi
@@ -9,6 +11,7 @@ def start_eyetracker(api=MockApi):
     TODO change default api argument to realAPI, and use MockApi when integration testing only
     """
     # Instantiate the api
+    print("Eyetracker process id: ", os.getpid())
     api = api()
 
     ipi_handler = DataHandler(measurement_func=compute_ipi,

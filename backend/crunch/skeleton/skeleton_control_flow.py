@@ -1,3 +1,5 @@
+import os
+
 from .measurement_functions import writeCSV
 
 
@@ -17,5 +19,5 @@ def skeleton_main():
     :return: void
     """
     # TODO: Refactor to read data and write pdf here instead of in measurement_functions
-    print("skeleton process succesfully started")
+    print("Skeleton process id: ", os.getpid())
     calculate_measurements(50, 60)
