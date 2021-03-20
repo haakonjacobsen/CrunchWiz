@@ -4,25 +4,45 @@ import Measurement from './Measurement';
 import MeasurmentExpansion from './MeasurementExpansion';
 
 const MainContent = () => {
-  const data = [{ name: 'No Measurment', number: 0 }];
   const webSocket = useRef('');
-  const [state, setState] = useState(data);
   const [showExtended, changeExtended] = useState(false);
   const [selectedMeasurment, setMeasurment] = useState('');
   const [graphData, addGraphData] = useState([]);
+  const [allData, addMoreData] = useState({});
 
   const receiveMessage = (message) => {
-    const object = JSON.parse(message.data);
-    const keys = Object.keys(object);
-    console.log(keys);
-    const values = Object.values(object);
-    for (let i = 0; i < keys.length; i += 1) {
-      console.log(keys[i], values[i]);
-    }
-    setState(object);
-    const dataPoint = object[Object.keys(object)[2]];
+    const measurement = JSON.parse(message.data)[0];
+    const dataPoint = { value: measurement.value, time: measurement.time };
     addGraphData((currGraphData) => [...currGraphData, dataPoint]);
+    const { name } = measurement;
+    if (name in allData) {
+      const value = [measurement.value];
+      addMoreData((prevState) => ({
+        ...prevState,
+        [name]: [...[prevState.name], value],
+      }));
+    } else {
+      const value = [measurement.value];
+      addMoreData((prevState) => ({
+        ...prevState,
+        [name]: [value],
+      }));
+    }
+    /*
+    if (name in allData) {
+      const { value } = allData[name].concat([[measurement.value, measurement.time]]);
+      addMoreData({
+        ...allData,
+        [name]:
+        value,
+      });
+    } else {
+      const { value } = [measurement.value, measurement.time];
+      addMoreData({ ...allData, [name]: [value] });
+    }
+    */
   };
+
   function toggleExtended(measurment) {
     if (measurment === selectedMeasurment) {
       changeExtended(!showExtended);
@@ -45,15 +65,14 @@ const MainContent = () => {
         ? (
           <MeasurmentExpansion
             name={selectedMeasurment}
-            graphData={graphData.length > 5
-              ? graphData.slice(Math.max(graphData.length - 20, 1)) : graphData}
+            graphData={graphData}
           />
         ) : <div> </div>}
       <div className="Measurements-info">
-        {state.map((measurment) => (
+        {Object.keys(allData).map((key) => (
           <Measurement
-            name={measurment.name}
-            number={measurment.value}
+            name={key}
+            number={allData[key]}
             showExtended={toggleExtended}
           />
         ))}
