@@ -38,7 +38,7 @@ def test_func():
 
 
 def test_finiteDiff():
-    eq = t+1
+    eq = t + 1
     assert mf.finiteDiff(eq, 1, 2) - 0 < tol
 
 
@@ -54,9 +54,18 @@ def test_amount_of_motion():
     assert np.abs(round(estimated, 4) - exact) < tol
 
 
-def most_used_joints_test():
-    pass
+def test_most_used_joints():
+    estimated = [0] * 25
+    mf.most_used_joints(1, 50, estimated)
+    min_estimated = round(min(estimated), 4)
+    max_estimated = round(max(estimated), 4)
+    min_exact = 0.0675
+    max_exact = 0.4716
+    assert np.abs(min_estimated - min_exact) < tol
+    assert np.abs(max_estimated - max_exact) < tol
 
 
-def stability_of_motion_test():
-    pass
+def test_stability_of_motion():
+    estimated = round(mf.stability_of_motion(1, 20), 4)
+    exact = 21.8083
+    assert np.abs(estimated - exact) < tol

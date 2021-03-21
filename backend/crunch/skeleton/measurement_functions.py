@@ -132,15 +132,14 @@ def amount_of_motion(t0, t1):
         total += jointTotal / total_joints
     return total
 
-print(amount_of_motion(1, 20))
 
 def most_used_joints(t0, t1, list):
     """ Putting the norm in a list such that
-    list[0] = joint 0, list[1 = joint 1 etc.
+    list[0] = joint 0, list[1] = joint 1 etc.
     Parameters:
         t0 (int): Start time
         t1 (int): End time
-        list (list): List requires an empty list to append values to
+        list (list): List requires a list to append values to i.e [0] * 25
     Returns:
         list (list): The inputted array with used joints appended
     """
