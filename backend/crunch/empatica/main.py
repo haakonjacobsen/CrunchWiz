@@ -13,7 +13,6 @@ def start_empatica(api=MockApi):
     TODO change default api argument to realAPI, and use MockApi when integration testing only
     """
     print("Empatica process id: ", os.getpid())
-    print(os.path)
 # Instantiate the api
     api = api()
 

@@ -63,7 +63,6 @@ class DataHandler:
         self.time = new_time
         return delta_time
 
-
     def _write_csv(self, path, row):
         """ write result to csv file """
         file_exists = os.path.isfile(path)
