@@ -1,8 +1,9 @@
+import os
 import pandas as pd
 import measurement_functions as mf
 
 
-def writeCSV(t0, t1):
+def calculate_measurements(t0, t1):
     """ Main function to write measurements to csv """
     timeArray = []
     motionArray = []
@@ -45,8 +46,5 @@ def skeleton_main():
     :return: void
     """
     # TODO: Refactor to read data and write pdf here instead of in measurement_functions
-    print("skeleton process succesfully started")
-    writeCSV(50, 60)
-
-
-skeleton_main()
+    print("Skeleton process id: ", os.getpid())
+    calculate_measurements(50, 60)
