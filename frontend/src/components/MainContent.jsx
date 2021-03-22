@@ -41,6 +41,7 @@ const MainContent = () => {
       addMoreData({ ...allData, [name]: [value] });
     }
     */
+    console.log(allData);
   };
 
   function toggleExtended(measurment) {
