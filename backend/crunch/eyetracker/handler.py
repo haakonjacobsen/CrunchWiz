@@ -63,10 +63,9 @@ class DataHandler:
         self.time = new_time
         return delta_time
 
-
     def _write_csv(self, path, row):
         """ write result to csv file """
-        file_exists = os.path.isfile(path)
+        file_exists = os.path.isfile("crunch/output/" + path)
         with open("crunch/output/" + path, "a", newline="") as csvfile:
             writer = csv.writer(csvfile, delimiter=",")
             if not file_exists:
