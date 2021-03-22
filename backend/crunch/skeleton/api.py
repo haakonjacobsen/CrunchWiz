@@ -18,7 +18,7 @@ class MockAPI:
 
     raw_data = ["body"]
     subscribers = {"body": []}
-    print(skeleton_data)
+
     def add_subscriber(self, data_handler, requested_data):
         """
         Adds a handler as a subscriber for a specific raw data
