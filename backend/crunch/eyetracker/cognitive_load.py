@@ -5,7 +5,7 @@ def lhipa(d):
     # find max decomposition level
     w = pywt.Wavelet('sym16')
     maxlevel = \
-        pywt.dwt_max_level(100, filter_len = w.dec_len)
+        pywt.dwt_max_level(len(d), filter_len = w.dec_len)
     # set high and low frequency band indeces
     hif, lof = 1, int(maxlevel / 2)
 
