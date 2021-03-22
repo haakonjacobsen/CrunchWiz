@@ -6,8 +6,14 @@ import sympy as sym
 def fatigue(t0, t1):
     """ Measures fatigue for every joint
     by finding their functions, and applying
-    finite differences """
-    totalFatigue = 0
+    finite differences
+    Parameters:
+        t0 (int): Start time
+        t1 (int): End time
+    Returns:
+        totalFatigue (float): Fatigue for all joint for given time interval
+    """
+    totalFatigue = 0.0
     totalJoint = 24
     for i in range(25):
         jointFatigue = 0
@@ -25,15 +31,20 @@ def func(a, b):
     then using said vector to calculate three
     equations responsible for x,y,z.
     Since they are dynamic, we use sympy
-    to create the mathematical expressions"""
+    to create the mathematical expressions
+    Parameters:
+        a (list): List of coordinates for point 1
+        b (list): List of coordinates for point 2
+    Returns:
+        x,y,z (float): Three functions with respect to x,y,z
+    """
     t = sym.symbols("t")
     vector = [
         b[0] - a[0],
         b[1] - a[1],
         b[2] - a[2],
-        ]
+    ]
     x = a[0] + (vector[0]) * t
     y = a[1] + (vector[1]) * t
     z = a[2] + (vector[2]) * t
     return x, y, z
-
