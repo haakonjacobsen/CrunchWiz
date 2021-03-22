@@ -5,7 +5,7 @@ import os
 from sys import platform
 import argparse
 from .handler import DataHandler  # noqa
-
+import time
 
 class MockAPI:
     """
@@ -13,11 +13,12 @@ class MockAPI:
 
     :type subscribers: list of (DataHandler, list of str)
     """
-    df = pd.read_csv("crunch/skeleton/mock_data/skeleton-S001.csv")
+    f = open("crunch/skeleton/mock_data/test_data.csv", "r")
+    skeleton_data = f.read()
 
     raw_data = ["body"]
     subscribers = {"body": []}
-
+    print(skeleton_data)
     def add_subscriber(self, data_handler, requested_data):
         """
         Adds a handler as a subscriber for a specific raw data
@@ -27,8 +28,8 @@ class MockAPI:
         :param requested_data: The specific raw data that the data handler subscribes to
         :type requested_data: list(str)
         """
-        assert all(data in self.raw_data for data in requested_data)
-        self.subscribers.append((data_handler, requested_data))
+        assert requested_data in self.subscribers.keys()
+        self.subscribers[requested_data].append(data_handler)
 
     def connect(self):
         """ Simulates connecting to the device, starts reading from csv files and push data to handlers """
@@ -36,13 +37,12 @@ class MockAPI:
             self._mock_datapoint(i)
 
             # simulate delay of new data points by sleeping
-            # time.sleep(0.1)
+            time.sleep(1)
 
     def _mock_datapoint(self, index):
         if index < len(self.skeleton_data):
-            for subscriber, raw_datas in self.subscribers:
-                data = {raw_data: self.skeleton_data[raw_data][index] for raw_data in raw_datas}
-                subscriber.add_data_point(data)
+            for subscriber in self.subscribers["body"]:
+                subscriber.add_data_point(self.skeleton_data[index])
 
 
 def display(datums):
@@ -73,8 +73,10 @@ class RealAPI:
 
     def add_datapoint(self, datums):
         datum = datums[0]
-        for handler in self.subscribers["body"]:
-            handler.add_data_point(datum.poseKeypoints)
+        if datum.poseKeypoints is not None:
+            fixed_data = [(row[0], row[1]) for row in datum.poseKeypoints[0]]
+            for handler in self.subscribers["body"]:
+                handler.add_data_point(fixed_data)
 
     def connect(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))

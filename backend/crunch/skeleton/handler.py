@@ -37,8 +37,7 @@ class DataHandler:
     def add_data_point(self, datapoint):
         """ Receive a new data point, and call appropriate measurement function when we have enough points """
         # TODO call eventual preprocessing here, should also take preprocessing function as argument in init
-        fixed_data = [(row[0], row[1]) for row in datapoint[0]]
-        self.data_queue.append(fixed_data)
+        self.data_queue.append(datapoint)
         if self.data_counter % self.window_step == 0 and len(self.data_queue) == self.window_length:
             measurement = self.measurement_func(list(self.data_queue))
             delta_time = self._get_delta_time()

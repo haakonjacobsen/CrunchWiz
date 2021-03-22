@@ -5,7 +5,7 @@ from .handler import DataHandler
 from .measurements import test_function
 
 
-def start_skeleton(api=RealAPI):
+def start_skeleton(api=MockAPI):
     """
     start the eye tracker process control flow.
     TODO change default api argument to realAPI, and use MockApi when integration testing only
@@ -14,9 +14,9 @@ def start_skeleton(api=RealAPI):
     # Instantiate the api
     api = api()
     test_handler = DataHandler(measurement_func=test_function,
-                               measurement_path="test.csv",
-                               window_length=1,
-                               window_step=1)
+                               measurement_path="test_data.csv",
+                               window_length=2,
+                               window_step=2)
     api.add_subscriber(test_handler, "body")
 
     # start up the api
