@@ -1,17 +1,22 @@
-from .helpers import norm_by_array, get_joint_by_index
+from helpers import norm_by_array, array
 
 
-def stability_of_motion(t0, t1):
-    """ Take norm of two points before applying
+def stability_of_motion(n):
+    """Take norm of two points before applying
     a formula, and summing them up
-    Parameters:
-        t0 (int): Start time
-        t1 (int): End time
-    Returns:
-        total_distance (float): Distance for all joints given an interval
+    :param n: Datapoints
+    :type n: list
+    :return total: List of stability
+    :type stabilityList: list
     """
-    total_distance = 0
-    for i in range(25):
-        euclid = norm_by_array(get_joint_by_index(t1, i), get_joint_by_index(t0, i))
-        total_distance += 1 / (1 + euclid)
-    return total_distance
+    stabilityList = []
+    for i in range(len(n) - 1):
+        joint_distance = 0
+        for j in range(len(n[i])):
+            euclid = norm_by_array(n[i][j], n[i + 1][j])
+            joint_distance += 1 / (1 + euclid)
+        stabilityList.append(joint_distance)
+    return stabilityList
+
+
+print(stability_of_motion(array(20)))

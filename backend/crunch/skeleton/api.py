@@ -14,7 +14,7 @@ class MockAPI:
     :type subscribers: list of (DataHandler, list of str)
     """
     f = open("crunch/skeleton/mock_data/test_data.csv", "r")
-    skeleton_data = f.read()
+    skeleton_data = f.readlines()
 
     raw_data = ["body"]
     subscribers = {"body": []}

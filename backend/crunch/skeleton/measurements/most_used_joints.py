@@ -1,16 +1,29 @@
-from .helpers import norm_by_array, get_joint_by_index
+from helpers import norm_by_array
 
 
-def most_used_joints(t0, t1, list):
+def most_used_joints(n):
     """ Putting the norm in a list such that
     list[0] = joint 0, list[1] = joint 1 etc.
-    Parameters:
-        t0 (int): Start time
-        t1 (int): End time
-        list (list): List requires a list to append values to i.e [0] * 25
-    Returns:
-        list (list): The inputted array with used joints appended
+    :param n: Datapoints
+    :type n: list
+    :return total: List of most used joint
+    :type stabilityList: list
     """
-    for i in range(25):
-        list[i] += norm_by_array(get_joint_by_index(t1, i), get_joint_by_index(t0, i))
-    return list
+    usedList = []
+    mostUsed = 0
+    for i in range(len(n) - 1):
+        jointNr = 0
+        highest = 0
+        sum = 0
+        for j in range(len(n[i])):
+            used = norm_by_array(n[i][j], n[i + 1][j])
+            if(highest<=used):
+                jointNr = j
+            sum += used
+        sum = sum/24
+        usedList.append((jointNr, sum))
+    return usedList
+
+
+from helpers import array
+print(most_used_joints(array(5)))

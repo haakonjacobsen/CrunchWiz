@@ -1,62 +1,45 @@
 import numpy as np
 import sympy as sym
-import pandas as df
+import pandas as pd
+import re
 
 
 def norm_by_array(a, b):
-    """ Calculating the L2 norm of two given lists
-    :param :
-        a (list): List 1
-        b (list): List 2
-    Returns:
-        norm (float): L2 norm
+    """Calculating the L2 norm of two given lists
+    :param a:
+    :type a: list with tuples
+    :param b:
+    :type b: list with tuples
+    :return total: L2 norm
+    :type total: float
     """
-    norm_x = (a[0] - b[0]) ** 2
-    norm_y = (a[1] - b[1]) ** 2
-    norm_z = (a[2] - b[2]) ** 2
-    return np.sqrt(norm_x + norm_y + norm_z)
+    x1 = float(a[0])
+    y1 = float(a[1])
+    x2 = float(b[0])
+    y2 = float(b[1])
+    norm_x = (x1 - x2) ** 2
+    norm_y = (y1 - y2) ** 2
+    return np.sqrt(norm_x + norm_y)
 
 
 def test_function(a):
     return 1
 
 
-def get_joint_by_index(t, j):
-    """
-    Main function which reads rows/columns values
-    and puts these into an array
-    Parameters:
-        t (int): Time in second
-        j (int): Joint number ranges from 0 to 24
-    Returns:
-        skele (list): A list of all skeleton joints
-        skele[j] (float): A value for specific joint
-    """
-    # TODO: Refactor to use array instead of directly referencing pandas dataframes
-    skele = []
-    for i in range(25):
-        temp = [df.iloc[i + 25 * t][1], df.iloc[i + 25 * t][2], df.iloc[i + 25 * t][3]]
-        skele.append(temp)
-    if j == "all":
-        # array jointnumber= indexnr i.e. skele[jointnr][x,y,z]
-        return skele
-    else:
-        # array [x,y,z] coordinates
-        return skele[j]
-
-
-def finiteDiff(f, tstart, tend):
+def finite_diff(f, tstart, tend):
     """Uses finite difference of the third
     derivate, of second order to estimate jerk
     error coefficient is ommited in this calculation
     h is default set to 0.25, since an interval 1 second
     it will get 4 evenly splits
-    Parameters:
-        f (expression): A sympy function with respect to t
-        tstart (int): Start time
-        tend (int):  End time
-    Returns:
-        diff (float): Estimated jerk
+    :param f: function with respect to t
+    :type f: sympy
+    :param tstart: start of interval
+    :type tstart: int
+    :param tend: end of interval
+    :type tend: int
+    :return diff: Estimated jerk
+    :type diff: float
     """
     t = sym.symbols("t")
     h = 0.25
@@ -69,3 +52,31 @@ def finiteDiff(f, tstart, tend):
         -0.5 * f.subs(t, t0) + f.subs(t, t1) - f.subs(t, t3) + 0.5 * f.subs(t, t4)
     ) / (h ** 3)
     return diff
+
+
+def array(n):
+    """Helper array to get data from
+    test_data.csv"""
+    collection = []
+    df = pd.pandas.read_csv(
+        "backend/crunch/skeleton/mock_data/test_data.csv", header=None
+    )
+    for i in range(n):
+        temp_array = []
+        row = df.iloc[i].tolist()
+        tuple = set()
+        i = 0
+        while i < len(row):
+            number = (
+                row[i].strip().strip("\[\]()"),
+                row[i + 1].strip().strip("\[\]()"),
+            )
+            i += 2
+            temp_array.append(number)
+        collection.append(temp_array)
+    return collection
+
+
+import pprint
+
+# pprint.pprint(array(2))
