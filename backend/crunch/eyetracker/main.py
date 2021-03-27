@@ -1,7 +1,9 @@
 import tobii_research as tr
 import time
 from .api import EyetrackerAPI
-from .handler import IpiHandler
+from .handler import IpiHandler, DataHandler
+from .measurements.anticipation import compute_anticipation
+from .measurements.perceived_difficulty import compute_perceived_difficulty
 
 
 def start_eyetracker(api=EyetrackerAPI):
@@ -23,8 +25,18 @@ def start_eyetracker(api=EyetrackerAPI):
         print("Now connected to eyetracker model: " + my_eyetracker.model + " with address: " + my_eyetracker.address)
 
         api = api()
+
         ipi_handler = IpiHandler()
         api.add_subscriber(ipi_handler)
+
+        perceived_difficulty_handler = DataHandler(
+            compute_perceived_difficulty, "perceived_difficulty.csv", ["initTime", "endTime", "fx", "fy"]
+        )
+        api.add_subscriber(perceived_difficulty_handler)
+        anticipation_handler = DataHandler(
+            compute_anticipation, "anticipation.csv", ["initTime", "endTime", "fx", "fy"]
+        )
+        api.add_subscriber(anticipation_handler)
 
         my_eyetracker.subscribe_to(tr.EYETRACKER_GAZE_DATA, gaze_data_callback, as_dictionary=True)
         #  TODO: the following snippet stops the program after x seconds. Remove this when finished developing

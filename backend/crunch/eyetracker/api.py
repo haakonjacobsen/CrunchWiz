@@ -177,7 +177,6 @@ class EyetrackerAPI:
             handler.send_data_window(
                 {key: self.dict_of_lists_of_fixation_data[key] for key in handler.get_data_subscribtions()}
             )
-            handler.print_hello_self()
         self.last_window_time = time.time()
         self.reset_fixation_data_lists()
 
