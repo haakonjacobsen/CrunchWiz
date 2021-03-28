@@ -22,6 +22,7 @@ def modmax(d):
             t[i] = 0.0
     return t
 
+""" Signal dur is last endTime - first initTime, use window size 500 """
 def lhipa(d,signal_dur):
     # find max decomposition level
     w = pywt.Wavelet('sym16')
@@ -63,10 +64,3 @@ def lhipa(d,signal_dur):
     LHIPA = float(ctr)/tt
 
     return LHIPA
-
-
-vals = []
-for i in range():
-        vals.append(random.uniform(3.6, 4.7))
-
-print(lhipa(vals,20))
