@@ -1,4 +1,4 @@
-from helpers import norm_by_array, array
+from .helpers import norm_by_array, array
 
 
 def amount_of_motion(n):
@@ -20,6 +20,3 @@ def amount_of_motion(n):
         total += jointTotal / total_joints
         motionList.append(total)
     return motionList
-
-
-print(amount_of_motion(array(20)))

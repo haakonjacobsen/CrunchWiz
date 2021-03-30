@@ -1,7 +1,6 @@
 import numpy as np
 import sympy as sym
 import pandas as pd
-import re
 
 
 def norm_by_array(a, b):
@@ -68,15 +67,10 @@ def array(n):
         i = 0
         while i < len(row):
             number = (
-                row[i].strip().strip("\[\]()"),
-                row[i + 1].strip().strip("\[\]()"),
+                float(row[i].strip().strip("\[\]()")),
+                float(row[i + 1].strip().strip("\[\]()")),
             )
             i += 2
             temp_array.append(number)
         collection.append(temp_array)
     return collection
-
-
-import pprint
-
-# pprint.pprint(array(2))

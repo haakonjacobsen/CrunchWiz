@@ -1,11 +1,11 @@
-from helpers import norm_by_array, array
+from .helpers import norm_by_array
 
 
 def stability_of_motion(n):
     """Take norm of two points before applying
     a formula, and summing them up
     :param n: Datapoints
-    :type n: list
+    :type n: list of 2d tuples
     :return total: List of stability
     :type stabilityList: list
     """
@@ -17,6 +17,3 @@ def stability_of_motion(n):
             joint_distance += 1 / (1 + euclid)
         stabilityList.append(joint_distance)
     return stabilityList
-
-
-print(stability_of_motion(array(20)))
