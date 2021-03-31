@@ -8,40 +8,22 @@ const MainContent = () => {
   const [showExtended, changeExtended] = useState(false);
   const [selectedMeasurment, setMeasurment] = useState('');
   const [graphData, addGraphData] = useState([]);
-  const [allData, addMoreData] = useState({});
+  const [allData, addMoreData] = useState({ stress: [] });
+
+  function handleAdd(measurement, newValue) {
+    addMoreData((prevState) => console.log(prevState.stress));
+
+    addMoreData((prevState) => ({
+      ...prevState,
+      [measurement]: [...prevState.stress, newValue],
+    }));
+  }
 
   const receiveMessage = (message) => {
     const measurement = JSON.parse(message.data)[0];
-    const dataPoint = { value: measurement.value, time: measurement.time };
+    const dataPoint = [{ value: measurement.value, time: measurement.time }];
     addGraphData((currGraphData) => [...currGraphData, dataPoint]);
-    const { name } = measurement;
-    if (name in allData) {
-      const value = [measurement.value];
-      addMoreData((prevState) => ({
-        ...prevState,
-        [name]: [...[prevState.name], value],
-      }));
-    } else {
-      const value = [measurement.value];
-      addMoreData((prevState) => ({
-        ...prevState,
-        [name]: [value],
-      }));
-    }
-    /*
-    if (name in allData) {
-      const { value } = allData[name].concat([[measurement.value, measurement.time]]);
-      addMoreData({
-        ...allData,
-        [name]:
-        value,
-      });
-    } else {
-      const { value } = [measurement.value, measurement.time];
-      addMoreData({ ...allData, [name]: [value] });
-    }
-    */
-    console.log(allData);
+    handleAdd(measurement.name, [measurement.value, measurement.time]);
   };
 
   function toggleExtended(measurment) {
