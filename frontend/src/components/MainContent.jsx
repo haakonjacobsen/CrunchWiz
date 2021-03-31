@@ -5,17 +5,22 @@ import MeasurmentExpansion from './MeasurementExpansion';
 
 const MainContent = () => {
   const webSocket = useRef('');
+  const allMeasurements = {
+    stress: [],
+    emotional_regulation: [],
+    entertainment: [],
+    arousal: [],
+    engagement: [],
+  };
   const [showExtended, changeExtended] = useState(false);
   const [selectedMeasurment, setMeasurment] = useState('');
   const [graphData, addGraphData] = useState([]);
-  const [allData, addMoreData] = useState({ stress: [] });
+  const [allData, addMoreData] = useState(allMeasurements);
 
   function handleAdd(measurement, newValue) {
-    addMoreData((prevState) => console.log(prevState.stress));
-
     addMoreData((prevState) => ({
       ...prevState,
-      [measurement]: [...prevState.stress, newValue],
+      [measurement]: [...prevState[measurement], newValue],
     }));
   }
 
