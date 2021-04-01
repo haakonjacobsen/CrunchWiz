@@ -5,30 +5,25 @@ import MeasurmentExpansion from './MeasurementExpansion';
 
 const MainContent = () => {
   const webSocket = useRef('');
-  const allMeasurements = {
-    stress: [],
-    emotional_regulation: [],
-    entertainment: [],
-    arousal: [],
-    engagement: [],
-  };
+  const allMeasurements = {};
   const [showExtended, changeExtended] = useState(false);
   const [selectedMeasurment, setMeasurment] = useState('');
-  const [graphData, addGraphData] = useState([]);
   const [allData, addMoreData] = useState(allMeasurements);
 
   function handleAdd(measurement, newValue) {
-    addMoreData((prevState) => ({
+    addMoreData((prevState) => (Object.prototype.hasOwnProperty.call(prevState, measurement) ? {
       ...prevState,
       [measurement]: [...prevState[measurement], newValue],
+    } : {
+      ...prevState,
+      [measurement]: [newValue],
     }));
   }
 
   const receiveMessage = (message) => {
     const measurement = JSON.parse(message.data)[0];
-    const dataPoint = [{ value: measurement.value, time: measurement.time }];
-    addGraphData((currGraphData) => [...currGraphData, dataPoint]);
-    handleAdd(measurement.name, [measurement.value, measurement.time]);
+    const dataPoint = { value: measurement.value, time: measurement.time };
+    handleAdd(measurement.name, dataPoint);
   };
 
   function toggleExtended(measurment) {
@@ -53,7 +48,7 @@ const MainContent = () => {
         ? (
           <MeasurmentExpansion
             name={selectedMeasurment}
-            graphData={graphData}
+            graphData={allData[selectedMeasurment]}
           />
         ) : <div> </div>}
       <div className="Measurements-info">
@@ -62,7 +57,7 @@ const MainContent = () => {
             ? (
               <Measurement
                 name={key}
-                number={allData[key][allData[key].length - 1][0]}
+                number={allData[key][allData[key].length - 1].value}
                 showExtended={toggleExtended}
               />
             ) : <div> </div>
