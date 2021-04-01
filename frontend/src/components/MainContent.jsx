@@ -58,11 +58,14 @@ const MainContent = () => {
         ) : <div> </div>}
       <div className="Measurements-info">
         {Object.keys(allData).map((key) => (
-          <Measurement
-            name={key}
-            number={allData[key]}
-            showExtended={toggleExtended}
-          />
+          allData[key].length > 0
+            ? (
+              <Measurement
+                name={key}
+                number={allData[key][allData[key].length - 1][0]}
+                showExtended={toggleExtended}
+              />
+            ) : <div> </div>
         ))}
       </div>
     </div>
