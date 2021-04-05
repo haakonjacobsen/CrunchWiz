@@ -22,7 +22,6 @@ def modmax(d):
             t[i] = 0.0
     return t
 
-""" Signal dur is last endTime - first initTime, use window size 500 """
 def lhipa(d,signal_dur):
     # find max decomposition level
     w = pywt.Wavelet('sym16')
@@ -64,3 +63,32 @@ def lhipa(d,signal_dur):
     LHIPA = float(ctr)/tt
 
     return LHIPA
+
+def compute_cognitive_load(initTime, endTime, lpup, rpup):
+    """
+    Preprocesses parameters from eyetracker handler and calls lhipa to calculate cognitive load
+
+    :param initTime: list of timestamps for start time of each data point
+    :type initTime: list
+
+    :param endTime: list of timestamps for end time of each data point
+    :type endTime: list
+
+    :param lpup: list of values for left pupil
+    :type lpup: list
+
+    :param rpup: list of values for right pupil
+    :type rpup: list'
+    :return: Measure of cognitive load
+    """
+    assert len(lpup) == len(rpup)
+    signal_dur = endTime[-1] - initTime[0]
+    average_pupil_values = []
+    for i in range(lpup):
+        if(lpup == "NA"):
+            lpup[i] = rpup[i]
+        elif(rpup == "NA"):
+            rpup[i] == lpup[i]
+        average_pupil_values.append((lpup[i] + rpup[i])/2)
+        
+    return lhipa(average_pupil_values,signal_dur)
