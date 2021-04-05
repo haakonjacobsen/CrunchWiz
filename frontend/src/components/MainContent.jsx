@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ConnectingPanel from './ConnectingPanel';
 import './MainContent.css';
 import Measurement from './Measurement';
 import MeasurmentExpansion from './MeasurementExpansion';
 
 const MainContent = () => {
   const webSocket = useRef('');
-  const allMeasurements = {};
+  const [ip, setIP] = useState('0.0.0.0:0000');
   const [showExtended, changeExtended] = useState(false);
   const [selectedMeasurment, setMeasurment] = useState('');
-  const [allData, addMoreData] = useState(allMeasurements);
+  const [allData, addMoreData] = useState({});
 
   function handleAdd(measurement, newValue) {
+    // Check if measurement already exist in allData and adds to array if true, creates new if false
     addMoreData((prevState) => (Object.prototype.hasOwnProperty.call(prevState, measurement) ? {
       ...prevState,
       [measurement]: [...prevState[measurement], newValue],
@@ -19,12 +21,6 @@ const MainContent = () => {
       [measurement]: [newValue],
     }));
   }
-
-  const receiveMessage = (message) => {
-    const measurement = JSON.parse(message.data)[0];
-    const dataPoint = { value: measurement.value, time: measurement.time };
-    handleAdd(measurement.name, dataPoint);
-  };
 
   function toggleExtended(measurment) {
     if (measurment === selectedMeasurment) {
@@ -36,14 +32,26 @@ const MainContent = () => {
       }
     }
   }
+  function changeIP(inputIP) {
+    setIP(inputIP);
+  }
+
+  const receiveMessage = (message) => {
+    const measurement = JSON.parse(message.data)[0];
+    const dataPoint = { value: measurement.value.toFixed(2), time: measurement.time };
+    handleAdd(measurement.name, dataPoint);
+    console.log(webSocket.readyState);
+  };
+
   useEffect(() => {
-    webSocket.current = new WebSocket('ws://127.0.0.1:8888/');
+    webSocket.current = new WebSocket(`ws://${ip}/`);
     webSocket.current.onmessage = (message) => receiveMessage(message);
     return () => webSocket.current.close();
-  }, []);
+  }, [ip]);
 
   return (
     <div className="Main-content">
+      <ConnectingPanel setIP={changeIP} />
       {showExtended
         ? (
           <MeasurmentExpansion
@@ -60,7 +68,7 @@ const MainContent = () => {
                 number={allData[key][allData[key].length - 1].value}
                 showExtended={toggleExtended}
               />
-            ) : <div> </div>
+            ) : null
         ))}
       </div>
     </div>
