@@ -15,9 +15,9 @@ frontend-lint:
   script:
     - yarn lint
 
-lint-python:
+backend-lint:
   stage: analysis
-  image: python:3.8.7-buster
+  image: python:3.6
   before_script:
     - cd backend
     - pip3 install isort flake8
@@ -27,14 +27,13 @@ lint-python:
 
 backend-test:
   stage: test
-  image: python:3.8.7-buster
+  image: python:3.6
   before_script:
     - cd backend
     - pip install virtualenv
     - virtualenv venv
     - source venv/bin/activate
     - pip3 install -r requirements.txt
-    - cd ..
   script:
-    - python -m pytest backend/test/ --cov=crunch/
+    - python -m pytest test/ --cov=crunch/
 

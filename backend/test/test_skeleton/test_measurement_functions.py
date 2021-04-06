@@ -1,7 +1,7 @@
+"""
 import numpy as np
 import sympy as sym
 
-"""
 import crunch.skeleton.measurements as mf
 
 tol = 1e-5
@@ -69,5 +69,4 @@ def test_stability_of_motion():
     estimated = round(mf.stability_of_motion(1, 20), 4)
     exact = 21.8083
     assert np.abs(estimated - exact) < tol
-    
 """

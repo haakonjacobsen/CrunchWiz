@@ -1,5 +1,5 @@
 from crunch.eyetracker.measurements import (compute_ipi,
-                                                    compute_baseline)
+                                            compute_baseline)
 
 
 class TestCrunch:

@@ -1,5 +1,6 @@
 # TODO change from class to functions, and function should take in lists of raw data
 
+
 class eyetracker:
     """The eyetracker class calculates various measurements based on the saccade and fixations"""
 

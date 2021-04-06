@@ -1,4 +1,3 @@
-import pandas as pd
 import sys
 import cv2
 import os
@@ -6,6 +5,7 @@ from sys import platform
 import argparse
 from .handler import DataHandler  # noqa
 import time
+
 
 class MockAPI:
     """

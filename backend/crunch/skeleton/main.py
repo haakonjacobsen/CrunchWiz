@@ -1,6 +1,6 @@
 import os
 
-from .api import MockAPI, RealAPI
+from .api import MockAPI  # , RealAPI
 from .handler import DataHandler
 from .measurements import test_function
 
@@ -26,4 +26,3 @@ def start_skeleton(api=MockAPI):
         print("Skeleton API connection failed")
         print(e)
         os._exit()
-
