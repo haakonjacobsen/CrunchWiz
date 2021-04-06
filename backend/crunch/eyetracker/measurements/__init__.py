@@ -1,2 +1,3 @@
 # flake8: noqa
 from .information_processing_index import compute_information_processing_index as compute_ipi
+from .information_processing_index import compute_ipi_thresholds as compute_baseline

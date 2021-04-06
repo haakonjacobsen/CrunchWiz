@@ -1,4 +1,4 @@
-from backend.crunch.eyetracker.measurements import (compute_ipi,
+from crunch.eyetracker.measurements import (compute_ipi,
                                                     compute_baseline)
 
 

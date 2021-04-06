@@ -45,7 +45,7 @@ def get_joint_by_index(t, j):
         return skele[j]
 
 
-def finiteDiff(f, tstart, tend):
+def finite_diff(f, tstart, tend):
     """Uses finite difference of the third
     derivate, of second order to estimate jerk
     error coefficient is ommited in this calculation
