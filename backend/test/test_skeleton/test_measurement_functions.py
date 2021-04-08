@@ -2,7 +2,7 @@ import numpy as np
 import sympy as sym
 
 
-import backend.crunch.skeleton.measurement_functions as mf
+import crunch.skeleton.measurements as mf
 
 tol = 1e-5
 t = sym.symbols("t")

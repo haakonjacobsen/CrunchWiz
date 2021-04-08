@@ -1,5 +1,4 @@
-from backend.crunch.eyetracker.measurements import (compute_ipi,
-                                                    compute_baseline)
+from crunch.eyetracker.measurements import compute_ipi
 
 
 class TestCrunch:
@@ -11,5 +10,5 @@ class TestCrunch:
         end = [203, 399, 539, 1219, 1499, 1701, 2044, 2239, 2358, 2940, 3142, 3675]
         fy = [720, 672, 653, 599, 621, 664, 566, 636, 652, 792, 810, 663]
         fx = [1054, 1166, 1087, 1052, 1048, 1069, 717, 856, 821, 527, 559, 938]
-        short, long = compute_baseline(init, end, fx, fy)
+        short, long = 1
         assert compute_ipi(init, end, fx, fy, short, long) == 1

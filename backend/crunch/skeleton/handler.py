@@ -34,6 +34,9 @@ class DataHandler:
         self.measurement_path = measurement_path
         self.time = datetime.datetime.now()
 
+    def __str__(self):
+        return self.measurement_func.__name__
+
     def add_data_point(self, datapoint):
         """ Receive a new data point, and call appropriate measurement function when we have enough points """
         # TODO call eventual preprocessing here, should also take preprocessing function as argument in init

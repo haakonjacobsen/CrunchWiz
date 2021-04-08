@@ -13,8 +13,23 @@ class MockAPI:
 
     :type subscribers: list of (DataHandler, list of str)
     """
-    f = open("crunch/skeleton/mock_data/test_data.csv", "r")
-    skeleton_data = f.readlines()
+    skeleton_data = []
+
+    # Get test data from scuffed CSV
+    df = pd.pandas.read_csv(os.path.dirname(__file__) + "\mock_data\\test_data.csv", header=None)
+    for i in range(len(df)):
+        temp_array = []
+        row = df.iloc[i].tolist()
+        tuple = set()
+        i = 0
+        while i < len(row):
+            number = (
+                float(row[i].strip().strip("\[\]()")),
+                float(row[i + 1].strip().strip("\[\]()")),
+            )
+            i += 2
+            temp_array.append(number)
+        skeleton_data.append(temp_array)
 
     raw_data = ["body"]
     subscribers = {"body": []}
@@ -28,6 +43,8 @@ class MockAPI:
         :param requested_data: The specific raw data that the data handler subscribes to
         :type requested_data: list(str)
         """
+        print("Added subscriber: ", end="skeleton-")
+        print(data_handler)
         assert requested_data in self.subscribers.keys()
         self.subscribers[requested_data].append(data_handler)
 
