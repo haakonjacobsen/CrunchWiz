@@ -1,5 +1,5 @@
 import pandas as pd
-
+import os
 from .handler import DataHandler  # noqa
 
 
@@ -9,8 +9,8 @@ class MockApi:
 
     :type subscribers: list of (DataHandler, list of str)
     """
-    eyetracker_data = pd.read_csv("crunch/eyetracker/mock_data/ET-data-S001.csv")
-
+    dirname = os.path.dirname(__file__)
+    eyetracker_data = pd.read_csv(os.path.join(dirname, "mock_data\\ET-data-S001.csv"))
     raw_data = ["initTime", "endTime", "fx", "fy"]
     subscribers = []
 

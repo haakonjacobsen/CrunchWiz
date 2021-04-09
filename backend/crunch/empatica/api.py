@@ -1,5 +1,5 @@
 import pandas as pd
-
+import os
 from .handler import DataHandler  # noqa
 
 
@@ -7,10 +7,11 @@ class MockApi:
     """
     Mock api that reads from csv files instead of getting data from devices
     """
-    eda_data = pd.read_csv("crunch/empatica/mock_data/EDA.csv")["EDA"]
-    ibi_data = pd.read_csv("crunch/empatica/mock_data/IBI.csv")["IBI"]
-    temp_data = pd.read_csv("crunch/empatica/mock_data/TEMP.csv")["TEMP"]
-    hr_data = pd.read_csv("crunch/empatica/mock_data/HR.csv")["HR"]
+    dirname = os.path.dirname(__file__)
+    eda_data = pd.read_csv(os.path.join(dirname, "mock_data\\EDA.csv"))["EDA"]
+    ibi_data = pd.read_csv(os.path.join(dirname, "mock_data\\IBI.csv"))["IBI"]
+    temp_data = pd.read_csv(os.path.join(dirname, "mock_data\\TEMP.csv"))["TEMP"]
+    hr_data = pd.read_csv(os.path.join(dirname, "mock_data\\HR.csv"))["HR"]
 
     subscribers = {"EDA": [], "IBI": [], "TEMP": [], "HR": []}
 
