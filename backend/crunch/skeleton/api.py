@@ -19,7 +19,7 @@ class MockAPI:
 
     # Get test data from scuffed CSV
     df = pd.pandas.read_csv(
-        os.path.dirname(__file__) + "\mock_data\\test_data.csv", header=None
+        os.path.join(os.path.dirname(__file__), "mock_data\\test_data.csv"), header=None
     )
     for i in range(len(df)):
         temp_array = []
@@ -28,8 +28,8 @@ class MockAPI:
         i = 0
         while i < len(row):
             number = (
-                float(row[i].strip().strip("\[\]()")),
-                float(row[i + 1].strip().strip("\[\]()")),
+                float(row[i].strip().strip("[]()")),
+                float(row[i + 1].strip().strip("[]()")),
             )
             i += 2
             temp_array.append(number)

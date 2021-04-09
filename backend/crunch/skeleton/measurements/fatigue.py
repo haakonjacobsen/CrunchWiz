@@ -17,7 +17,6 @@ def fatigue(n):
     fatigeArray = []
     totalFatigue = 0.0
     totalJoint = 24
-    t = sym.symbols("t")
     for i in range(len(n) - 1):
         jointFatigue = 0
         for j in range(len(n[i])):

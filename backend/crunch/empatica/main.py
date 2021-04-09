@@ -1,6 +1,6 @@
 import os
 
-from crunch.empatica.api import MockApi
+from crunch.empatica.api import MockApi, RealAPI # noqa
 from crunch.empatica.handler import DataHandler
 from crunch.empatica.measurements import (
     compute_arousal,

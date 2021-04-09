@@ -1,6 +1,6 @@
 import os
 
-from crunch.skeleton.api import MockAPI, RealAPI
+from crunch.skeleton.api import MockAPI, RealAPI # noqa
 from crunch.skeleton.handler import DataHandler
 from crunch.skeleton.measurements import stability_of_motion, fatigue, amount_of_motion, most_used_joints
 
@@ -30,7 +30,7 @@ def start_skeleton(api=MockAPI):
                                 window_length=2,
                                 window_step=2)
     api.add_subscriber(motionHandler, "body")
- 
+
     mostUsedJointHandler = DataHandler(measurement_func=most_used_joints,
                                        measurement_path="most_used_joints.csv",
                                        window_length=2,

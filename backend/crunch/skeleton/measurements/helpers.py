@@ -1,6 +1,5 @@
 import numpy as np
 import sympy as sym
-import pandas as pd
 
 
 def norm_by_array(a, b):

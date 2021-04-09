@@ -1,6 +1,6 @@
 import os
 
-from crunch.eyetracker.api import MockApi, RealAPI
+from crunch.eyetracker.api import MockApi, RealAPI # noqa
 from crunch.eyetracker.handler import DataHandler
 from crunch.eyetracker.measurements.__init__ import compute_ipi
 
