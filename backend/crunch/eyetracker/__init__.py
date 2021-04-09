@@ -1,2 +1,2 @@
 # flake8: noqa
-from .main import start_eyetracker
+from crunch.eyetracker.main import start_eyetracker

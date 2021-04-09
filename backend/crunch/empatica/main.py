@@ -1,8 +1,8 @@
 import os
 
-from .api import MockApi
-from .handler import DataHandler
-from .measurements import (compute_arousal, compute_emotional_regulation,
+from crunch.empatica.api import MockApi
+from crunch.empatica.handler import DataHandler
+from crunch.empatica.measurements import (compute_arousal, compute_emotional_regulation,
                            compute_engagement, compute_entertainment,
                            compute_stress)
 

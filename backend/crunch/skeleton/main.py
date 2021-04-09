@@ -1,8 +1,8 @@
 import os
 
-from .api import MockAPI, RealAPI
-from .handler import DataHandler
-from .measurements import stability_of_motion, fatigue, amount_of_motion, most_used_joints
+from crunch.skeleton.api import MockAPI, RealAPI
+from crunch.skeleton.handler import DataHandler
+from crunch.skeleton.measurements import stability_of_motion, fatigue, amount_of_motion, most_used_joints
 
 
 def start_skeleton(api=MockAPI):

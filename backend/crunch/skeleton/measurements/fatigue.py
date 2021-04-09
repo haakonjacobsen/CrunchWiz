@@ -1,5 +1,5 @@
 import numpy as np
-from .helpers import finite_diff
+from crunch.skeleton.measurements.helpers import finite_diff
 import sympy as sym
 
 

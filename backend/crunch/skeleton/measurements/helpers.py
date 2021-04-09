@@ -21,10 +21,6 @@ def norm_by_array(a, b):
     return np.sqrt(norm_x + norm_y)
 
 
-def test_function(a):
-    return 1
-
-
 def finite_diff(f, tstart, tend):
     """Uses finite difference of the third
     derivate, of second order to estimate jerk

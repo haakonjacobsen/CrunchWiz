@@ -1,6 +1,6 @@
 import pandas as pd
 
-from .handler import DataHandler  # noqa
+from crunch.eyetracker.handler import DataHandler  # noqa
 
 
 class MockApi:
@@ -9,7 +9,7 @@ class MockApi:
 
     :type subscribers: list of (DataHandler, list of str)
     """
-    eyetracker_data = pd.read_csv("crunch/eyetracker/mock_data/ET-data-S001.csv")
+    eyetracker_data = pd.read_csv("crunch\eyetracker\mock_data\ET-data-S001.csv")
 
     raw_data = ["initTime", "endTime", "fx", "fy"]
     subscribers = []

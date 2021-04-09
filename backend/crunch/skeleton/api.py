@@ -4,7 +4,7 @@ import cv2
 import os
 from sys import platform
 import argparse
-from .handler import DataHandler  # noqa
+from crunch.skeleton.handler import DataHandler  # noqa
 import time
 
 class MockAPI:

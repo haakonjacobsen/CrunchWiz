@@ -1,8 +1,8 @@
 import os
 
-from .api import MockApi, RealAPI
-from .handler import DataHandler
-from .measurements import compute_ipi
+from crunch.eyetracker.api import MockApi, RealAPI
+from crunch.eyetracker.handler import DataHandler
+from crunch.eyetracker.measurements.__init__ import compute_ipi
 
 
 def start_eyetracker(api=MockApi):
