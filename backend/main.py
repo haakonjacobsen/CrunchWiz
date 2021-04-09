@@ -1,4 +1,4 @@
-from crunch import start_processes
+from crunch.crunch import start_processes
 
 
 def main():

@@ -4,8 +4,9 @@ import cv2
 import os
 from sys import platform
 import argparse
-from .handler import DataHandler  # noqa
+from crunch.skeleton.handler import DataHandler  # noqa
 import time
+
 
 class MockAPI:
     """
@@ -13,8 +14,26 @@ class MockAPI:
 
     :type subscribers: list of (DataHandler, list of str)
     """
-    f = open("crunch/skeleton/mock_data/test_data.csv", "r")
-    skeleton_data = f.read()
+
+    skeleton_data = []
+
+    # Get test data from scuffed CSV
+    df = pd.pandas.read_csv(
+        os.path.join(os.path.dirname(__file__), "mock_data\\test_data.csv"), header=None
+    )
+    for i in range(len(df)):
+        temp_array = []
+        row = df.iloc[i].tolist()
+        tuple = set()
+        i = 0
+        while i < len(row):
+            number = (
+                float(row[i].strip().strip("[]()")),
+                float(row[i + 1].strip().strip("[]()")),
+            )
+            i += 2
+            temp_array.append(number)
+        skeleton_data.append(temp_array)
 
     raw_data = ["body"]
     subscribers = {"body": []}
@@ -28,6 +47,8 @@ class MockAPI:
         :param requested_data: The specific raw data that the data handler subscribes to
         :type requested_data: list(str)
         """
+        print("Added subscriber: ", end="skeleton-")
+        print(data_handler)
         assert requested_data in self.subscribers.keys()
         self.subscribers[requested_data].append(data_handler)
 
@@ -56,6 +77,7 @@ class RealAPI:
     """
     Mock api that reads from csv files instead of getting data from devices
     """
+
     raw_data = ["body"]
     subscribers = {"body": []}
 
@@ -83,23 +105,26 @@ class RealAPI:
         try:
             if platform == "win32":
                 # Change these variables to point to the correct folder (Release/x64 etc.)
-                sys.path.append(dir_path + '/openpose/build/python/openpose/Release')
-                y = dir_path + '/openpose/build/x64/Release;'
-                z = dir_path + '/openpose/build/bin;'
-                os.environ['PATH'] = os.environ['PATH'] + ';' + y + z
+                sys.path.append(dir_path + "/openpose/build/python/openpose/Release")
+                y = dir_path + "/openpose/build/x64/Release;"
+                z = dir_path + "/openpose/build/bin;"
+                os.environ["PATH"] = os.environ["PATH"] + ";" + y + z
                 import pyopenpose as op
             else:
-                sys.path.append('/openpose/build/python')
+                sys.path.append("/openpose/build/python")
                 from openpose import pyopenpose as op
         except ImportError as e:
             print(
-                'Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in'
-                ' CMake and have this Python script in the right folder?')
+                "Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in"
+                " CMake and have this Python script in the right folder?"
+            )
             raise e
 
         # Flags
         parser = argparse.ArgumentParser()
-        parser.add_argument("--no-display", action="store_true", help="Disable display.")
+        parser.add_argument(
+            "--no-display", action="store_true", help="Disable display."
+        )
         parser.add_argument("--frame_step", default=100)
         parser.add_argument("--fps_max", default=1)
         args = parser.parse_known_args()
@@ -115,11 +140,11 @@ class RealAPI:
             else:
                 next_item = "1"
             if "--" in curr_item and "--" in next_item:
-                key = curr_item.replace('-', '')
+                key = curr_item.replace("-", "")
                 if key not in params:
                     params[key] = "1"
             elif "--" in curr_item and "--" not in next_item:
-                key = curr_item.replace('-', '')
+                key = curr_item.replace("-", "")
                 if key not in params:
                     params[key] = next_item
         # Construct it from system arguments
