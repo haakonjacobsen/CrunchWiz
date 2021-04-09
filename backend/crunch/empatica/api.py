@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from .handler import DataHandler  # noqa
+from crunch.empatica.handler import DataHandler  # noqa
 
 
 class MockApi:

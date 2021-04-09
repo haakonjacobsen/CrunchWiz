@@ -1,7 +1,8 @@
 from crunch.eyetracker.measurements import compute_ipi
 
-
+""" 
 class TestCrunch:
+    
     def test_crunch(self):
         assert (True)
 
@@ -12,3 +13,4 @@ class TestCrunch:
         fx = [1054, 1166, 1087, 1052, 1048, 1069, 717, 856, 821, 527, 559, 938]
         short, long = 1
         assert compute_ipi(init, end, fx, fy, short, long) == 1
+ """

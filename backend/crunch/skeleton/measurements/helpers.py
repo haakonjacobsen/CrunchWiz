@@ -21,10 +21,6 @@ def norm_by_array(a, b):
     return np.sqrt(norm_x + norm_y)
 
 
-def test_function(a):
-    return 1
-
-
 def finite_diff(f, tstart, tend):
     """Uses finite difference of the third
     derivate, of second order to estimate jerk
@@ -51,26 +47,3 @@ def finite_diff(f, tstart, tend):
         -0.5 * f.subs(t, t0) + f.subs(t, t1) - f.subs(t, t3) + 0.5 * f.subs(t, t4)
     ) / (h ** 3)
     return diff
-
-
-def array(n):
-    """Helper array to get data from
-    test_data.csv"""
-    collection = []
-    df = pd.pandas.read_csv(
-        "backend/crunch/skeleton/mock_data/test_data.csv", header=None
-    )
-    for i in range(n):
-        temp_array = []
-        row = df.iloc[i].tolist()
-        tuple = set()
-        i = 0
-        while i < len(row):
-            number = (
-                float(row[i].strip().strip("\[\]()")),
-                float(row[i + 1].strip().strip("\[\]()")),
-            )
-            i += 2
-            temp_array.append(number)
-        collection.append(temp_array)
-    return collection

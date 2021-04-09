@@ -1,2 +1,2 @@
 # flake8: noqa
-from .main import start_empatica
+from crunch.empatica.main import start_empatica

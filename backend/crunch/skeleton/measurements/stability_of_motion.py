@@ -1,4 +1,4 @@
-from .helpers import norm_by_array
+from crunch.skeleton.measurements.helpers import norm_by_array
 
 
 def stability_of_motion(n):
