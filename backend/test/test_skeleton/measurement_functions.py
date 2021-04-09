@@ -2,7 +2,7 @@ import numpy as np
 import sympy as sym
 
 
-import backend.crunch.skeleton.measurement_functions as mf
+import crunch.skeleton.measurement_functions as mf
 
 tol = 1e-5
 t = sym.symbols("t")
@@ -69,6 +69,7 @@ def test_stability_of_motion():
     estimated = round(mf.stability_of_motion(1, 20), 4)
     exact = 21.8083
     assert np.abs(estimated - exact) < tol
+
 
 """ 
 t = sym.symbols("t")

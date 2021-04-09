@@ -9,6 +9,7 @@ class MockApi:
 
     :type subscribers: list of (DataHandler, list of str)
     """
+
     eyetracker_data = pd.read_csv("crunch\eyetracker\mock_data\ET-data-S001.csv")
 
     raw_data = ["initTime", "endTime", "fx", "fy"]
@@ -37,7 +38,10 @@ class MockApi:
     def _mock_datapoint(self, index):
         if index < len(self.eyetracker_data):
             for subscriber, raw_datas in self.subscribers:
-                data = {raw_data: self.eyetracker_data[raw_data][index] for raw_data in raw_datas}
+                data = {
+                    raw_data: self.eyetracker_data[raw_data][index]
+                    for raw_data in raw_datas
+                }
                 subscriber.add_data_point(data)
 
 
