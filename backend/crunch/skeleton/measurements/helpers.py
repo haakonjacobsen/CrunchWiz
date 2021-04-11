@@ -21,20 +21,6 @@ def norm_by_array(a, b):
 
 
 def finite_diff(f, tstart, tend):
-    """Uses finite difference of the third
-    derivate, of second order to estimate jerk
-    error coefficient is ommited in this calculation
-    h is default set to 0.25, since an interval 1 second
-    it will get 4 evenly splits
-    :param f: function with respect to t
-    :type f: sympy
-    :param tstart: start of interval
-    :type tstart: int
-    :param tend: end of interval
-    :type tend: int
-    :return diff: Estimated jerk
-    :type diff: float
-    """
     t = sym.symbols("t")
     h = 0.25
     t0 = tstart
@@ -43,6 +29,10 @@ def finite_diff(f, tstart, tend):
     t3 = t2 + h
     t4 = tend
     diff = (
-        -0.5 * f.subs(t, t0) + f.subs(t, t1) - f.subs(t, t3) + 0.5 * f.subs(t, t4)
-    ) / (h ** 3)
-    return diff
+        round(-0.5 * f.subs(t, t0), 4)
+        + round(f.subs(t, t1), 4)
+        - round(f.subs(t, t3), 4)
+        + round(0.5 * f.subs(t, t4), 4)
+    )
+    deff = h ** 3
+    return diff / deff
