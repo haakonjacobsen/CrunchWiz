@@ -32,33 +32,43 @@ const MainContent = () => {
       }
     }
   }
-  function changeIP(inputIP) {
-    setIP(inputIP);
+
+  function isValidIpv4Addr(ipAddress) {
+    return /^(?=\d+\.\d+\.\d+\.\d+$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}$/.test(ipAddress);
+  }
+
+  function changeIP(inputIP, inputPort) {
+    if (isValidIpv4Addr(inputIP) && parseInt(inputPort, 10) <= 65535) {
+      setIP(`${inputIP}:${inputPort}`);
+    } else {
+      console.log(`${inputIP}:${inputPort} is not a valid IPv4 address`);
+    }
   }
 
   const receiveMessage = (message) => {
     const measurement = JSON.parse(message.data)[0];
     const dataPoint = { value: measurement.value.toFixed(2), time: measurement.time };
     handleAdd(measurement.name, dataPoint);
-    console.log(webSocket.readyState);
   };
 
   useEffect(() => {
     webSocket.current = new WebSocket(`ws://${ip}/`);
     webSocket.current.onmessage = (message) => receiveMessage(message);
+    console.log(ip);
     return () => webSocket.current.close();
   }, [ip]);
 
   return (
     <div className="Main-content">
-      <ConnectingPanel setIP={changeIP} />
+      { webSocket.current.readyState !== WebSocket.OPEN ? <ConnectingPanel updateIP={changeIP} />
+        : null}
       {showExtended
         ? (
           <MeasurmentExpansion
             name={selectedMeasurment}
             graphData={allData[selectedMeasurment]}
           />
-        ) : <div> </div>}
+        ) : null}
       <div className="Measurements-info">
         {Object.keys(allData).map((key) => (
           allData[key].length > 0

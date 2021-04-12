@@ -21,6 +21,8 @@
   height: 100%;
   display: flex;
   flex-wrap: wrap;
+  height: fit-content;
+
 }
 .Measurment-number-wrapper{
   display: flex;
