@@ -14,19 +14,30 @@ def fatigue(n):
     :return fatigeArray: List of fatigue
     :type fatigeArray: list
     """
-    totalFatigue = 0.0
-    totalJoint = 24
+    total_Fatigue = 0.0
+    total_Joint = 24
     for i in range(len(n) - 1):
-        jointFatigue = 0
+        joint_Fatigue = 0
         for j in range(len(n[i])):
             f, g = equation(n[i][j], n[i + 1][j])
-            jointFatigue += np.abs(finite_diff(f, i, i + 1))
-            jointFatigue += np.abs(finite_diff(g, i, i + 1))
-        totalFatigue += jointFatigue / totalJoint
-    return round(totalFatigue, 6)
+            joint_Fatigue += np.abs(finite_diff(f, i, i + 1))
+            joint_Fatigue += np.abs(finite_diff(g, i, i + 1))
+        total_Fatigue += joint_Fatigue / total_Joint
+    return round(total_Fatigue, 6)
 
 
 def equation(x, y):
+    """A helper function to calculate
+    the equation given two points
+    :param x: Datapoints for x
+    :type x: list
+    :param y: Datapoints for y
+    :type y: list
+    :return x: equation for x with respect to t
+    :type sympy: equation
+    :return x: equation for x with respect to t
+    :type sympy: equation
+    """
     x1 = float(x[0])
     y1 = float(x[1])
     x2 = float(y[0])
