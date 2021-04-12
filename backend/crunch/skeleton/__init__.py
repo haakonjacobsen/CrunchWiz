@@ -1,2 +1,2 @@
 # flake8: noqa
-from .main import start_skeleton
+from crunch.skeleton.main import start_skeleton

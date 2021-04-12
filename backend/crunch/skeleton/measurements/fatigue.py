@@ -1,50 +1,40 @@
 import numpy as np
-from .helpers import finite_diff, get_joint_by_index
+from crunch.skeleton.measurements.helpers import finite_diff
 import sympy as sym
 
 
-def fatigue(t0, t1):
-    """ Measures fatigue for every joint
+def fatigue(n):
+    """Measures fatigue for every joint
     by finding their functions, and applying
     finite differences
-    Parameters:
-        t0 (int): Start time
-        t1 (int): End time
-    Returns:
-        totalFatigue (float): Fatigue for all joint for given time interval
+    :param n: Datapoints
+    :type n: list of 2d tuples
+    :return totalFatigue: Total fatigue
+    :type totalFatigue: float
+    :return fatigeArray: List of fatigue
+    :type fatigeArray: list
     """
+    fatigeArray = []
     totalFatigue = 0.0
     totalJoint = 24
-    for i in range(25):
+    for i in range(len(n) - 1):
         jointFatigue = 0
-        x, y, z = func(get_joint_by_index(t0, i), get_joint_by_index(t1, i))
-        # we apply absolute value since we are interested in positive movement
-        jointFatigue += np.abs(finite_diff(x, t0, t1))
-        jointFatigue += np.abs(finite_diff(y, t0, t1))
-        jointFatigue += np.abs(finite_diff(z, t0, t1))
+        for j in range(len(n[i])):
+            f, g = equation(n[i][j], n[i + 1][j])
+            jointFatigue += np.abs(finite_diff(f, i, i + 1))
+            jointFatigue += np.abs(finite_diff(g, i, i + 1))
         totalFatigue += jointFatigue / totalJoint
-    return totalFatigue
+        fatigeArray.append(totalFatigue)
+    return totalFatigue, fatigeArray
 
 
-def func(a, b):
-    """Takes two point, and makes a direction vector,
-    then using said vector to calculate three
-    equations responsible for x,y,z.
-    Since they are dynamic, we use sympy
-    to create the mathematical expressions
-    Parameters:
-        a (list): List of coordinates for point 1
-        b (list): List of coordinates for point 2
-    Returns:
-        x,y,z (float): Three functions with respect to x,y,z
-    """
+def equation(x, y):
+    x1 = float(x[0])
+    y1 = float(x[1])
+    x2 = float(y[0])
+    y2 = float(y[1])
     t = sym.symbols("t")
-    vector = [
-        b[0] - a[0],
-        b[1] - a[1],
-        b[2] - a[2],
-    ]
-    x = a[0] + (vector[0]) * t
-    y = a[1] + (vector[1]) * t
-    z = a[2] + (vector[2]) * t
-    return x, y, z
+    vector = [x2 - x1, y2 - y1]
+    x = x1 + (vector[0]) * t
+    y = y1 + (vector[1]) * t
+    return x, y

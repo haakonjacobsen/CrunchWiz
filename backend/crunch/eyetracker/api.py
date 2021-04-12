@@ -1,8 +1,10 @@
 import pandas as pd
 import time
+import os
+
 from math import isnan
-from .handler import IpiHandler
-from .handler import DataHandler  # noqa
+
+from crunch.eyetracker.handler import DataHandler, IpiHandler # noqa
 
 
 class GazedataToFixationdata:
@@ -246,8 +248,8 @@ class MockApi:
 
     :type subscribers: list of (DataHandler, list of str)
     """
-    eyetracker_data = pd.read_csv("crunch/eyetracker/mock_data/ET-data-S001.csv")
-
+    dirname = os.path.dirname(__file__)
+    eyetracker_data = pd.read_csv(os.path.join(dirname, "mock_data\\ET-data-S001.csv"))
     raw_data = ["initTime", "endTime", "fx", "fy"]
     subscribers = []
 
@@ -274,5 +276,8 @@ class MockApi:
     def _mock_datapoint(self, index):
         if index < len(self.eyetracker_data):
             for subscriber, raw_datas in self.subscribers:
-                data = {raw_data: self.eyetracker_data[raw_data][index] for raw_data in raw_datas}
+                data = {
+                    raw_data: self.eyetracker_data[raw_data][index]
+                    for raw_data in raw_datas
+                }
                 subscriber.add_data_point(data)

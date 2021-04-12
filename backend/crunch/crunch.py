@@ -1,9 +1,9 @@
 from multiprocessing import Process
 
-from .empatica import start_empatica
-from .eyetracker import start_eyetracker
-from .skeleton import start_skeleton
-from .websocket import start_websocket
+from crunch.empatica.main import start_empatica
+from crunch.eyetracker.main import start_eyetracker
+from crunch.skeleton.main import start_skeleton
+from crunch.websocket.websocket import start_websocket
 import os
 
 
