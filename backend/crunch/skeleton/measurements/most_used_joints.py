@@ -13,13 +13,13 @@ def most_used_joints(n):
     for i in range(len(n) - 1):
         jointNr = 0
         highest = 0
-        sum = 0
+        total = 0
         for j in range(len(n[i])):
             used = norm_by_array(n[i][j], n[i + 1][j])
             if highest <= used:
                 highest = used
                 jointNr = j
-            sum += used
-        sum = sum / 24
-        usedList.append((jointNr, sum))
+            total += used
+        total = total / 24
+        usedList.append((jointNr, round(total, 6)))
     return usedList

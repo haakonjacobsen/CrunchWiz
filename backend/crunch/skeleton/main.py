@@ -34,7 +34,8 @@ def start_skeleton(api=MockAPI):
     mostUsedJointHandler = DataHandler(measurement_func=most_used_joints,
                                        measurement_path="most_used_joints.csv",
                                        window_length=2,
-                                       window_step=2)
+                                       window_step=2,
+                                       calculate_baseline=False)
     api.add_subscriber(mostUsedJointHandler, "body")
 
     # start up the api

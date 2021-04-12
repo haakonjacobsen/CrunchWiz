@@ -6,17 +6,13 @@ def amount_of_motion(n):
     averageing, before summing them up
     :param n: Datapoints
     :type n: list
-    :return total: List of motions
-    :type motionList: list
+    :return total: Total amount of motion
+    :type total: float
     """
     total_joints = 24
     total = 0
-    motionList = []
-    for i in range(len(n) - 1):
-        total = 0
-        jointTotal = 0
-        for j in range(len(n[i])):
-            jointTotal += norm_by_array(n[i][j], n[i + 1][j])
+    jointTotal = 0
+    for j in range(total_joints):
+        jointTotal += norm_by_array(n[0][j], n[1][j])
         total += jointTotal / total_joints
-        motionList.append(total)
-    return motionList
+    return round(total, 6)

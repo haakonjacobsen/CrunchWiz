@@ -14,7 +14,6 @@ def fatigue(n):
     :return fatigeArray: List of fatigue
     :type fatigeArray: list
     """
-    fatigeArray = []
     totalFatigue = 0.0
     totalJoint = 24
     for i in range(len(n) - 1):
@@ -24,8 +23,7 @@ def fatigue(n):
             jointFatigue += np.abs(finite_diff(f, i, i + 1))
             jointFatigue += np.abs(finite_diff(g, i, i + 1))
         totalFatigue += jointFatigue / totalJoint
-        fatigeArray.append(totalFatigue)
-    return totalFatigue, fatigeArray
+    return round(totalFatigue, 6)
 
 
 def equation(x, y):
