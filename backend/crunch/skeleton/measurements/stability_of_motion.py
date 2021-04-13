@@ -9,11 +9,11 @@ def stability_of_motion(n):
     :return total: List of stability
     :type stabilityList: list
     """
-    stabilityList = []
-    for i in range(len(n) - 1):
-        joint_distance = 0
-        for j in range(len(n[i])):
-            euclid = norm_by_array(n[i][j], n[i + 1][j])
-            joint_distance += 1 / (1 + euclid)
-        stabilityList.append(joint_distance)
-    return stabilityList
+    stability = 0
+    total_joints = 24
+    joint_distance = 0
+    for j in range(total_joints):
+        euclid = norm_by_array(n[0][j], n[1][j])
+        joint_distance += 1 / (1 + euclid)
+        stability += joint_distance
+    return round(stability, 6)

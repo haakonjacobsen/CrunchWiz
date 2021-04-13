@@ -10,3 +10,4 @@ sympy~=1.7.1
 websockets~=8.1
 watchgod~=0.7
 pytest-cov~=2.11.1
+tobii-research~=1.8.0
