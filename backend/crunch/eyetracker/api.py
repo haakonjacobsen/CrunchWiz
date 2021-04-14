@@ -1,10 +1,5 @@
-import pandas as pd
 import time
-import os
-
 from math import isnan
-
-from crunch.eyetracker.handler import DataHandler, IpiHandler # noqa
 
 
 class GazedataToFixationdata:
