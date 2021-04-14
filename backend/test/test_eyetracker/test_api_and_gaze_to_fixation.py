@@ -1,6 +1,5 @@
 from crunch.eyetracker.api import EyetrackerAPI, GazedataToFixationdata
 from crunch.eyetracker.handler import DataHandler, IpiHandler
-from crunch.eyetracker.measurements.anticipation import compute_anticipation
 from crunch.eyetracker.measurements.perceived_difficulty import compute_perceived_difficulty
 
 
@@ -54,7 +53,6 @@ class TestGazeDataToFixAndAPI:
         def insert_one_fixation_point():
             # inserting 20 gazepoints that should be part of a fixation, because no eye movement
             for j in range(20):
-                fixation_data_length = len(api.dict_of_lists_of_fixation_data["initTime"])
                 api.insert_new_gaze_data(left_eye_fx, left_eye_fy, right_eye_fx, right_eye_fy,
                                          self.gaze_data['left_pupil_diameter'],
                                          self.gaze_data['right_pupil_diameter'],
@@ -66,7 +64,6 @@ class TestGazeDataToFixAndAPI:
                                      self.gaze_data['right_pupil_diameter'],
                                      next(gazedata_gen))
 
-
         # set up, add handlers
         api = EyetrackerAPI()
         ipi_handler = IpiHandler()
@@ -76,10 +73,6 @@ class TestGazeDataToFixAndAPI:
             compute_perceived_difficulty, "perceived_difficulty.csv", ["initTime", "endTime", "fx", "fy"]
         )
         api.add_subscriber(perceived_difficulty_handler)
-        anticipation_handler = DataHandler(
-            compute_anticipation, "anticipation.csv", ["initTime", "endTime", "fx", "fy"]
-        )
-        #api.add_subscriber(anticipation_handler)
         gazedata_gen = self.timestamp_generator()
 
         left_eye_fx, left_eye_fy = self.gaze_data['left_gaze_point_on_display_area']
@@ -100,6 +93,3 @@ class TestGazeDataToFixAndAPI:
             elif type(handler) == IpiHandler:
                 assert len(handler.list_of_baseline_values) == 0
                 assert len(handler.dict_of_lists_of_threshold_values["initTime"]) == 6
-
-
-

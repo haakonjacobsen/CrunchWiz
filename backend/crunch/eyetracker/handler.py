@@ -2,6 +2,7 @@ import csv
 import os
 import time
 from .measurements.information_processing_index import compute_information_processing_index, compute_ipi_thresholds
+from .measurements.cognitive_load import compute_cognitive_load
 
 
 class DataHandler:
@@ -108,23 +109,6 @@ class DataHandler:
     def get_data_subscribtions(self):
         return self.list_of_raw_data_subscribed_to
 
-    # d Delete everything below:
-
-    def debug(self):
-        print(self.list_of_baseline_values, self.baseline)
-
-    def debug_transition(self):
-        # A phase transition will happen next time send_measurement is called
-        self.baseline_end_time = 0
-        for i in range(80):
-            self.list_of_baseline_values.append(0.5)
-
-    def print_hello_self(self):
-        print("hello, ", self)
-
-    def test_write_to_csv(self):
-        self._write_csv(self.measurement_path, ["time", "measurement ratio"])
-
 
 class IpiHandler(DataHandler):
     """
@@ -222,5 +206,26 @@ class IpiHandler(DataHandler):
                                                           raw_data["fx"], raw_data["fy"],
                                                           self.short_threshold, self.long_threshold))
 
-    def printn_no(self):
-        print(self.phase_func)
+
+class CognitiveLoadHandler(DataHandler):
+    """
+    Cognitive load needs 500 values to calculate one measurement value. It is otherwise identical
+    to the DataHandler
+    """
+
+    def __init__(self):
+        DataHandler.__init__(
+            self, compute_cognitive_load, "cognitive_load.csv", ["initTime", "endTime", "lpup", "rpup"]
+        )
+        self.dict_of_lists_of_values = {"initTime": [], "endTime": [], "lpup": [], "rpup": []}
+
+    def send_data_window(self, raw_data):
+        self.dict_of_lists_of_values["initTime"].extend(raw_data["initTime"])
+        self.dict_of_lists_of_values["endTime"].extend(raw_data["endTime"])
+        self.dict_of_lists_of_values["lpup"].extend(raw_data["lpup"])
+        self.dict_of_lists_of_values["rpup"].extend(raw_data["rpup"])
+
+        if len(self.dict_of_lists_of_values["initTime"]) >= 500:
+            measurement_result = self.measurement_func(**self.dict_of_lists_of_values)
+            self.phase_func(measurement_result)
+            self.dict_of_lists_of_values = {"initTime": [], "endTime": [], "lpup": [], "rpup": []}

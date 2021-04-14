@@ -1,11 +1,9 @@
-# from backend.crunch.eyetracker.handler import DataHandler
 from crunch.eyetracker.measurements.information_processing_index import compute_information_processing_index
 from crunch.eyetracker.measurements.information_processing_index import compute_ipi_thresholds
 from crunch.eyetracker.measurements.anticipation import compute_anticipation
 from crunch.eyetracker.measurements.perceived_difficulty import compute_perceived_difficulty
-from crunch.eyetracker.measurements.information_processing_index import compute_ipi_thresholds
-from crunch.eyetracker.handler import DataHandler, IpiHandler
-from crunch.eyetracker.api import EyetrackerAPI, GazedataToFixationdata
+from crunch.eyetracker.measurements.cognitive_load import compute_cognitive_load
+import numpy as np
 
 
 class TestCrunch:
@@ -24,46 +22,8 @@ class TestCrunch:
     def test_compute_perceived_difficulty(self):
         assert compute_perceived_difficulty(self.init, self.end, self.fx, self.fy) > 0
 
-    def test_DataHandler(self):
-        handler = DataHandler(compute_anticipation, "anticipation.csv", ["initTime", "endTime", "fx", "fy"])
-        for i in range(1, 20):
-            handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
-            assert len(handler.list_of_baseline_values) == i
-        # transition from baseline phase to csv phase
-        assert handler.phase_func == handler.baseline_phase
-        handler.baseline_end_time -= 120
-        handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
-        assert handler.phase_func == handler.csv_phase
-        try:
-            # should throw File not found error
-            handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
-            assert False
-        except OSError as e:
-            assert True
-
-    def test_IpiHandler(self):
-        handler = IpiHandler()
-        for i in range(1, 20):
-            handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
-            assert len(handler.dict_of_lists_of_threshold_values["initTime"]) == 12 * i
-        # transition from threshold phase to baseline phase
-        assert handler.phase_func == handler.threshold_phase
-        handler.threshold_phase_end -= 120
-        handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
-        assert handler.phase_func == handler.baseline_phase
-
-        # transition from baseline phase to csv phase
-        for i in range(1, 20):
-            handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
-            assert len(handler.list_of_baseline_values) == i
-
-        handler.baseline_end_time -= 120
-        handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
-        assert handler.phase_func == handler.csv_phase
-        try:
-            # should throw File not found error
-            handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
-            assert False
-        except OSError as e:
-            assert True
-
+    def test_compute_cognitive_load(self):
+        pup = list(np.random.rand(500) * 2 + 4)
+        initTime = list(np.arange(0, 20000, 40))
+        endTime = list(np.arange(0, 20000, 40) + 10)
+        assert compute_cognitive_load(initTime, endTime, pup, pup) > 0
