@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import './ConnectingPanel.css';
 import PropTypes from 'prop-types';
 
-export default function ConnectingPanel({ updateIP }) {
-  const [ipPart, changeIP] = useState('0.0.0.0');
-  const [portPart, changePort] = useState('1111');
+export default function ConnectingPanel({ errorMsg, isLoading, connectWebsocket }) {
+  const [ipPart, changeIP] = useState('');
+  const [portPart, changePort] = useState('');
 
   return (
     <div className="Connecting-panel">
@@ -40,15 +40,37 @@ export default function ConnectingPanel({ updateIP }) {
         </div>
         <input type="text" placeholder="Port number" onChange={(event) => changePort(event.target.value)} />
       </div>
-      <button className="Connect-button" type="button" onClick={() => updateIP(ipPart, portPart)} onKeyDown={() => updateIP(ipPart, portPart)}> Connect </button>
+      <button className="Connect-button" type="button" onClick={() => connectWebsocket(ipPart, portPart)} onKeyDown={() => connectWebsocket(ipPart, portPart)}>
+        {isLoading ? 'connecting' : 'connect'}
+      </button>
+      {isLoading
+        ? (
+          <div className="SVG-conteiner">
+            <svg className="spinner" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+              <rect className="spinner__rect" x="0" y="0" width="100" height="100" fill="none" />
+              <circle className="spinner__circle" cx="50" cy="50" r="40" stroke="#999999" fill="none" strokeWidth="6" strokeLinecap="round" />
+            </svg>
+          </div>
+        )
+        : (
+          <h1 className="Error-message">
+            {' '}
+            {errorMsg}
+            {' '}
+          </h1>
+        ) }
     </div>
   );
 }
 
 ConnectingPanel.defaultProps = {
-  updateIP: () => {},
+  connectWebsocket: () => {},
+  errorMsg: '',
+  isLoading: false,
 };
 
 ConnectingPanel.propTypes = {
-  updateIP: PropTypes.func,
+  connectWebsocket: PropTypes.func,
+  errorMsg: PropTypes.string,
+  isLoading: PropTypes.bool,
 };

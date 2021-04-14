@@ -77,3 +77,31 @@
     padding: 10px;
     width: auto;
 }
+.Error-message{
+    font-size: 1.2em;
+    text-align: center;
+    font-weight: 400;
+    color: #9d9d9d;
+    
+}
+.SVG-conteiner{
+    height: 10%;
+}
+
+.spinner__circle {
+    animation: 2s linear spinning-circle infinite;
+}
+
+@keyframes spinning-circle {
+  0% {
+    stroke-dashoffset: 0;
+    stroke-dasharray: 150 100.4;
+  }
+  50% {
+    stroke-dasharray: 1 250;
+  }
+  100% {
+    stroke-dashoffset: 502;
+    stroke-dasharray: 150.6 100.4;
+  }
+}

@@ -3,16 +3,35 @@ import ConnectingPanel from './ConnectingPanel';
 import './MainContent.css';
 import Measurement from './Measurement';
 import MeasurmentExpansion from './MeasurementExpansion';
+import LoadingMeasurements from './LoadingMeasurements';
 
 const MainContent = () => {
-  const webSocket = useRef('');
-  const [ip, setIP] = useState('0.0.0.0:0000');
+  const renderCount = useRef(1);
+  const webSocket = useRef(null);
+  const [connectioError, setError] = useState('');
+  const [ip, setIP] = useState(null);
+  const [wsStatus, setStatus] = useState(3);
   const [showExtended, changeExtended] = useState(false);
   const [selectedMeasurment, setMeasurment] = useState('');
   const [allData, addMoreData] = useState({});
+  const [loading, toggleLoading] = useState(false);
+
+  function isValidIpv4Addr(ipAddress) {
+    return /^(?=\d+\.\d+\.\d+\.\d+$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}$/.test(ipAddress);
+  }
+
+  function connectWebsocket(ipAddr, port) {
+    if (isValidIpv4Addr(ipAddr) && parseInt(port, 10) >= 0 <= 65535) {
+      toggleLoading(!loading);
+      setIP(`${ipAddr}:${port}`);
+    } else {
+      setError(`${ipAddr}:${port} is not a valid IPv4 address`);
+      console.log(`${ipAddr}:${port} is not a valid IPv4 address`);
+    }
+  }
 
   function handleAdd(measurement, newValue) {
-    // Check if measurement already exist in allData and adds to array if true, creates new if false
+    // Check if measurement already exist in allData, adds to array if true, creates new if false
     addMoreData((prevState) => (Object.prototype.hasOwnProperty.call(prevState, measurement) ? {
       ...prevState,
       [measurement]: [...prevState[measurement], newValue],
@@ -22,6 +41,17 @@ const MainContent = () => {
     }));
   }
 
+  function handleOpen() {
+    setStatus(1);
+    toggleLoading(!loading);
+  }
+
+  function handleError() {
+    setError('Websocket error, try again');
+    console.log('ERROR WHEN TRYINT OT CONNECT TO ', ip);
+    toggleLoading(false);
+    setIP(null);
+  }
   function toggleExtended(measurment) {
     if (measurment === selectedMeasurment) {
       changeExtended(!showExtended);
@@ -33,18 +63,6 @@ const MainContent = () => {
     }
   }
 
-  function isValidIpv4Addr(ipAddress) {
-    return /^(?=\d+\.\d+\.\d+\.\d+$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}$/.test(ipAddress);
-  }
-
-  function changeIP(inputIP, inputPort) {
-    if (isValidIpv4Addr(inputIP) && parseInt(inputPort, 10) <= 65535) {
-      setIP(`${inputIP}:${inputPort}`);
-    } else {
-      console.log(`${inputIP}:${inputPort} is not a valid IPv4 address`);
-    }
-  }
-
   const receiveMessage = (message) => {
     const measurement = JSON.parse(message.data)[0];
     const dataPoint = { value: measurement.value.toFixed(2), time: measurement.time };
@@ -52,35 +70,51 @@ const MainContent = () => {
   };
 
   useEffect(() => {
-    webSocket.current = new WebSocket(`ws://${ip}/`);
-    webSocket.current.onmessage = (message) => receiveMessage(message);
-    console.log(ip);
-    return () => webSocket.current.close();
+    renderCount.current += 1;
+  });
+
+  useEffect(() => {
+    if (ip !== null) {
+      webSocket.current = new WebSocket(`ws://${ip}/`);
+      webSocket.current.onmessage = (message) => receiveMessage(message);
+      webSocket.current.onopen = () => handleOpen();
+      webSocket.current.onclose = () => setStatus(3);
+      webSocket.current.onerror = () => handleError();
+      return () => webSocket.current.close();
+    } return () => null;
   }, [ip]);
 
   return (
     <div className="Main-content">
-      { webSocket.current.readyState !== WebSocket.OPEN ? <ConnectingPanel updateIP={changeIP} />
+      <h1>{renderCount.current}</h1>
+      { wsStatus === 3 && Object.keys(allData).length === 0
+        ? (
+          <ConnectingPanel
+            connectWebsocket={connectWebsocket}
+            errorMsg={connectioError}
+            isLoading={loading}
+          />
+        )
         : null}
       {showExtended
-        ? (
-          <MeasurmentExpansion
-            name={selectedMeasurment}
-            graphData={allData[selectedMeasurment]}
-          />
-        ) : null}
-      <div className="Measurements-info">
-        {Object.keys(allData).map((key) => (
-          allData[key].length > 0
-            ? (
-              <Measurement
-                name={key}
-                number={allData[key][allData[key].length - 1].value}
-                showExtended={toggleExtended}
-              />
-            ) : null
-        ))}
-      </div>
+        ? <MeasurmentExpansion name={selectedMeasurment} graphData={allData[selectedMeasurment]} />
+        : null}
+      { wsStatus === 1 && Object.keys(allData).length === 0
+        ? <LoadingMeasurements />
+        : (
+          <div className="Measurements-info">
+            { Object.keys(allData).length === 0 && wsStatus === 1
+              ? <LoadingMeasurements />
+              : Object.keys(allData).map((name) => (
+                <Measurement
+                  name={name}
+                  number={allData[name][allData[name].length - 1].value}
+                  showExtended={toggleExtended}
+                  key={name}
+                />
+              ))}
+          </div>
+        )}
     </div>
   );
 };
