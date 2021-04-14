@@ -1,16 +1,16 @@
 # flake8: noqa
 from crunch.skeleton.measurements.amount_of_motion import amount_of_motion
 import numpy as np
-import sympy as sym
 
 tol = 1e-5
 
 
 def test_amount_of_motion():
-    test_array = [[(4, 6)], [(5, 7)], [(1, 3)]]
+    test_array = [[(4, 6), (1, 4)], [(5, 7), (2, 5)]]
+    test_array2 = [[(6, 7), (8, 12)], [(7, 2), (6, 2)]]
     estimated = amount_of_motion(test_array)
-    assert len(estimated) == 2
-    exact0 = 0.0589
-    exact1 = 0.2357
-    assert np.abs(round(estimated[0], 4) - exact0) < tol
-    assert np.abs(round(estimated[1], 4) - exact1) < tol
+    estimated2 = amount_of_motion(test_array2)
+    exact = 0.176777
+    exact2 = 0.849837
+    assert np.abs(round(estimated, 6) - exact) < tol
+    assert np.abs(round(estimated2, 6) - exact2) < tol

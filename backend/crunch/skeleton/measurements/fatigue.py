@@ -14,16 +14,15 @@ def fatigue(n):
     :return fatigeArray: List of fatigue
     :type fatigeArray: list
     """
-    total_Fatigue = 0.0
     total_Joint = 24
     for i in range(len(n) - 1):
-        joint_Fatigue = 0
+        joint_Fatigue = 0.0
         for j in range(len(n[i])):
             f, g = equation(n[i][j], n[i + 1][j])
             joint_Fatigue += np.abs(finite_diff(f, i, i + 1))
             joint_Fatigue += np.abs(finite_diff(g, i, i + 1))
-        total_Fatigue += joint_Fatigue / total_Joint
-    return round(total_Fatigue, 6)
+    frameFatigue = joint_Fatigue / total_Joint
+    return round(frameFatigue, 6)
 
 
 def equation(x, y):
@@ -38,11 +37,11 @@ def equation(x, y):
     :return x: equation for x with respect to t
     :type sympy: equation
     """
-    x1 = float(x[0])
-    y1 = float(x[1])
-    x2 = float(y[0])
-    y2 = float(y[1])
     t = sym.symbols("t")
+    x1 = x[0]
+    y1 = x[1]
+    x2 = y[0]
+    y2 = y[1]
     vector = [x2 - x1, y2 - y1]
     x = x1 + (vector[0]) * t
     y = y1 + (vector[1]) * t

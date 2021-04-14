@@ -44,10 +44,10 @@ def finite_diff(f, tstart, tend):
     t3 = t2 + h
     t4 = tend
     numerator = (
-        round(-0.5 * f.subs(t, t0), 4)
-        + round(f.subs(t, t1), 4)
-        - round(f.subs(t, t3), 4)
-        + round(0.5 * f.subs(t, t4), 4)
+        f.evalf(6, subs={t: t0}) / 2
+        + f.evalf(6, subs={t: t1})
+        - f.evalf(6, subs={t: t3})
+        + f.evalf(6, subs={t: t4}) / 2
     )
     denominator = h ** 3
     diff = numerator / denominator
