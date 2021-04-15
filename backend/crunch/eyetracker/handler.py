@@ -1,7 +1,9 @@
 import csv
 import os
 import time
-from .measurements.information_processing_index import compute_information_processing_index, compute_ipi_thresholds
+
+from .measurements.information_processing_index import (
+    compute_information_processing_index, compute_ipi_thresholds)
 
 
 class DataHandler:

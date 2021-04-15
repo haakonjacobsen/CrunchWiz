@@ -1,7 +1,7 @@
 import csv
-import time
 import datetime
 import os
+import time
 from collections import deque
 
 

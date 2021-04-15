@@ -1,7 +1,7 @@
 # flake8: noqa
-from crunch.skeleton.measurements.fatigue import fatigue
 import numpy as np
 
+from crunch.skeleton.measurements.fatigue import fatigue
 
 tol = 1e-6
 

@@ -1,10 +1,10 @@
+import os
 from multiprocessing import Process
 
 from crunch.empatica.main import start_empatica
 from crunch.eyetracker.main import start_eyetracker
 from crunch.skeleton.main import start_skeleton
 from crunch.websocket.websocket import start_websocket
-import os
 
 
 def start_processes():
