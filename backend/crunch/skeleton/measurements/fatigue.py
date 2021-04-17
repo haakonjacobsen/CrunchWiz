@@ -1,6 +1,7 @@
 import numpy as np
-from crunch.skeleton.measurements.helpers import finite_diff
 import sympy as sym
+
+from crunch.skeleton.measurements.helpers import finite_diff
 
 
 def fatigue(n):

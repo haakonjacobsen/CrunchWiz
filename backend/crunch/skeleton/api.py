@@ -1,11 +1,13 @@
-import pandas as pd
-import sys
-import cv2
-import os
-from sys import platform
 import argparse
-from crunch.skeleton.handler import DataHandler  # noqa
+import os
+import sys
 import time
+from sys import platform
+
+import cv2
+import pandas as pd
+
+from crunch.skeleton.handler import DataHandler  # noqa
 
 
 class MockAPI:
