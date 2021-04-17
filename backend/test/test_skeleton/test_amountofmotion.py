@@ -1,6 +1,7 @@
 # flake8: noqa
-from crunch.skeleton.measurements.amount_of_motion import amount_of_motion
 import numpy as np
+
+from crunch.skeleton.measurements.amount_of_motion import amount_of_motion
 
 tol = 1e-5
 

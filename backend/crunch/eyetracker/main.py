@@ -1,5 +1,7 @@
-import tobii_research as tr
 import time
+
+import tobii_research as tr
+
 from .api import EyetrackerAPI
 from .handler import IpiHandler, DataHandler, CognitiveLoadHandler
 from .measurements.anticipation import compute_anticipation

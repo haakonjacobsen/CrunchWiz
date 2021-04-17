@@ -1,6 +1,7 @@
 # flake8: noqa
-from crunch.skeleton.measurements.most_used_joints import most_used_joints
 import numpy as np
+
+from crunch.skeleton.measurements.most_used_joints import most_used_joints
 
 tol = 1e-5
 

@@ -1,20 +1,17 @@
 import os
 
-from crunch.empatica.api import MockApi, RealAPI # noqa
+from crunch.empatica.api import MockAPI, RealAPI  # noqa
 from crunch.empatica.handler import DataHandler
-from crunch.empatica.measurements import (
-    compute_arousal,
-    compute_emotional_regulation,
-    compute_engagement,
-    compute_entertainment,
-    compute_stress,
-)
+from crunch.empatica.measurements import (compute_arousal,
+                                          compute_emotional_regulation,
+                                          compute_engagement,
+                                          compute_entertainment,
+                                          compute_stress)
 
 
-def start_empatica(api=MockApi):
+def start_empatica(api=RealAPI):
     """
     start the empatica process control flow.
-    TODO change default api argument to realAPI, and use MockApi when integration testing only
     """
     print("Empatica process id: ", os.getpid())
     # Instantiate the api
