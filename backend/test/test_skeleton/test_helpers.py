@@ -17,4 +17,4 @@ def test_norm_by_array():
 
 def test_finite_diff():
     eq = t + 1
-    assert finite_diff(eq, 1, 2) - 0 < tol
+    assert finite_diff(eq, 1, 2) - 128 < tol

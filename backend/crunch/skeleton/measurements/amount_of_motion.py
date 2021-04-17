@@ -12,7 +12,7 @@ def amount_of_motion(n):
     total_joints = 24
     total = 0
     joint_Total = 0
-    for j in range(total_joints):
+    for j in range(len(n[0])):
         joint_Total += norm_by_array(n[0][j], n[1][j])
         total += joint_Total / total_joints
     return round(total, 6)
