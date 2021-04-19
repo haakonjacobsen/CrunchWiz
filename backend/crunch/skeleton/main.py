@@ -1,5 +1,6 @@
 import os
 
+from config import CONFIG_PATH
 from crunch.skeleton.api import MockAPI, RealAPI  # noqa
 from crunch.skeleton.handler import DataHandler
 from crunch.skeleton.measurements import (amount_of_motion, fatigue,
@@ -16,7 +17,7 @@ def start_skeleton():
     # Read config & Instantiate the api
     config = configparser.ConfigParser()
     try:
-        config.read('setup.cfg')
+        config.read(CONFIG_PATH)
         api = MockAPI if config['skeleton'].getboolean('MockAPI') else RealAPI
     except KeyError:
         raise KeyError("Error in config file, could not find value skeleton")

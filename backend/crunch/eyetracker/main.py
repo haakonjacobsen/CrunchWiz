@@ -31,7 +31,7 @@ def start_eyetracker(api=EyetrackerAPI):
         # TODO: fix this when MockAPI is back
         config = configparser.ConfigParser()
         try:
-            config.read('setup.cfg')
+            config.read(CONFIG_PATH)
             api = EyetrackerAPI if config['eyetracker'].getboolean('MockAPI') else EyetrackerAPI
         except KeyError:
             raise KeyError("Error in config file, could not find value eyetracker")

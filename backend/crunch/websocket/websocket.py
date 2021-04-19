@@ -8,6 +8,8 @@ import pandas as pd
 import websockets
 from watchgod import awatch
 
+from config import CONFIG_PATH
+
 
 async def watcher(queue):
     async for changes in awatch('./crunch/output/'):
@@ -39,7 +41,7 @@ def start_websocket():
 
     config = configparser.ConfigParser()
     try:
-        config.read("setup.cfg")
+        config.read(CONFIG_PATH)
         use_localhost = config["websocket"].getboolean("use_localhost")
         port = int(config["websocket"]["port"])
     except FileNotFoundError:

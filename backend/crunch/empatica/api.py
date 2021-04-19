@@ -6,6 +6,7 @@ import pandas as pd
 from crunch.empatica.handler import DataHandler  # noqa
 
 import configparser
+from config import CONFIG_PATH
 
 
 class MockAPI:
@@ -70,10 +71,9 @@ class MockAPI:
 
 # TODO proper error handling on missing connection etc. probably time.wait 5 sec and try again
 class RealAPI:
-    try:
-        config = configparser.ConfigParser()
-        config.read('setup.cfg')
-    except FileNotFoundError:
+    config = configparser.ConfigParser()
+    config.read(CONFIG_PATH)
+    if not config.sections():
         raise FileNotFoundError("Config file not found")
 
     try:

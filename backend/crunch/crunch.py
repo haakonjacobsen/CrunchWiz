@@ -1,6 +1,7 @@
 import os
 from multiprocessing import Process
 
+from config import CONFIG_PATH
 from crunch.empatica.main import start_empatica
 from crunch.eyetracker.main import start_eyetracker
 from crunch.skeleton.main import start_skeleton
@@ -20,7 +21,7 @@ def start_processes():
     p2.start()
 
     config = configparser.ConfigParser()
-    config.read('setup.cfg')
+    config.read(CONFIG_PATH)
     mobile = (config['general']['environment'] == 'mobile')
     if mobile:
         p3 = Process(target=start_skeleton)

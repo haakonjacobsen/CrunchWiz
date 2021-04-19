@@ -132,7 +132,7 @@ class RealAPI:
         config = configparser.ConfigParser()
         params = dict()
         params["model_folder"] = dir_path + "/openpose/models/"
-        config.read('setup.cfg')
+        config.read(CONFIG_PATH)
         try:
             for key in config["openpose"]:
                 params[key] = config["openpose"][key]

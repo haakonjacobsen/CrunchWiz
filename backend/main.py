@@ -1,3 +1,4 @@
+from config import CONFIG_PATH
 from crunch.crunch import start_processes
 import argparse
 import configparser
@@ -13,7 +14,7 @@ def main():
     args = vars(parser.parse_args())
     config = configparser.ConfigParser()
     try:
-        config.read('setup.cfg')
+        config.read(CONFIG_PATH)
     except FileNotFoundError:
         raise FileNotFoundError("Couldnt find config file")
 
@@ -22,7 +23,7 @@ def main():
         config['general']['environment'] = 'static'
     else:
         config['general']['environment'] = 'mobile'
-    with open('setup.cfg', 'w') as cfg:
+    with open(CONFIG_PATH, 'w') as cfg:
         config.write(cfg)
     start_processes()
 

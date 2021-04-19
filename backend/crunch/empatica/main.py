@@ -1,3 +1,4 @@
+from config import CONFIG_PATH
 from crunch.empatica.api import MockAPI, RealAPI  # noqa
 from crunch.empatica.handler import DataHandler
 from crunch.empatica.measurements import (compute_arousal,
@@ -15,7 +16,7 @@ def start_empatica():
     # Read config & Instantiate the api
     config = configparser.ConfigParser()
     try:
-        config.read('setup.cfg')
+        config.read(CONFIG_PATH)
         api = MockAPI if config['empatica'].getboolean('mockapi') else RealAPI
     except KeyError:
         raise KeyError("Error in config file, could not find value empatica")
