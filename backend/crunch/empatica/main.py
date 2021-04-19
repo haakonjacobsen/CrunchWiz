@@ -1,19 +1,12 @@
-import os
-
 from crunch.empatica.api import MockAPI, RealAPI  # noqa
 from crunch.empatica.handler import DataHandler
-from crunch.empatica.measurements import (compute_arousal,
-                                          compute_emotional_regulation,
-                                          compute_engagement,
-                                          compute_entertainment,
-                                          compute_stress)
+from crunch.empatica.measurements import *
 
 
 def start_empatica(api=RealAPI):
     """
     start the empatica process control flow.
     """
-    print("Empatica process id: ", os.getpid())
     # Instantiate the api
     api = api()
 
@@ -23,6 +16,7 @@ def start_empatica(api=RealAPI):
         measurement_path="arousal.csv",
         window_length=121,
         window_step=40,
+        baseline_length=161
     )
     api.add_subscriber(arousal_handler, "EDA")
 
@@ -32,6 +26,7 @@ def start_empatica(api=RealAPI):
         measurement_path="engagement.csv",
         window_length=121,
         window_step=40,
+        baseline_length=161
     )
     api.add_subscriber(engagement_handler, "EDA")
 
@@ -41,6 +36,7 @@ def start_empatica(api=RealAPI):
         measurement_path="emotional_regulation.csv",
         window_length=12,
         window_step=12,
+        baseline_length=36
     )
     api.add_subscriber(emreg_handler, "IBI")
 
@@ -49,7 +45,8 @@ def start_empatica(api=RealAPI):
         measurement_func=compute_entertainment,
         measurement_path="entertainment.csv",
         window_length=20,
-        window_step=20,
+        window_step=10,
+        baseline_length=30
     )
     api.add_subscriber(entertainment_handler, "HR")
 
@@ -59,6 +56,7 @@ def start_empatica(api=RealAPI):
         measurement_path="stress.csv",
         window_length=10,
         window_step=10,
+        baseline_length=30
     )
     api.add_subscriber(stress_handler, "TEMP")
 

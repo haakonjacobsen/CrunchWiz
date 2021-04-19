@@ -1,3 +1,5 @@
+
+# TODO this probably needs fixing
 def compute_stress(temps_list):
     """
     Predicts acute stress based on GSR temperature
