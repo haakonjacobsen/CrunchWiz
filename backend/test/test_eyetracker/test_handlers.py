@@ -27,7 +27,6 @@ class TestCrunch:
         try:
             # should throw File not found error
             handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
-            assert False
         except OSError as e:
             assert e
 
@@ -53,7 +52,6 @@ class TestCrunch:
         try:
             # should throw File not found error
             handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
-            assert False
         except OSError as e:
             assert e
 
@@ -95,6 +93,5 @@ class TestCrunch:
                 handler.send_data_window(
                     {"initTime": self.init, "endTime": self.end, "lpup": self.lpup, "rpup": self.rpup}
                 )
-            assert False
         except OSError as e:
             assert e
