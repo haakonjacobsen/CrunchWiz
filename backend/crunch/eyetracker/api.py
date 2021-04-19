@@ -159,15 +159,12 @@ class EyetrackerAPI:
                                                                             right_eye_fx, right_eye_fy,
                                                                             lpup, rpup, timestamp)
         if fixation_point_or_none is not None:
-            # print("realAPI fixation: ", self.dict_of_lists_of_fixation_data)
-            self.insert_new_fixation_data(fixation_point_or_none['initTime'],
-                                          fixation_point_or_none['endTime'],
-                                          fixation_point_or_none['lpup'],
-                                          fixation_point_or_none['rpup'],
-                                          fixation_point_or_none['fx'],
-                                          fixation_point_or_none['fy'])
-            if self.is_time_to_send_next_window():
-                self.send_data_to_handlers()
+            for handler in self.list_of_handlers:
+
+                handler.add_data_point(
+                    {key: fixation_point_or_none[key] for key in handler.get_list_of_raw_data_subscribed_to()}
+                )
+
 
     def is_time_to_send_next_window(self):
         return (time.time() > self.last_window_time + self.window_size_in_sec and

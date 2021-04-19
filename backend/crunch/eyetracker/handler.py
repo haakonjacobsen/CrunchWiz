@@ -1,11 +1,120 @@
-import csv
-import os
-import time
 from .measurements.information_processing_index import compute_information_processing_index, compute_ipi_thresholds
 from .measurements.cognitive_load import compute_cognitive_load
+import csv
+import datetime
+import os
+import time
+from collections import deque
 
 
 class DataHandler:
+    """
+    Class that subscribes to a specific raw data stream,
+    handles storing the data,
+    preprocessing the data,
+    and calculating measurements from the data
+    """
+
+    def __init__(self, measurement_func=None, measurement_path=None,
+                 list_of_raw_data_subscribed_to=["initTime", "endTime", "fx", "fy", "lpup", "rpup"],
+                 window_length=None, window_step=None,
+                 calculate_baseline=True):
+        """
+        :param measurement_func: the function we call to compute measurements from the raw data
+        :type measurement_func: (list) -> float
+        :param measurement_path: path to the output csv file
+        :type measurement_path: str
+        :param window_length: length of the window, i.e number of data points for the function
+        :type window_length: int
+        :param window_step: how many steps for a new window, i.e for 6 steps,
+        a new measurement is computed every 6 data points
+        :type window_step: int
+        """
+        assert window_length and window_step and measurement_func and measurement_path, \
+            "Need to supply the required parameters"
+
+        self.data_queues = {key: deque(maxlen=window_length) for key in list_of_raw_data_subscribed_to}
+        self.data_counter = 0
+        self.window_step = window_step
+        self.window_length = window_length
+        self.measurement_func = measurement_func
+        self.measurement_path = measurement_path
+        self.list_of_raw_data_subscribed_to = list_of_raw_data_subscribed_to
+
+        self.phase_func = self.baseline_phase if calculate_baseline else self.csv_phase
+        self.calculate_baseline = calculate_baseline
+        self.baseline = 0
+        self.list_of_baseline_values = []
+        self.baseline_phase_time_in_sec = 60
+        self.baseline_end_time = time.time() + self.baseline_phase_time_in_sec
+        self.time = datetime.datetime.now()
+
+    def __str__(self):
+        return self.measurement_func.__name__
+
+    def add_data_point(self, datapoint):
+        """ Receive a new data point, and call appropriate measurement function when we have enough points """
+
+        for key, value in datapoint.items():
+            self.data_queues[key].append(value)
+        if self.data_counter % self.window_step == 0 \
+                and all(len(queue) == self.window_length for _, queue in self.data_queues.items()):
+            self.phase_func()
+
+    def baseline_phase(self):
+        """
+        Appends a value to be used for calculating the baseline, then checks if it is time to
+        transition to next phase
+        """
+        if self.data_counter % self.window_step == 0 and len(self.data_queues["initTime"]) == self.window_length:
+            measurement = self.measurement_func(
+                **{key: list(queue) for key, queue in self.data_queues.items()}
+            )
+            self.list_of_baseline_values.append(measurement)
+            if time.time() > self.baseline_end_time:
+                self.transition_to_csv_phase()
+
+    def transition_to_csv_phase(self):
+        self.baseline = float(sum(self.list_of_baseline_values) / len(self.list_of_baseline_values))
+        assert 0 <= self.baseline < float('inf') and type(self.baseline) == float
+        self.phase_func = self.csv_phase
+
+        # Save memory
+        self.list_of_baseline_values = None
+
+    def csv_phase(self):
+        if self.data_counter % self.window_step == 0 and len(self.data_queues["initTime"]) == self.window_length:
+            measurement = self.measurement_func(
+                **{key: list(queue) for key, queue in self.data_queues.items()}
+            )
+            if self.calculate_baseline:
+                measurement = round(measurement / self.baseline, 6)
+            delta_time = self._get_delta_time()
+            self._write_csv(self.measurement_path, [delta_time, measurement])
+        self.data_counter += 1
+
+    def _get_delta_time(self):
+        """ finds delta time from last computed measurement """
+        new_time = datetime.datetime.now()
+        delta_time = (new_time - self.time).total_seconds()
+        self.time = new_time
+        return delta_time
+
+    def _write_csv(self, path, row):
+        """ write result to csv file """
+        file_exists = os.path.isfile("crunch/output/" + path)
+        with open("crunch/output/" + path, "a", newline="") as csvfile:
+            writer = csv.writer(csvfile, delimiter=",")
+            if not file_exists:
+                header = ['time', 'value']
+                writer.writerow(header)
+            writer.writerow(row)
+
+    def get_list_of_raw_data_subscribed_to(self):
+        return self.list_of_raw_data_subscribed_to
+
+
+class DataHandler2:
     """
     Class that subscribes to fixation data streams and gets 10 second time window slices of preprocessed data.
     The class has 2 phases:

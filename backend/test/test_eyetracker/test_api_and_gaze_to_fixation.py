@@ -66,11 +66,13 @@ class TestGazeDataToFixAndAPI:
 
         # set up, add handlers
         api = EyetrackerAPI()
-        ipi_handler = IpiHandler()
-        api.add_subscriber(ipi_handler)
+        #ipi_handler = IpiHandler()
+        #api.add_subscriber(ipi_handler)
 
         perceived_difficulty_handler = DataHandler(
-            compute_perceived_difficulty, "perceived_difficulty.csv", ["initTime", "endTime", "fx", "fy"]
+            compute_perceived_difficulty, "perceived_difficulty.csv", ["initTime", "endTime", "fx", "fy"],
+            window_length=10, window_step=10
+
         )
         api.add_subscriber(perceived_difficulty_handler)
         gazedata_gen = self.timestamp_generator()
@@ -79,17 +81,24 @@ class TestGazeDataToFixAndAPI:
         right_eye_fx, right_eye_fy = self.gaze_data['right_gaze_point_on_display_area']
         # inserting 20 gazepoints that should be part of a fixation, because no eye movement
         # 5 fixation data points
-        for i in range(5):
-            assert len(api.dict_of_lists_of_fixation_data["initTime"]) == i
+        for i in range(20):
             insert_one_fixation_point()
-            assert len(api.dict_of_lists_of_fixation_data["initTime"]) == i + 1
-        api.last_window_time -= 10
         # api should now send first time window
         insert_one_fixation_point()
         assert len(api.dict_of_lists_of_fixation_data["initTime"]) == 0
         for handler in api.list_of_handlers:
             if type(handler) == DataHandler:
-                assert len(handler.list_of_baseline_values) == 1
+                assert len(handler.list_of_baseline_values) == 12
+                handler.baseline_end_time -= 200
+                insert_one_fixation_point()
+                assert handler.phase_func == handler.csv_phase
+                try:
+                    # should throw File not found error
+                    insert_one_fixation_point()
+                    assert False
+                except OSError as e:
+                    assert e
+
             elif type(handler) == IpiHandler:
                 assert len(handler.list_of_baseline_values) == 0
                 assert len(handler.dict_of_lists_of_threshold_values["initTime"]) == 6
