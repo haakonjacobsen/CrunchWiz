@@ -11,10 +11,10 @@ const MainContent = () => {
   const [connectioError, setError] = useState('');
   const [ip, setIP] = useState(null);
   const [wsStatus, setStatus] = useState(3);
+  const [loading, toggleLoading] = useState(false);
   const [showExtended, changeExtended] = useState(false);
   const [selectedMeasurment, setMeasurment] = useState('');
   const [allData, addMoreData] = useState({});
-  const [loading, toggleLoading] = useState(false);
 
   function isValidIpv4Addr(ipAddress) {
     return /^(?=\d+\.\d+\.\d+\.\d+$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}$/.test(ipAddress);
@@ -22,6 +22,9 @@ const MainContent = () => {
 
   function connectWebsocket(ipAddr, port) {
     if (isValidIpv4Addr(ipAddr) && parseInt(port, 10) >= 0 <= 65535) {
+      if (`${ipAddr}:${port}` === ip) {
+        setIP(null);
+      }
       toggleLoading(!loading);
       setIP(`${ipAddr}:${port}`);
     } else {
@@ -51,6 +54,7 @@ const MainContent = () => {
     console.log('ERROR WHEN TRYINT OT CONNECT TO ', ip);
     toggleLoading(false);
     setIP(null);
+    setStatus(3);
   }
   function toggleExtended(measurment) {
     if (measurment === selectedMeasurment) {
@@ -97,7 +101,12 @@ const MainContent = () => {
         )
         : null}
       {showExtended
-        ? <MeasurmentExpansion name={selectedMeasurment} graphData={allData[selectedMeasurment]} />
+        ? (
+          <MeasurmentExpansion
+            name={selectedMeasurment}
+            graphData={allData[selectedMeasurment]}
+          />
+        )
         : null}
       { wsStatus === 1 && Object.keys(allData).length === 0
         ? <LoadingMeasurements />

@@ -81,13 +81,12 @@
     font-size: 1.2em;
     text-align: center;
     font-weight: 400;
-    color: #9d9d9d;
-    
-}
-.SVG-conteiner{
-    height: 10%;
+    color: #9d9d9d;  
 }
 
+.SVG-loader{
+    height: 40px;
+}
 .spinner__circle {
     animation: 2s linear spinning-circle infinite;
 }
