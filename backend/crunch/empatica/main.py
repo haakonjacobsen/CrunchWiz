@@ -16,7 +16,7 @@ def start_empatica():
     config = configparser.ConfigParser()
     try:
         config.read('setup.cfg')
-        api = MockAPI if config['empatica'].getboolean('MockAPI') else RealAPI
+        api = MockAPI if config['empatica'].getboolean('mockapi') else RealAPI
     except KeyError:
         raise KeyError("Error in config file, could not find value empatica")
     except FileNotFoundError:

@@ -24,7 +24,7 @@ class MockAPI:
 
     # Get test data from scuffed CSV
     df = pd.pandas.read_csv(
-        os.path.join(os.path.dirname(__file__), "mock_data\\test_data.csv"), header=None
+        os.path.join(os.path.dirname(__file__), "mock_data/test_data.csv"), header=None
     )
     for i in range(len(df)):
         temp_array = []

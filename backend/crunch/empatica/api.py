@@ -13,10 +13,10 @@ class MockAPI:
     Mock api that reads from csv files instead of getting data from devices
     """
     dirname = os.path.dirname(__file__)
-    eda_data = pd.read_csv(os.path.join(dirname, "mock_data\\EDA.csv"))["EDA"]
-    ibi_data = pd.read_csv(os.path.join(dirname, "mock_data\\IBI.csv"))["IBI"]
-    temp_data = pd.read_csv(os.path.join(dirname, "mock_data\\TEMP.csv"))["TEMP"]
-    hr_data = pd.read_csv(os.path.join(dirname, "mock_data\\HR.csv"))["HR"]
+    eda_data = pd.read_csv(os.path.join(dirname, "mock_data/EDA.csv"))["EDA"]
+    ibi_data = pd.read_csv(os.path.join(dirname, "mock_data/IBI.csv"))["IBI"]
+    temp_data = pd.read_csv(os.path.join(dirname, "mock_data/TEMP.csv"))["TEMP"]
+    hr_data = pd.read_csv(os.path.join(dirname, "mock_data/HR.csv"))["HR"]
 
     subscribers = {"EDA": [], "IBI": [], "TEMP": [], "HR": []}
 
@@ -77,12 +77,13 @@ class RealAPI:
         raise FileNotFoundError("Config file not found")
 
     try:
+        print(config.sections())
         serverAddress = config['empatica']['address']
-        serverPort = config['empatica']['port']
-        bufferSize = config['empatica']['bufferSize']
-        deviceID = config['empatica']['deviceID']
-    except ValueError:
-        raise ValueError("ERROR reading from config file setup.cfg[empatica]")
+        serverPort = int(config['empatica']['port'])
+        bufferSize = int(config['empatica']['buffersize'])
+        deviceID = config['empatica']['deviceid']
+    except KeyError:
+        raise KeyError("ERROR reading from config file setup.cfg[empatica]")
 
     socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     connected = False

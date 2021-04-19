@@ -17,12 +17,11 @@ async def watcher(queue):
             df = pd.read_csv(file_path).iloc[-1]
             # format how we send it to frontend
             data = {"name": file_path[16:-4], "value": df.value, "time": df.time}
-            # print("reading from csv:", data)
+            print("reading from csv:", data)
             # put it queue so web socket can read
             await queue.put([data])
 
 
-# TODO: Fix proper removal of closed clients
 async def handler(websocket, path, queue):
     try:
         print("Established connection with client")
