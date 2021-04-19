@@ -65,6 +65,8 @@ class DataHandler:
 
     def transition_to_csv_phase(self):
         self.baseline = float(sum(self.list_of_baseline_values) / len(self.list_of_baseline_values))
+        print("BASELINE", type(self.baseline), self.baseline)
+        print(self)
         assert 0 <= self.baseline < float('inf') and type(self.baseline) == float
         self.phase_func = self.csv_phase
 

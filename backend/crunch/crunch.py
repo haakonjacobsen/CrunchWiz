@@ -8,7 +8,6 @@ from crunch.websocket.websocket import start_websocket
 
 
 def start_processes():
-    print("Main process id: ", os.getpid())
     if not os.path.exists("crunch/output"):
         os.makedirs("crunch/output")
     p1 = Process(target=start_empatica)

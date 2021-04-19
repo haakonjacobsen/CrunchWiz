@@ -5,6 +5,8 @@ import pandas as pd
 
 from crunch.empatica.handler import DataHandler  # noqa
 
+import configparser
+
 
 class MockAPI:
     """
@@ -68,10 +70,20 @@ class MockAPI:
 
 # TODO proper error handling on missing connection etc. probably time.wait 5 sec and try again
 class RealAPI:
-    serverAddress = '127.0.0.1'
-    serverPort = 28000
-    bufferSize = 4096
-    deviceID = "C13A64"  # TODO probably set this in config file or something??
+    try:
+        config = configparser.ConfigParser()
+        config.read('setup.cfg')
+    except FileNotFoundError:
+        raise FileNotFoundError("Config file not found")
+
+    try:
+        serverAddress = config['empatica']['address']
+        serverPort = config['empatica']['port']
+        bufferSize = config['empatica']['bufferSize']
+        deviceID = config['empatica']['deviceID']
+    except ValueError:
+        raise ValueError("ERROR reading from config file setup.cfg[empatica]")
+
     socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     connected = False
 
