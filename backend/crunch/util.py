@@ -16,6 +16,9 @@ class Time:
 
 def write_csv(path, row):
     """ write result to csv file """
+    if not os.path.exists("crunch/output"):
+        os.makedirs("crunch/output")
+
     file_exists = os.path.isfile("crunch/output/" + path)
     with open("crunch/output/" + path, "a", newline="") as csvfile:
         writer = csv.writer(csvfile, delimiter=",")

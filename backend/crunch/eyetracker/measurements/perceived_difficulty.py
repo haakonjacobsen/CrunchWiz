@@ -1,4 +1,18 @@
 def compute_perceived_difficulty(initTime, endTime, fx, fy):
+    """
+    Computes the perceived difficulty
+
+    :param initTime: the start times of the saccade/fixation point
+    :type initTime: list of int
+    :param endTime: the end times of the saccade/fixation point
+    :type endTime: list of int
+    :param fx: the x positions in each saccade/fixation point
+    :type fx: list of int
+    :param fy: the y positions in each saccade/fixation point
+    :type fy: list of int
+    :return: a measure of the perceived difficulty
+    :rtype: float
+    """
     count = 0
     sum = 0
     for i in range(1, len(initTime)):
@@ -15,9 +29,33 @@ def compute_perceived_difficulty(initTime, endTime, fx, fy):
     return sum / count
 
 
-def saccade_duration(start_time2, end_time1):
-    return start_time2 - end_time1
+def saccade_duration(startTime, endTime):
+    """
+    Finds the duration of a saccade
+
+    :param startTime: start of the saccade/fixation
+    :type startTime: int
+    :param endTime: end of the saccade/fixation
+    :type endTime: int
+    :return: duration of the saccade
+    :rtype: int
+    """
+    return startTime - endTime
 
 
 def saccade_length(x1, y1, x2, y2):
+    """
+    finds the length of the saccade
+
+    :param x1: x coordinate of the previous fixation point
+    :type x1: int
+    :param y1: y coordinate of the previous fixation point
+    :type y1: int
+    :param x2: x coordinate of the current fixation point
+    :type x2: int
+    :param y2: y coordinate of the current fixation point
+    :type y2: int
+    :return: the saccade length measured in euclidean distance
+    :rtype: float
+    """
     return ((x2-x1)**2 + (y2-y1)**2)**0.5

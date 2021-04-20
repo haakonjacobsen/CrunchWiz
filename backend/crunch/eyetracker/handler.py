@@ -1,6 +1,7 @@
 import csv
 import os
 import time
+import crunch.util as util
 from .measurements.information_processing_index import compute_information_processing_index, compute_ipi_thresholds
 from .measurements.cognitive_load import compute_cognitive_load
 
@@ -37,7 +38,7 @@ class DataHandler:
         self.phase_func = self.baseline_phase
         self.baseline = None
         self.list_of_raw_data_subscribed_to = list_of_raw_data_subscribed_to
-        self.start_time = time.time()
+        self.time = util.Time()
 
         # delete probably
         self.time_window_in_sec = 10
@@ -86,25 +87,7 @@ class DataHandler:
         :type measurement_result: float
         """
         result_ratio = measurement_result / self.baseline
-        self._write_csv(self.measurement_path, [self._get_delta_time(), result_ratio])
-
-    def _write_csv(self, path, row):
-        """ write result to csv file """
-
-        file_exists = os.path.isfile("crunch/output/" + path)
-        with open("crunch/output/" + path, "a", newline="") as csvfile:
-            writer = csv.writer(csvfile, delimiter=",")
-            if not file_exists:
-                header = ['time', 'value']
-                writer.writerow(header)
-            writer.writerow(row)
-
-    def _get_delta_time(self):
-        """ finds delta time from last computed measurement """
-        new_time = time.time()
-        delta_time = new_time - self.start_time
-        self.start_time = new_time
-        return delta_time
+        util.write_csv(self.measurement_path, [self.time.delta_time(), result_ratio])
 
     def get_data_subscribtions(self):
         return self.list_of_raw_data_subscribed_to
