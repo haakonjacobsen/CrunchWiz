@@ -10,7 +10,7 @@ class DataHandler:
     preprocessing the data,
     and calculating measurements from the data
     """
-    def __init__(self, measurement_func=None, measurement_path=None, window_length=None, window_step=None, baseline_length=None):
+    def __init__(self, measurement_func=None, measurement_path=None, window_length=None, window_step=None, baseline_length=None, header_features=[]):
         """
         :param measurement_func: the function we call to compute measurements from the raw data
         :type measurement_func: (list) -> any
@@ -35,6 +35,7 @@ class DataHandler:
         self.measurement_path = measurement_path
         self.baseline_length = baseline_length
         self.baseline = None
+        self.header_features = header_features
         self.time = util.Time()
         self._handle_datapoint = self._calculate_baseline
 
@@ -65,4 +66,4 @@ class DataHandler:
             if len(measurement) == 1:
                 util.write_csv(self.measurement_path, [self.time.delta_time(), normalized_measurement])
             else:
-                util.write_csv(self.measurement_path, [self.time.delta_time(), normalized_measurement, *measurement])
+                util.write_csv(self.measurement_path, [self.time.delta_time(), normalized_measurement, *measurement], header_features=self.header_features)

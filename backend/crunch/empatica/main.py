@@ -3,7 +3,7 @@ from crunch.empatica.handler import DataHandler
 from crunch.empatica.measurements import *
 
 
-def start_empatica(api=RealAPI):
+def start_empatica(api=MockAPI):
     """
     start the empatica process control flow.
     """
@@ -26,7 +26,8 @@ def start_empatica(api=RealAPI):
         measurement_path="engagement.csv",
         window_length=121,
         window_step=40,
-        baseline_length=161
+        baseline_length=161,
+        header_features=["amplitude", "nr of peaks", "area under curve of tonic signal"]
     )
     api.add_subscriber(engagement_handler, "EDA")
 
@@ -36,7 +37,8 @@ def start_empatica(api=RealAPI):
         measurement_path="emotional_regulation.csv",
         window_length=12,
         window_step=12,
-        baseline_length=36
+        baseline_length=36,
+        header_features=["rmssd", "outliers", "mean"]
     )
     api.add_subscriber(emreg_handler, "IBI")
 
@@ -46,7 +48,8 @@ def start_empatica(api=RealAPI):
         measurement_path="entertainment.csv",
         window_length=20,
         window_step=10,
-        baseline_length=30
+        baseline_length=30,
+        header_features=["mean", "var", "max", "min", "diff", "correlation", "auto-correlation", "approximate entropy", "fluctuations"]
     )
     api.add_subscriber(entertainment_handler, "HR")
 

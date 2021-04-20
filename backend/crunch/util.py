@@ -14,7 +14,7 @@ class Time:
         return delta
 
 
-def write_csv(path, row):
+def write_csv(path, row, header_features=[]):
     """ write result to csv file """
     if not os.path.exists("crunch/output"):
         os.makedirs("crunch/output")
@@ -24,7 +24,7 @@ def write_csv(path, row):
         writer = csv.writer(csvfile, delimiter=",")
         if not file_exists:
             header = ['time', 'value']
-            writer.writerow(header)
+            writer.writerow(header + header_features)
         writer.writerow(row)
 
 
