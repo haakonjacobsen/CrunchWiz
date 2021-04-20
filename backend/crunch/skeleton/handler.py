@@ -1,8 +1,6 @@
-import csv
-import datetime
-import os
 import time
 from collections import deque
+import crunch.util as util
 
 
 class DataHandler:
@@ -42,7 +40,7 @@ class DataHandler:
         self.list_of_baseline_values = []
         self.baseline_phase_time_in_sec = 10
         self.baseline_end_time = time.time() + self.baseline_phase_time_in_sec
-        self.time = datetime.datetime.now()
+        self.time = util.Time()
 
     def __str__(self):
         return self.measurement_func.__name__
@@ -68,31 +66,10 @@ class DataHandler:
         assert 0 <= self.baseline < float('inf') and type(self.baseline) == float
         self.phase_func = self.csv_phase
 
-        # Save memory
-        self.list_of_baseline_values = None
-
     def csv_phase(self):
         if self.data_counter % self.window_step == 0 and len(self.data_queue) == self.window_length:
             measurement = self.measurement_func(list(self.data_queue))
             if self.calculate_baseline:
                 measurement = round(measurement/self.baseline, 6)
-            delta_time = self._get_delta_time()
-            self._write_csv(self.measurement_path, [delta_time, measurement])
+            util.write_csv(self.measurement_path, [self.time.delta_time(), measurement])
         self.data_counter += 1
-
-    def _get_delta_time(self):
-        """ finds delta time from last computed measurement """
-        new_time = datetime.datetime.now()
-        delta_time = (new_time - self.time).total_seconds()
-        self.time = new_time
-        return delta_time
-
-    def _write_csv(self, path, row):
-        """ write result to csv file """
-        file_exists = os.path.isfile("crunch/output/" + path)
-        with open("crunch/output/" + path, "a", newline="") as csvfile:
-            writer = csv.writer(csvfile, delimiter=",")
-            if not file_exists:
-                header = ['time', 'value']
-                writer.writerow(header)
-            writer.writerow(row)

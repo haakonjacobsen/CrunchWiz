@@ -2,9 +2,7 @@ import os
 
 from crunch.skeleton.api import MockAPI, RealAPI  # noqa
 from crunch.skeleton.handler import DataHandler
-from crunch.skeleton.measurements import (amount_of_motion, fatigue,
-                                          most_used_joints,
-                                          stability_of_motion)
+from crunch.skeleton.measurements import *
 
 
 def start_skeleton(api=MockAPI):
