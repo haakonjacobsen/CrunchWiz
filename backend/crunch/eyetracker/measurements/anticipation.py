@@ -39,7 +39,7 @@ def variance(initTime, endTime, fx, fy, avg_speed):
         count += 1
     try:
         return sum_square_difference / (count - 1)
-    except:
+    except ZeroDivisionError:
         return 0
 
 
@@ -77,5 +77,5 @@ def compute_anticipation(initTime, endTime, fx, fy):
         count += 1
     try:
         return sum_cube_difference / ((count - 1) * (var ** 0.5) ** 3)
-    except:
+    except ZeroDivisionError:
         return 0
