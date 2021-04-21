@@ -3,7 +3,8 @@ import pywt
 import numpy as np
 
 
-"""modmax (Duchowski, Krejtz, Krejtz, Biele, Niedzielska, Kiefer, Raubal, Giannopoulos) https://dl.acm.org/doi/pdf/10.1145/
+"""modmax (Duchowski, Krejtz, Krejtz, Biele, Niedzielska, Kiefer, Raubal, Giannopoulos) https://dl.acm.
+org/doi/pdf/10.1145/
 3173574.3173856?casa_token=G1ECXzSt_
 -oAAAAA:fr5dMZxCJtCn4s_
 7o0kaMabcJ-N1K7BeFOjtb34FQfGrj_8T_ZHKB9BePDdRPz-ye8HJ8u5yjc_S
