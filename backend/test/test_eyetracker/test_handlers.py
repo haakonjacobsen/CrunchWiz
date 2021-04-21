@@ -1,5 +1,6 @@
+from crunch.eyetracker.handler import (CognitiveLoadHandler, DataHandler,
+                                       IpiHandler)
 from crunch.eyetracker.measurements.anticipation import compute_anticipation
-from crunch.eyetracker.handler import DataHandler, IpiHandler, CognitiveLoadHandler
 
 
 class TestCrunch:

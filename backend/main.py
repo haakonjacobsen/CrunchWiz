@@ -1,36 +1,24 @@
-from config import CONFIG_PATH
-from crunch.crunch import start_processes
 import argparse
-import configparser
 
+from crunch import start_processes
 
-def main():
-    # read system arguments and write config accordingly
+if __name__ == '__main__':
+    # read system arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('--static', action='store_true',
                         help='Set the environment to be static, default is mobile')
     parser.add_argument('--mobile', action='store_true',
                         help='Set the environment to be mobile, default is mobile (this argument is redundant)')
     args = vars(parser.parse_args())
-    config = configparser.ConfigParser()
-    try:
-        config.read(CONFIG_PATH)
-    except FileNotFoundError:
-        raise FileNotFoundError("Couldnt find config file")
 
-    # write config
+    # Determine whether it is a mobile or static setup
     if args['static']:
-        config['general']['environment'] = 'static'
+        mobile = False
     else:
-        config['general']['environment'] = 'mobile'
-    with open(CONFIG_PATH, 'w') as cfg:
-        config.write(cfg)
-    start_processes()
+        mobile = True
 
-
-if __name__ == '__main__':
-    main()
-
+    # start program
+    start_processes(mobile)
 
 """
 Use this to move csv to different folder on exit

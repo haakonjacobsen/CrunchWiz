@@ -2,13 +2,13 @@ import asyncio
 import functools
 import json
 import socket
-import configparser
 
 import pandas as pd
 import websockets
 from watchgod import awatch
 
-from config import CONFIG_PATH
+import crunch.util as util
+from datetime import datetime
 
 
 async def watcher(queue):
@@ -18,7 +18,8 @@ async def watcher(queue):
             # get last row of changed file
             df = pd.read_csv(file_path).iloc[-1]
             # format how we send it to frontend
-            data = {"name": file_path[16:-4], "value": df.value, "time": df.time}
+            time = datetime.now().strftime("%H:%M:%S")
+            data = {"name": file_path[16:-4], "value": df.value, "time": time}
             print("reading from csv:", data)
             # put it queue so web socket can read
             await queue.put([data])
@@ -39,18 +40,9 @@ def start_websocket():
     loop = asyncio.get_event_loop()
     queue = asyncio.Queue(loop=loop)
 
-    config = configparser.ConfigParser()
-    try:
-        config.read(CONFIG_PATH)
-        use_localhost = config["websocket"].getboolean("use_localhost")
-        port = int(config["websocket"]["port"])
-    except FileNotFoundError:
-        raise FileNotFoundError("Could not find config file")
-    except KeyError:
-        raise KeyError("Error reading config file at [websocket]")
-
     local_ip = socket.gethostbyname(socket.gethostname())
-    ip = "127.0.0.1" if use_localhost else local_ip
+    ip = "127.0.0.1" if util.config("websocket", "use_localhost") else local_ip
+    port = int(util.config("websocket", "port"))
 
     print("##################################################################")
     print("###### Paste the websocket ip on the frontend to connect")
