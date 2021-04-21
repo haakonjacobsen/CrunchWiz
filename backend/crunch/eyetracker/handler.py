@@ -22,7 +22,8 @@ class DataHandler:
     """
 
     def __init__(self, measurement_func, measurement_path,
-                 list_of_raw_data_subscribed_to=["initTime", "endTime", "fx", "fy", "lpup", "rpup"]):
+                 list_of_raw_data_subscribed_to=["initTime", "endTime", "fx", "fy", "lpup", "rpup"],
+                 calculate_baseline=True):
         """
         :param measurement_func: the function we call to compute measurements from the raw data
         :type measurement_func: (list) -> float
@@ -36,7 +37,8 @@ class DataHandler:
 
         self.measurement_func = measurement_func
         self.measurement_path = measurement_path
-        self.phase_func = self.baseline_phase
+        self.calculate_baseline = calculate_baseline
+        self.phase_func = self.baseline_phase if calculate_baseline else self.csv_phase
         self.baseline = 0
         self.list_of_raw_data_subscribed_to = list_of_raw_data_subscribed_to
         self.time = util.Time()
@@ -87,7 +89,10 @@ class DataHandler:
         :param measurement_result: the result of calling the measurement function
         :type measurement_result: float
         """
-        result_ratio = measurement_result / self.baseline
+        if self:
+            result_ratio = measurement_result / self.baseline
+        else:
+            result_ratio = measurement_result
         util.write_csv(self.measurement_path, [self.time.delta_time(), result_ratio])
 
     def get_data_subscribtions(self):
