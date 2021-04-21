@@ -1,4 +1,20 @@
 def compute_perceived_difficulty(initTime, endTime, fx, fy):
+    """
+    Calculates perceived difficulty measurement.
+
+    :param initTime: list of timestamps for start time of each data point
+    :type initTime: list
+
+    :param endTime: list of timestamps for end time of each data point
+    :type endTime: list
+
+    :param fx: list of x-values
+    :type fx: list
+
+    :param fy: list of y-values
+    :type fy: list'
+    :return: Measure of perceived difficulty
+    """
     count = 0
     sum = 0
     for i in range(1, len(initTime)):

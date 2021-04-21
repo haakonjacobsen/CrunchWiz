@@ -37,10 +37,29 @@ def variance(initTime, endTime, fx, fy, avg_speed):
         sacc_speed = sacc_len / sacc_dur
         sum_square_difference += (sacc_speed - avg_speed) ** 2
         count += 1
-    return sum_square_difference / (count - 1)
+    try:
+        return sum_square_difference / (count - 1)
+    except:
+        return 0
 
 
 def compute_anticipation(initTime, endTime, fx, fy):
+    """
+    Calculates anticitpation measurement, calls helper functions to find average speed and variance.
+
+    :param initTime: list of timestamps for start time of each data point
+    :type initTime: list
+
+    :param endTime: list of timestamps for end time of each data point
+    :type endTime: list
+
+    :param fx: list of x-values
+    :type fx: list
+
+    :param fy: list of y-values
+    :type fy: list'
+    :return: Measure of anticipation
+    """
     avg_speed = average_speed(initTime, endTime, fx, fy)
     var = variance(initTime, endTime, fx, fy, avg_speed)
     count = 0
@@ -56,4 +75,7 @@ def compute_anticipation(initTime, endTime, fx, fy):
         sacc_speed = sacc_len / sacc_dur
         sum_cube_difference += (sacc_speed - avg_speed) ** 3
         count += 1
-    return sum_cube_difference / ((count - 1) * (var ** 0.5) ** 3)
+    try:
+        return sum_cube_difference / ((count - 1) * (var ** 0.5) ** 3)
+    except:
+        return 0
