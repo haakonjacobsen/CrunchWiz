@@ -21,6 +21,8 @@
   height: 100%;
   display: flex;
   flex-wrap: wrap;
+  height: fit-content;
+
 }
 .Measurment-number-wrapper{
   display: flex;
@@ -34,14 +36,19 @@
   font-size: 2.5em;
   transition: 0.3s;
 }
+.Measurment-number-wrapper svg{
+  position: absolute;
+  transition: 0.3s;
+}
+.Measurment:hover svg{
+  position: absolute;
+  opacity: 0;
+  transform: scale(0.2);
+}
 .MeasurementIndicator{
   position: absolute;
   transition: 0.3s;
   opacity: 100;
-}
-.Measurment:hover .MeasurementIndicator{
-  opacity: 0;
-  transform: scale(0.2);
 }
 .Measurment:hover .Measurment-number{
   opacity: 100;
