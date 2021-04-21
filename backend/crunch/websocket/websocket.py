@@ -8,6 +8,7 @@ import websockets
 from watchgod import awatch
 
 import crunch.util as util
+from datetime import datetime
 
 
 async def watcher(queue):
@@ -17,7 +18,8 @@ async def watcher(queue):
             # get last row of changed file
             df = pd.read_csv(file_path).iloc[-1]
             # format how we send it to frontend
-            data = {"name": file_path[16:-4], "value": df.value, "time": df.time}
+            time = datetime.now().strftime("%H:%M:%S")
+            data = {"name": file_path[16:-4], "value": df.value, "time": time}
             print("reading from csv:", data)
             # put it queue so web socket can read
             await queue.put([data])
