@@ -15,14 +15,16 @@ def fatigue(n):
     :return fatigeArray: List of fatigue
     :type fatigeArray: list
     """
-    total_Joint = 24
+    total_joints = 24
+    joint_fatigue = 0.0
     for i in range(len(n) - 1):
-        joint_Fatigue = 0.0
+        joint_fatigue = 0.0
         for j in range(len(n[i])):
+            if n[i][j] == (0.0, 0.0) or n[i + 1][j] == (0.0, 0.0):
+                continue
             f = equation(n[i][j], n[i + 1][j])
-            joint_Fatigue += np.abs(finite_diff(f, i, i + 1))
-        joint_Fatigue
-    frameFatigue = joint_Fatigue / total_Joint
+            joint_fatigue += np.abs(finite_diff(f, i, i + 1))
+    frameFatigue = joint_fatigue / total_joints
     return round(frameFatigue, 6)
 
 
@@ -39,10 +41,8 @@ def equation(x, y):
     :type sympy: equation
     """
     t = sym.symbols("t")
-    x1 = x[0]
-    y1 = x[1]
-    x2 = y[0]
-    y2 = y[1]
+    x1, y1 = x[0], x[1]
+    x2, y2 = y[0], y[1]
     m = (y2 - y1) / (x2 - x1)
     f = m * (t - x1) + y1
     return f

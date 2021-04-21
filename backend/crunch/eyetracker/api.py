@@ -1,8 +1,5 @@
-import os
 import time
 from math import isnan
-
-import pandas as pd
 
 from crunch.eyetracker.handler import DataHandler, IpiHandler  # noqa
 
