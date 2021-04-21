@@ -1,3 +1,4 @@
+import configparser
 import csv
 import os
 import time
@@ -35,3 +36,24 @@ def to_list(x):
         return list(x)
     except TypeError:
         return [x]
+
+
+def config(section, key=None):
+    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../setup.cfg')
+
+    conf = configparser.ConfigParser()
+    try:
+        conf.read(config_path)
+    except FileNotFoundError:
+        raise FileNotFoundError("Couldn't find configuration file")
+
+    if section not in conf:
+        raise Exception(f"The section named {section} does not exist in the config file.")
+
+    if key is None:
+        return conf[section]
+
+    if key not in conf[section]:
+        raise Exception(f"The value {key} does not exist in section {section} in the config file.")
+
+    return conf[section][key]

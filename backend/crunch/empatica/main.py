@@ -1,14 +1,20 @@
+
+import crunch.util as util
 from crunch.empatica.api import MockAPI, RealAPI  # noqa
 from crunch.empatica.handler import DataHandler
-from crunch.empatica.measurements import *  # noqa
+from crunch.empatica.measurements import (compute_arousal,
+                                          compute_emotional_regulation,
+                                          compute_engagement,
+                                          compute_entertainment,
+                                          compute_stress)
 
 
-def start_empatica(api=MockAPI):
+def start_empatica():
     """
     start the empatica process control flow.
     """
-    # Instantiate the api
-    api = api()
+    # Read config & Instantiate the api
+    api = MockAPI() if util.config('skeleton', 'MockAPI') == "True" else RealAPI()
 
     # Instantiate the arousal data handler and subscribe to the api
     arousal_handler = DataHandler(

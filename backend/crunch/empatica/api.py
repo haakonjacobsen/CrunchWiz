@@ -4,6 +4,7 @@ import time
 
 import pandas as pd
 
+import crunch.util as util
 from crunch.empatica.handler import DataHandler  # noqa
 
 
@@ -40,7 +41,7 @@ class MockAPI:
             self._mock_hr_datapoint(i)
 
             # simulate delay of new data points by sleeping
-            # time.sleep(0.1)
+            time.sleep(0.1)
 
     def _mock_ibi_datapoint(self, index):
         """ Simulate receiving and sending a ibi datapoint """
@@ -72,11 +73,11 @@ class MockAPI:
 
 
 class RealAPI:
-    """ Api which receives data points from the empatica wristband, and sends it to subscribers """
-    serverAddress = '127.0.0.1'
-    serverPort = 28000
-    bufferSize = 4096
-    deviceID = "C13A64"
+    serverAddress = util.config('empatica', 'address')
+    serverPort = int(util.config('empatica', 'port'))
+    bufferSize = int(util.config('empatica', 'buffersize'))
+    deviceID = util.config('empatica', 'deviceid')
+
     socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     connected = False
 

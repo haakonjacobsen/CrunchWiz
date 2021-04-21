@@ -2,6 +2,8 @@ import time
 
 import tobii_research as tr
 
+import crunch.util as util
+
 from .api import EyetrackerAPI
 from .handler import CognitiveLoadHandler, DataHandler, IpiHandler
 from .measurements.anticipation import compute_anticipation
@@ -22,11 +24,14 @@ def start_eyetracker(api=EyetrackerAPI):
     #  Try to connect to eyetracker
     if len(tr.find_all_eyetrackers()) == 0:
         print("No eyetracker was found")
-    if len(tr.find_all_eyetrackers()) > 0:
+    else:
         my_eyetracker = tr.find_all_eyetrackers()[0]
         print("Now connected to eyetracker model: " + my_eyetracker.model + " with address: " + my_eyetracker.address)
 
-        api = api()
+        # TODO: fix this when MockAPI is back
+        # Read config & Instantiate the api
+        api = EyetrackerAPI() if util.config('skeleton', 'MockAPI') == "True" else EyetrackerAPI()
+
         # add handlers
         ipi_handler = IpiHandler()
         api.add_subscriber(ipi_handler)

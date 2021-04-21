@@ -11,14 +11,14 @@ def fatigue(pos):
     :return: total fatigue
     :rtype: float
     """
-    total_Joint = 24
-    joint_Fatigue = 0.0
+    total_joint = 24
+    joint_fatigue = 0.0
     for i in range(len(pos) - 1):
         for j in range(len(pos[i])):
             f = equation(pos[i][j], pos[i + 1][j])
-            joint_Fatigue += np.abs(finite_diff(f, i, i + 1))
-    frameFatigue = joint_Fatigue / total_Joint
-    return round(frameFatigue, 6)
+            joint_fatigue += np.abs(finite_diff(f, i, i + 1))
+    frame_fatigue = joint_fatigue / total_joint
+    return round(frame_fatigue, 6)
 
 
 def equation(pos1, pos2):
