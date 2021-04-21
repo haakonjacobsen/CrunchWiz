@@ -16,7 +16,7 @@ const MainContent = () => {
   const [selectedMeasurment, setMeasurment] = useState('');
   const [graphData, addMoreData] = useState({});
   const [dataStats, addStats] = useState({});
-
+  const specialMeasurements = ['most_used_joints', 'emotion'];
   function isValidIpv4Addr(ipAddress) {
     return /^(?=\d+\.\d+\.\d+\.\d+$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}$/.test(ipAddress);
   }
@@ -46,7 +46,7 @@ const MainContent = () => {
         } else if (copy.min > value) {
           copy.min = value;
         }
-        copy.avg += (copy.avg * copy.count + value) / (copy.count + 1);
+        copy.avg = value;
         copy.count += 1;
         return {
           ...prevState,
@@ -100,10 +100,23 @@ const MainContent = () => {
   }
 
   const receiveMessage = (message) => {
-    const measurement = JSON.parse(message.data)[0];
-    const dataPoint = { value: parseFloat(measurement.value.toFixed(2)), time: measurement.time };
-    handleAdd(measurement.name, dataPoint);
-    handleStats(measurement.name, dataPoint.value);
+    try {
+      const measurement = JSON.parse(message.data)[0];
+      if (specialMeasurements.includes(measurement.name)) {
+        const dataPoint = { value: measurement.value, time: measurement.time };
+        handleAdd(measurement.name, dataPoint);
+      } else {
+        const dataPoint = {
+          value: parseFloat(measurement.value.toFixed(2)),
+          time: measurement.time,
+        };
+        handleAdd(measurement.name, dataPoint);
+        handleStats(measurement.name, dataPoint.value);
+      }
+    } catch (error) {
+      console.log(error);
+      setError(error);
+    }
   };
 
   useEffect(() => {

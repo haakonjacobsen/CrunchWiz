@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import Indicator from './Indicator';
 import MeasurmentStat from './MeasurementStat';
+import Stickman from './Stickman';
 
 export default function MeasurmentExpansion({
   name, graphData, dataStats, changeExtended, number,
@@ -35,9 +36,11 @@ export default function MeasurmentExpansion({
       </div>
       <div className="Extended-main">
         <div className="Extended-stats">
-          { Object.entries(dataStats).map(([key, value]) => (
-            <MeasurmentStat name={key} value={value} />
-          ))}
+          { name === 'most-used-joints'
+            ? <Stickman name="Fuck off" number={1} />
+            : Object.entries(dataStats).map(([key, value]) => (
+              <MeasurmentStat name={key} value={value} />
+            ))}
         </div>
         <div className="Extended-graph-container">
           <div className="Extended-graph-header">

@@ -1,0 +1,14 @@
+.Stickman{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    margin: 20px;
+}
+.Stickman-header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.Stickman-svg{
+    padding: 20px;
+}
