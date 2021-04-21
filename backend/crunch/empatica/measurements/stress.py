@@ -1,3 +1,7 @@
+
+# TODO this probably needs fixing
+
+
 def compute_stress(temps_list):
     """
     Predicts acute stress based on GSR temperature
@@ -7,7 +11,7 @@ def compute_stress(temps_list):
     temperature_sum = 0
     temperature_threshold = -0.02
     for i, temp in enumerate(temps_list[:-1]):
-        change = temps_list[i+1] - temp
+        change = temps_list[i + 1] - temp
         if change > 0:
             temperature_sum = 0
             continue

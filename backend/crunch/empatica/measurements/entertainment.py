@@ -2,11 +2,9 @@ import numpy as np
 import statsmodels.api as sm
 
 
-def compute_entertainment(list_of_hr_values):
-
+def compute_entertainment(hr):
     """
-    This function only computes features that can be used as input to supervised learning.
-    Currently outputs a placeholder value between 0 and 1.
+    Calculates these features which are correlated with entertainment:
     The average HRE
     The variance of the HR signal σ2
     The maximum HR max
@@ -18,6 +16,11 @@ def compute_entertainment(list_of_hr_values):
     level of non-randomness in the HR data
     The approximate entropy (ApEnm,r)(Pincus 1991) of the signal which quantifies
     the unpredictability of fluctuations in the HR time series.
+
+    :param hr: list of heart rate values
+    :type hr: list of float
+    :return: 9 different features as described above
+    :rtype: (float, float, float, float, float, float, float, float, float)
     """
     def ApEn(U, m, r) -> float:
         """
@@ -38,17 +41,13 @@ def compute_entertainment(list_of_hr_values):
         N = len(U)
         return abs(_phi(m + 1) - _phi(m))
 
-    def normalize(value, min_range, max_range):
-        return (value - min_range) / (max_range - min_range)
-
-    list_of_hr_values = np.asarray(list_of_hr_values)
-    avg_hr = np.average(list_of_hr_values)
-    var_hr = np.var(list_of_hr_values)
-    max_hr = np.amax(list_of_hr_values)
-    min_hr = np.amin(list_of_hr_values)
-    d = max_hr - min_hr
-    p = np.corrcoef(list_of_hr_values, np.arange(len(list_of_hr_values)))
-    p1 = sm.tsa.acf(list_of_hr_values, nlags=1, fft=False)
-    approximate_entropy = ApEn(list_of_hr_values, 2, 3)
-    return (normalize(avg_hr, 20, 200) + normalize(var_hr, 0, 1000) + normalize(max_hr, 20, 200)
-            + normalize(min_hr, 20, 200) + normalize(d, 0, 180) + p1[0] + p1[1] + approximate_entropy + p[0][1]) / 8
+    hr = np.asarray(hr)
+    avg_hr = np.average(hr)
+    var_hr = np.var(hr)
+    max_hr = np.amax(hr)
+    min_hr = np.amin(hr)
+    diff = max_hr - min_hr
+    p = np.corrcoef(hr, np.arange(len(hr)))
+    p1 = sm.tsa.acf(hr, nlags=1, fft=False)
+    approximate_entropy = ApEn(hr, 2, 3)
+    return avg_hr, var_hr, max_hr, min_hr, diff, p1[0], p1[1], approximate_entropy, p[0][1]

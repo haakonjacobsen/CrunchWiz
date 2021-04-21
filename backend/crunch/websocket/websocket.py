@@ -2,13 +2,12 @@ import asyncio
 import functools
 import json
 import socket
-import configparser
 
 import pandas as pd
 import websockets
 from watchgod import awatch
 
-from config import CONFIG_PATH
+import crunch.util as util
 from datetime import datetime
 
 
@@ -41,18 +40,9 @@ def start_websocket():
     loop = asyncio.get_event_loop()
     queue = asyncio.Queue(loop=loop)
 
-    config = configparser.ConfigParser()
-    try:
-        config.read(CONFIG_PATH)
-        use_localhost = config["websocket"].getboolean("use_localhost")
-        port = int(config["websocket"]["port"])
-    except FileNotFoundError:
-        raise FileNotFoundError("Could not find config file")
-    except KeyError:
-        raise KeyError("Error reading config file at [websocket]")
-
     local_ip = socket.gethostbyname(socket.gethostname())
-    ip = "127.0.0.1" if use_localhost else local_ip
+    ip = "127.0.0.1" if util.config("websocket", "use_localhost") else local_ip
+    port = int(util.config("websocket", "port"))
 
     print("##################################################################")
     print("###### Paste the websocket ip on the frontend to connect")
