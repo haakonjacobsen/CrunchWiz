@@ -4,6 +4,7 @@ from crunch.empatica import start_empatica
 from crunch.eyetracker import start_eyetracker
 from crunch.skeleton import start_skeleton
 from crunch.websocket import start_websocket
+from crunch.emotion import start_emotion
 
 
 def start_processes(mobile):
@@ -12,12 +13,11 @@ def start_processes(mobile):
 
     p2 = Process(target=start_eyetracker)
     p2.start()
-
     if mobile:
         p3 = Process(target=start_skeleton)
         p3.start()
     else:
-        # TODO start emotion
-        pass
+        p3 = Process(target=start_emotion)
+        p3.start()
 
     start_websocket()

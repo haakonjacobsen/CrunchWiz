@@ -13,3 +13,5 @@ pytest-cov~=2.11.1
 tobii-research~=1.8.0
 PyWavelets~=1.1.1
 configparser~=5.0.2
+Pillow~=7.0.0
+PyEmotion~=1.0.0
