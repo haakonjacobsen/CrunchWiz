@@ -36,8 +36,8 @@ export default function MeasurmentExpansion({
       </div>
       <div className="Extended-main">
         <div className="Extended-stats">
-          { name === 'most-used-joints'
-            ? <Stickman name="Fuck off" number={1} />
+          { name === 'most_used_joints'
+            ? <Stickman name={graphData[graphData.length - 1].value} />
             : Object.entries(dataStats).map(([key, value]) => (
               <MeasurmentStat name={key} value={value} />
             ))}
