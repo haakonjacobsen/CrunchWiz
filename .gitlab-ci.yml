@@ -23,11 +23,11 @@ lint-python:
     - pip3 install isort flake8
   script:
     - flake8
-    - isort .
+    - isort -rc .
 
 backend-test:
   stage: test
-  image: python:3.8.7-buster
+  image: python:3.6.13-buster
   before_script:
     - cd backend
     - pip install virtualenv

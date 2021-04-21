@@ -1,36 +1,36 @@
-import json
-import websockets
-import functools
 import asyncio
+import functools
+import json
+import socket
+import configparser
+
 import pandas as pd
+import websockets
 from watchgod import awatch
+
+from config import CONFIG_PATH
 
 
 async def watcher(queue):
     async for changes in awatch('./crunch/output/'):
-        file_paths = []
-        # get file path of changed file
         for a in changes:
-            file_paths.append(a[1])
-
-        for file_path in file_paths:
+            file_path = a[1]
             # get last row of changed file
             df = pd.read_csv(file_path).iloc[-1]
             # format how we send it to frontend
             data = {"name": file_path[16:-4], "value": df.value, "time": df.time}
+            print("reading from csv:", data)
             # put it queue so web socket can read
             await queue.put([data])
 
 
-# TODO: Fix proper removal of closed clients
 async def handler(websocket, path, queue):
-    connected = set()
-    connected.add(websocket)
     try:
         print("Established connection with client")
         while True:
             data = await queue.get()
-            await asyncio.wait([ws.send(json.dumps(data)) for ws in connected])
+            print("Sending:", data)
+            await websocket.send(json.dumps(data))
     finally:
         print("CONNECTION WITH CLIENT LOST")
 
@@ -39,8 +39,26 @@ def start_websocket():
     loop = asyncio.get_event_loop()
     queue = asyncio.Queue(loop=loop)
 
-    start_server = websockets.serve(functools.partial(handler, queue=queue), "127.0.0.1", 8888)
+    config = configparser.ConfigParser()
+    try:
+        config.read(CONFIG_PATH)
+        use_localhost = config["websocket"].getboolean("use_localhost")
+        port = int(config["websocket"]["port"])
+    except FileNotFoundError:
+        raise FileNotFoundError("Could not find config file")
+    except KeyError:
+        raise KeyError("Error reading config file at [websocket]")
 
+    local_ip = socket.gethostbyname(socket.gethostname())
+    ip = "127.0.0.1" if use_localhost else local_ip
+
+    print("##################################################################")
+    print("###### Paste the websocket ip on the frontend to connect")
+    print("###### IP: ", ip)
+    print("###### Port: ", port)
+    print("##################################################################")
+
+    start_server = websockets.serve(functools.partial(handler, queue=queue), ip, port)
     loop.run_until_complete(asyncio.gather(
         start_server,
         watcher(queue),

@@ -1,0 +1,3 @@
+[submodule "backend/crunch/skeleton/openpose"]
+	path = backend/crunch/skeleton/openpose
+	url = https://github.com/olafsm/openpose.git
