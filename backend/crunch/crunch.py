@@ -1,20 +1,23 @@
-import os
 from multiprocessing import Process
 
-from crunch.empatica.main import start_empatica
-from crunch.eyetracker.main import start_eyetracker
-from crunch.skeleton.main import start_skeleton
-from crunch.websocket.websocket import start_websocket
+from crunch.empatica import start_empatica
+from crunch.eyetracker import start_eyetracker
+from crunch.skeleton import start_skeleton
+from crunch.websocket import start_websocket
+from crunch.emotion import start_emotion
 
 
-def start_processes():
-    print("Main process id: ", os.getpid())
-    if not os.path.exists("crunch/output"):
-        os.makedirs("crunch/output")
+def start_processes(mobile):
     p1 = Process(target=start_empatica)
-    p2 = Process(target=start_eyetracker)
-    p3 = Process(target=start_skeleton)
     p1.start()
+
+    p2 = Process(target=start_eyetracker)
     p2.start()
-    p3.start()
+    if mobile:
+        p3 = Process(target=start_skeleton)
+        p3.start()
+    else:
+        p3 = Process(target=start_emotion)
+        p3.start()
+
     start_websocket()

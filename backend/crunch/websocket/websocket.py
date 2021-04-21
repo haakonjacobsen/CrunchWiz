@@ -1,10 +1,14 @@
 import asyncio
 import functools
 import json
+import socket
 
 import pandas as pd
 import websockets
 from watchgod import awatch
+
+import crunch.util as util
+from datetime import datetime
 
 
 async def watcher(queue):
@@ -14,13 +18,13 @@ async def watcher(queue):
             # get last row of changed file
             df = pd.read_csv(file_path).iloc[-1]
             # format how we send it to frontend
-            data = {"name": file_path[16:-4], "value": df.value, "time": df.time}
+            time = datetime.now().strftime("%H:%M:%S")
+            data = {"name": file_path[16:-4], "value": df.value, "time": time}
             print("reading from csv:", data)
             # put it queue so web socket can read
             await queue.put([data])
 
 
-# TODO: Fix proper removal of closed clients
 async def handler(websocket, path, queue):
     try:
         print("Established connection with client")
@@ -36,8 +40,17 @@ def start_websocket():
     loop = asyncio.get_event_loop()
     queue = asyncio.Queue(loop=loop)
 
-    start_server = websockets.serve(functools.partial(handler, queue=queue), "127.0.0.1", 8888)
+    local_ip = socket.gethostbyname(socket.gethostname())
+    ip = "127.0.0.1" if util.config("websocket", "use_localhost") else local_ip
+    port = int(util.config("websocket", "port"))
 
+    print("##################################################################")
+    print("###### Paste the websocket ip on the frontend to connect")
+    print("###### IP: ", ip)
+    print("###### Port: ", port)
+    print("##################################################################")
+
+    start_server = websockets.serve(functools.partial(handler, queue=queue), ip, port)
     loop.run_until_complete(asyncio.gather(
         start_server,
         watcher(queue),

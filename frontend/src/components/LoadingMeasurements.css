@@ -1,0 +1,10 @@
+.Baseline-loader{
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    height: 50%;
+}
+.SVG{
+    transform: translateZ(0);
+}

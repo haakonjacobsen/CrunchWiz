@@ -1,6 +1,31 @@
 import math
-import pywt
+
 import numpy as np
+import pywt
+
+
+def compute_cognitive_load(initTime, endTime, lpup, rpup):
+    """
+    Computes the cognitive load based on the size of the pupils in a time window
+    The modmax and lhipa algorithm are taken directly from this paper: https://doi.org/10.1145/3313831.3376394
+
+    :param initTime: timestamps for start time of each data point
+    :type initTime: list of int
+    :param endTime: timestamps for end time of each data point
+    :type endTime: list of int
+    :param lpup: values for left pupil size
+    :type lpup: list of int
+    :param rpup: values for right pupil size
+    :type rpup: list of int
+    :return: Measure of cognitive load
+    :rtype: float
+    """
+    assert len(lpup) == len(rpup)
+    # TODO remove inittime and endtime, find signalduration by len(lpup)/120
+    signal_dur = endTime[-1] - initTime[0]
+    average_pupil_values = [(l + r) / 2 for l, r in zip(lpup, rpup)]
+
+    return lhipa(average_pupil_values, signal_dur)
 
 
 """modmax (Duchowski, Krejtz, Krejtz, Biele, Niedzielska, Kiefer, Raubal, Giannopoulos) https://dl.acm.
@@ -77,33 +102,3 @@ def lhipa(d, signal_dur):
     LHIPA = float(ctr) / tt
 
     return LHIPA
-
-
-def compute_cognitive_load(initTime, endTime, lpup, rpup):
-    """
-    Preprocesses parameters from eyetracker handler and calls lhipa to calculate cognitive load
-
-    :param initTime: list of timestamps for start time of each data point
-    :type initTime: list
-
-    :param endTime: list of timestamps for end time of each data point
-    :type endTime: list
-
-    :param lpup: list of values for left pupil
-    :type lpup: list
-
-    :param rpup: list of values for right pupil
-    :type rpup: list'
-    :return: Measure of cognitive load
-    """
-    assert len(lpup) == len(rpup)
-    signal_dur = endTime[-1] - initTime[0]
-    average_pupil_values = []
-    for i in range(len(lpup)):
-        if lpup == "NA":
-            lpup[i] = rpup[i]
-        elif rpup == "NA":
-            rpup[i] == lpup[i]
-        average_pupil_values.append((lpup[i] + rpup[i]) / 2)
-
-    return lhipa(average_pupil_values, signal_dur)

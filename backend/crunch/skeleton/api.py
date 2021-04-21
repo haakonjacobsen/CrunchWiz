@@ -1,4 +1,3 @@
-import argparse
 import os
 import sys
 import time
@@ -7,6 +6,7 @@ from sys import platform
 import cv2
 import pandas as pd
 
+import crunch.util as util
 from crunch.skeleton.handler import DataHandler  # noqa
 
 
@@ -14,14 +14,14 @@ class MockAPI:
     """
     Mock api that reads from csv files instead of getting data from devices
 
-    :type subscribers: list of (DataHandler, list of str)
+    :type subscribers: dict
     """
 
     skeleton_data = []
 
     # Get test data from scuffed CSV
     df = pd.pandas.read_csv(
-        os.path.join(os.path.dirname(__file__), "mock_data\\test_data.csv"), header=None
+        os.path.join(os.path.dirname(__file__), "mock_data/test_data.csv"), header=None
     )
     for i in range(len(df)):
         temp_array = []
@@ -47,10 +47,8 @@ class MockAPI:
         :param data_handler: a data handler for a specific measurement that subscribes to a specific raw data
         :type data_handler: DataHandler
         :param requested_data: The specific raw data that the data handler subscribes to
-        :type requested_data: list(str)
+        :type requested_data: str
         """
-        print("Added subscriber: ", end="skeleton-")
-        print(data_handler)
         assert requested_data in self.subscribers.keys()
         self.subscribers[requested_data].append(data_handler)
 
@@ -90,7 +88,7 @@ class RealAPI:
         :param data_handler: a data handler for a specific measurement that subscribes to a specific raw data
         :type data_handler: DataHandler
         :param requested_data: The specific raw data that the data handler subscribes to
-        :type requested_data: list(str)
+        :type requested_data: str
         """
         assert requested_data in self.subscribers.keys()
         self.subscribers[requested_data].append(data_handler)
@@ -117,52 +115,31 @@ class RealAPI:
                 from openpose import pyopenpose as op
         except ImportError as e:
             print(
-                "Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in"
-                " CMake and have this Python script in the right folder?"
+                "Error: OpenPose library could not be found. Did you install OpenPose and enable `BUILD_PYTHON` in"
+                " CMake?"
             )
             raise e
 
-        # Flags
-        parser = argparse.ArgumentParser()
-        parser.add_argument(
-            "--no-display", action="store_true", help="Disable display."
-        )
-        parser.add_argument("--frame_step", default=100)
-        parser.add_argument("--fps_max", default=1)
-        args = parser.parse_known_args()
-
         # Custom Params (refer to include/openpose/flags.hpp for more parameters)
+        config = util.config("openpose")
         params = dict()
         params["model_folder"] = dir_path + "/openpose/models/"
-        # Add others in path?
-        for i in range(0, len(args[1])):
-            curr_item = args[1][i]
-            if i != len(args[1]) - 1:
-                next_item = args[1][i + 1]
-            else:
-                next_item = "1"
-            if "--" in curr_item and "--" in next_item:
-                key = curr_item.replace("-", "")
-                if key not in params:
-                    params[key] = "1"
-            elif "--" in curr_item and "--" not in next_item:
-                key = curr_item.replace("-", "")
-                if key not in params:
-                    params[key] = next_item
-        # Construct it from system arguments
-        # op.init_argv(args[1])
-        # oppython = op.OpenposePython()
+        try:
+            for key in config["openpose"]:
+                params[key] = config["openpose"][key]
+        except ValueError as e:
+            raise ValueError(e)
+
         # Starting OpenPose
         opWrapper = op.WrapperPython(op.ThreadManagerMode.AsynchronousOut)
         opWrapper.configure(params)
         opWrapper.start()
-        print("OpenPose Process successfully started, press ESC to exit")
 
         user_wants_to_exit = False
         while not user_wants_to_exit:
             dataframe = op.VectorDatum()
             if opWrapper.waitAndPop(dataframe):
-                if not args[0].no_display:
+                if "no_display" not in params:
                     user_wants_to_exit = display(dataframe)
                 self.add_datapoint(dataframe)
             else:

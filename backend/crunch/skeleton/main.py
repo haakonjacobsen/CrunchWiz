@@ -1,5 +1,4 @@
-import os
-
+import crunch.util as util
 from crunch.skeleton.api import MockAPI, RealAPI  # noqa
 from crunch.skeleton.handler import DataHandler
 from crunch.skeleton.measurements import (amount_of_motion, fatigue,
@@ -7,14 +6,14 @@ from crunch.skeleton.measurements import (amount_of_motion, fatigue,
                                           stability_of_motion)
 
 
-def start_skeleton(api=MockAPI):
+def start_skeleton():
     """
     start the eye tracker process control flow.
-    TODO change default api argument to realAPI, and use MockApi when integration testing only
     """
-    print("Skeleton process id: ", os.getpid())
-    # Instantiate the api
-    api = api()
+
+    # Read config & Instantiate the api
+    api = MockAPI() if util.config('skeleton', 'MockAPI') == "True" else RealAPI()
+
     stabilityHandler = DataHandler(measurement_func=stability_of_motion,
                                    measurement_path="stability_of_motion.csv",
                                    window_length=2,
@@ -43,7 +42,5 @@ def start_skeleton(api=MockAPI):
     # start up the api
     try:
         api.connect()
-    except Exception as e:
+    except Exception:
         print("Skeleton API connection failed")
-        print(e)
-        os._exit()
