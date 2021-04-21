@@ -1,5 +1,6 @@
 from crunch.eyetracker.measurements.anticipation import compute_anticipation
-from crunch.eyetracker.handler import DataHandler, IpiHandler, CognitiveLoadHandler
+from crunch.eyetracker.handler import DataHandler, IpiHandler
+from random import randint
 
 
 class TestCrunch:
@@ -14,87 +15,47 @@ class TestCrunch:
             5.743347633692244, 5.430037397359653, 6.5972075001625035, 5.499173507095739, 6.103474780858872,
             5.221226103401899, 6.750097979894939]
 
-    def test_DataHandler(self):
-        handler = DataHandler(compute_anticipation, "anticipation.csv", ["initTime", "endTime", "fx", "fy"])
-        for i in range(1, 20):
-            handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
-            assert len(handler.list_of_baseline_values) == i
-        # transition from baseline phase to csv phase
-        assert handler.phase_func == handler.baseline_phase
-        handler.baseline_end_time -= 120
-        handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
-        assert handler.phase_func == handler.csv_phase
-        try:
-            # should throw File not found error
-            handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
-            assert False
-        except OSError as e:
-            assert e
+    def test_Handler(self):
+        assert True
 
     def test_IpiHandler(self):
-        handler = IpiHandler()
-        for i in range(1, 20):
-            handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
-            assert len(handler.dict_of_lists_of_threshold_values["initTime"]) == 12 * i
+        def timestamp_generator():
+            time = 0
+            while True:
+                yield time
+                time += randint(3, 50)
+
+        handler = IpiHandler("ipi.csv", ["initTime", "endTime", "fx", "fy"],
+                             window_length=10, window_step=10)
+        time_generator = timestamp_generator()
+        assert len(handler.data_queues["initTime"]) == 0
+        for i in range(0, 30):
+            handler.add_data_point({"initTime": next(time_generator), "endTime": next(time_generator),
+                                    "fx": 720, "fy": 1054})
+
         # transition from threshold phase to baseline phase
+        assert len(handler.dict_of_lists_of_threshold_values["initTime"]) == 30
         assert handler.phase_func == handler.threshold_phase
         handler.threshold_phase_end -= 120
-        handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
+        handler.add_data_point({"initTime": next(time_generator), "endTime": next(time_generator),
+                                "fx": 720, "fy": 1054})
         assert handler.phase_func == handler.baseline_phase
-
+        assert handler.long_threshold > 0
+        assert handler.long_threshold > 0
         # transition from baseline phase to csv phase
-        for i in range(1, 20):
-            handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
-            assert len(handler.list_of_baseline_values) == i
-
+        for i in range(1, 10):
+            handler.add_data_point({"initTime": next(time_generator), "endTime": next(time_generator),
+                                    "fx": 720, "fy": 1054})
+            assert len(handler.data_queues["initTime"]) == i
         handler.baseline_end_time -= 120
-        handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
+        handler.add_data_point({"initTime": next(time_generator), "endTime": next(time_generator),
+                                "fx": 720, "fy": 1054})
         assert handler.phase_func == handler.csv_phase
         try:
             # should throw File not found error
-            handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
-            assert False
-        except OSError as e:
-            assert e
-
-    def test_CognitiveLoadHandler(self):
-        handler = CognitiveLoadHandler()
-        for i in range(1, 42):
-            handler.send_data_window(
-                {"initTime": self.init, "endTime": self.end, "lpup": self.lpup, "rpup": self.rpup}
-            )
-            assert len(handler.list_of_baseline_values) == 0
-            assert len(handler.dict_of_lists_of_values["initTime"]) == 12 * i
-        # calculate first measurement
-        assert len(handler.dict_of_lists_of_values["initTime"]) == 41 * 12
-        assert len(handler.list_of_baseline_values) == 0
-        handler.send_data_window(
-            {"initTime": self.init, "endTime": self.end, "lpup": self.lpup, "rpup": self.rpup}
-        )
-        assert len(handler.dict_of_lists_of_values["initTime"]) == 0
-        assert len(handler.list_of_baseline_values) == 1
-
-        for i in range(210):
-            handler.send_data_window(
-                {"initTime": self.init, "endTime": self.end, "lpup": self.lpup, "rpup": self.rpup}
-            )
-        assert len(handler.dict_of_lists_of_values["initTime"]) == 0
-        assert len(handler.list_of_baseline_values) == 6
-
-        # transition to csv phase:
-        handler.baseline_end_time -= 100
-        for i in range(1, 45):
-            handler.send_data_window(
-                {"initTime": self.init, "endTime": self.end, "lpup": self.lpup, "rpup": self.rpup}
-            )
-        assert handler.phase_func == handler.csv_phase
-        assert type(handler.baseline) == float and 0 < handler.baseline < 1
-        try:
-            # should throw File not found error
-            for i in range(1, 45):
-                handler.send_data_window(
-                    {"initTime": self.init, "endTime": self.end, "lpup": self.lpup, "rpup": self.rpup}
-                )
+            for i in range(10):
+                handler.add_data_point({"initTime": next(time_generator), "endTime": next(time_generator),
+                                    "fx": 720, "fy": 1054})
             assert False
         except OSError as e:
             assert e

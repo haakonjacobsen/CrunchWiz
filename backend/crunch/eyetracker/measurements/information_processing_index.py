@@ -10,7 +10,7 @@ def ipi_helper(init_time, end_time, fx, fy):
     for i in range(min(len(init_time), len(end_time)) - 1):
         current_fixation_duration = fixation_duration(init_time[i], end_time[i])
         current_saccade_length = saccade_length(fx[i], fy[i], fx[i + 1], fy[i + 1])
-        div.append(current_fixation_duration / current_saccade_length)
+        div.append(current_fixation_duration / max(current_saccade_length, 0.5))
     return div
 
 

@@ -66,13 +66,14 @@ class TestGazeDataToFixAndAPI:
 
         # set up, add handlers
         api = EyetrackerAPI()
-        #ipi_handler = IpiHandler()
-        #api.add_subscriber(ipi_handler)
+
+        ipi_handler = IpiHandler("ipi.csv", ["initTime", "endTime", "fx", "fy"],
+            window_length=10, window_step=10)
+        api.add_subscriber(ipi_handler)
 
         perceived_difficulty_handler = DataHandler(
             compute_perceived_difficulty, "perceived_difficulty.csv", ["initTime", "endTime", "fx", "fy"],
             window_length=10, window_step=10
-
         )
         api.add_subscriber(perceived_difficulty_handler)
         gazedata_gen = self.timestamp_generator()
@@ -88,17 +89,29 @@ class TestGazeDataToFixAndAPI:
         assert len(api.dict_of_lists_of_fixation_data["initTime"]) == 0
         for handler in api.list_of_handlers:
             if type(handler) == DataHandler:
-                assert len(handler.list_of_baseline_values) == 12
+                assert len(handler.list_of_baseline_values) == 3
                 handler.baseline_end_time -= 200
-                insert_one_fixation_point()
+                for i in range(10):
+                    insert_one_fixation_point()
                 assert handler.phase_func == handler.csv_phase
                 try:
                     # should throw File not found error
-                    insert_one_fixation_point()
+                    for i in range(10):
+                        insert_one_fixation_point()
+
                     assert False
                 except OSError as e:
                     assert e
 
             elif type(handler) == IpiHandler:
+
                 assert len(handler.list_of_baseline_values) == 0
-                assert len(handler.dict_of_lists_of_threshold_values["initTime"]) == 6
+                assert len(handler.dict_of_lists_of_threshold_values["initTime"]) == 21
+                handler.threshold_phase_end -= 120
+                insert_one_fixation_point()
+                assert len(handler.data_queues["initTime"]) == 0
+                assert len(handler.list_of_baseline_values) == 0
+                for i in range(15):
+                    insert_one_fixation_point()
+                assert len(handler.list_of_baseline_values) == 1
+

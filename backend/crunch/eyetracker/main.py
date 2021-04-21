@@ -3,7 +3,7 @@ import time
 import tobii_research as tr
 
 from .api import EyetrackerAPI
-from .handler import IpiHandler, DataHandler, CognitiveLoadHandler
+from .handler import IpiHandler, DataHandler
 from .measurements.anticipation import compute_anticipation
 from .measurements.perceived_difficulty import compute_perceived_difficulty
 
@@ -28,22 +28,29 @@ def start_eyetracker(api=EyetrackerAPI):
 
         api = api()
         # add handlers
-        ipi_handler = IpiHandler()
+        ipi_handler = IpiHandler("ipi.csv", ["initTime", "endTime", "fx", "fy"],
+                                 window_length=10, window_step=10)
         api.add_subscriber(ipi_handler)
 
         perceived_difficulty_handler = DataHandler(
-            compute_perceived_difficulty, "perceived_difficulty.csv", ["initTime", "endTime", "fx", "fy"]
+            compute_perceived_difficulty, "perceived_difficulty.csv", ["initTime", "endTime", "fx", "fy"],
+            window_length=10, window_step=10
         )
         api.add_subscriber(perceived_difficulty_handler)
+
         anticipation_handler = DataHandler(
-            compute_anticipation, "anticipation.csv", ["initTime", "endTime", "fx", "fy"]
+            compute_anticipation, "anticipation.csv", ["initTime", "endTime", "fx", "fy"],
+            window_length=10, window_step=10
         )
         api.add_subscriber(anticipation_handler)
 
-        cognitive_load_handler = CognitiveLoadHandler()
+        cognitive_load_handler = DataHandler(
+            compute_anticipation, "cognitive_load.csv", ["initTime", "endTime", "lpup", "rpup"],
+            window_length=500, window_step=500
+        )
         api.add_subscriber(cognitive_load_handler)
 
         my_eyetracker.subscribe_to(tr.EYETRACKER_GAZE_DATA, gaze_data_callback, as_dictionary=True)
         #  TODO: the following snippet stops the program after x seconds. Remove this when finished developing
-        time.sleep(150)  # change to how long you want the program to run
+        time.sleep(400)  # change to how long you want the program to run
         my_eyetracker.unsubscribe_from(tr.EYETRACKER_GAZE_DATA, gaze_data_callback)
