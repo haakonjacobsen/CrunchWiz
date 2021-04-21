@@ -37,7 +37,7 @@ class DataHandler:
         self.measurement_func = measurement_func
         self.measurement_path = measurement_path
         self.phase_func = self.baseline_phase
-        self.baseline = None
+        self.baseline = 0
         self.list_of_raw_data_subscribed_to = list_of_raw_data_subscribed_to
         self.time = util.Time()
 
@@ -75,8 +75,8 @@ class DataHandler:
     def transition_to_csv_phase(self):
         """Sets the baseline to the average of the baseline values collected, and sets phase_func to csv_phase"""
         self.baseline = float(sum(self.list_of_baseline_values) / len(self.list_of_baseline_values))
-        assert 0 <= self.baseline < float('inf') and type(self.baseline) == float
         self.phase_func = self.csv_phase
+        assert 0 <= self.baseline < float('inf') and type(self.baseline) == float
 
         #  Save memory
         self.list_of_baseline_values = None

@@ -26,3 +26,4 @@ def get_n_skeleton_points(n):
             i += 2
             temp_array.append(number)
         skeleton_data.append(temp_array)
+    return skeleton_data

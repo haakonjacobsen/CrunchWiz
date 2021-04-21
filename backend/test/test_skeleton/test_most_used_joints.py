@@ -10,7 +10,7 @@ tol = 1e-5
 
 def test_most_used_joints():
     test_array = get_n_skeleton_points(2)
-    exact0_joint = 2
+    exact0_joint = "LSmallToe"
     estimated = most_used_joints(test_array)
 
     assert estimated == exact0_joint
