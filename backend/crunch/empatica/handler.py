@@ -1,7 +1,8 @@
-import csv
-import datetime
-import os
 from collections import deque
+
+import numpy as np
+
+import crunch.util as util
 
 
 class DataHandler:
@@ -11,10 +12,12 @@ class DataHandler:
     preprocessing the data,
     and calculating measurements from the data
     """
-    def __init__(self, measurement_func=None, measurement_path=None, window_length=None, window_step=None):
+    def __init__(self, measurement_func=None, measurement_path=None,
+                 window_length=None, window_step=None,
+                 baseline_length=None, header_features=[]):
         """
         :param measurement_func: the function we call to compute measurements from the raw data
-        :type measurement_func: (list) -> float
+        :type measurement_func: (list) -> any
         :param measurement_path: path to the output csv file
         :type measurement_path: str
         :param window_length: length of the window, i.e number of data points for the function
@@ -22,8 +25,10 @@ class DataHandler:
         :param window_step: how many steps for a new window, i.e for 6 steps,
         a new measurement is computed every 6 data points
         :type window_step: int
+        :param baseline_length: Amount of data points required to calculate baseline
+        :type baseline_length: int
         """
-        assert window_length and window_step and measurement_func and measurement_path, \
+        assert window_length and window_step and measurement_func and measurement_path and baseline_length, \
             "Need to supply the required parameters"
 
         self.data_queue = deque(maxlen=window_length)
@@ -32,31 +37,39 @@ class DataHandler:
         self.window_length = window_length
         self.measurement_func = measurement_func
         self.measurement_path = measurement_path
-        self.time = datetime.datetime.now()
+        self.baseline_length = baseline_length
+        self.baseline = None
+        self.header_features = header_features
+        self.time = util.Time()
+        self._handle_datapoint = self._calculate_baseline
 
     def add_data_point(self, datapoint):
         """ Receive a new data point, and call appropriate measurement function when we have enough points """
-        # TODO call eventual preprocessing here, should also take preprocessing function as argument in init
         self.data_queue.append(datapoint)
-        if self.data_counter % self.window_step == 0 and len(self.data_queue) == self.window_length:
-            measurement = self.measurement_func(list(self.data_queue))
-            delta_time = self._get_delta_time()
-            self._write_csv(self.measurement_path, [delta_time, measurement])
+        self._handle_datapoint()
         self.data_counter += 1
 
-    def _get_delta_time(self):
-        """ finds delta time from last computed measurement """
-        new_time = datetime.datetime.now()
-        delta_time = (new_time - self.time).total_seconds()
-        self.time = new_time
-        return delta_time
+    def _calculate_baseline(self):
+        """ Calculates a baseline if we have received enough data points """
+        if self.data_counter % self.window_step == 0 and len(self.data_queue) == self.window_length:
+            measurement = util.to_list(self.measurement_func(list(self.data_queue)))
+            if self.baseline is None:
+                self.baseline = [[feature] for feature in measurement]
+            else:
+                for baseline_feature, feature in zip(self.baseline, measurement):
+                    baseline_feature.append(feature)
+        if self.data_counter > self.baseline_length:
+            self.baseline = [sum(feature) / len(feature) for feature in self.baseline]
+            self._handle_datapoint = self._calculate_measurement
 
-    def _write_csv(self, path, row):
-        """ write result to csv file """
-        file_exists = os.path.isfile("crunch/output/" + path)
-        with open("crunch/output/" + path, "a", newline="") as csvfile:
-            writer = csv.writer(csvfile, delimiter=",")
-            if not file_exists:
-                header = ['time', 'value']
-                writer.writerow(header)
-            writer.writerow(row)
+    def _calculate_measurement(self):
+        """ Calculates a measurement and writes to csv if we have received enough data points """
+        if self.data_counter % self.window_step == 0 and len(self.data_queue) == self.window_length:
+            measurement = util.to_list(self.measurement_func(list(self.data_queue)))
+            normalized_measurement = np.dot(measurement, np.reciprocal(self.baseline)) / len(self.baseline)
+            if len(measurement) == 1:
+                util.write_csv(self.measurement_path, [self.time.delta_time(), normalized_measurement])
+            else:
+                util.write_csv(self.measurement_path,
+                               [self.time.delta_time(), normalized_measurement, *measurement],
+                               header_features=self.header_features)

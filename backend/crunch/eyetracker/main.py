@@ -2,11 +2,12 @@ import time
 
 import tobii_research as tr
 
+import crunch.util as util
+
 from .api import EyetrackerAPI
-from .handler import IpiHandler, DataHandler, CognitiveLoadHandler
+from .handler import CognitiveLoadHandler, DataHandler, IpiHandler
 from .measurements.anticipation import compute_anticipation
 from .measurements.perceived_difficulty import compute_perceived_difficulty
-import configparser
 
 
 def start_eyetracker(api=EyetrackerAPI):
@@ -23,21 +24,14 @@ def start_eyetracker(api=EyetrackerAPI):
     #  Try to connect to eyetracker
     if len(tr.find_all_eyetrackers()) == 0:
         print("No eyetracker was found")
-    if len(tr.find_all_eyetrackers()) > 0:
+    else:
         my_eyetracker = tr.find_all_eyetrackers()[0]
         print("Now connected to eyetracker model: " + my_eyetracker.model + " with address: " + my_eyetracker.address)
 
-        # Read config & Instantiate the api
         # TODO: fix this when MockAPI is back
-        config = configparser.ConfigParser()
-        try:
-            config.read(CONFIG_PATH)
-            api = EyetrackerAPI if config['eyetracker'].getboolean('MockAPI') else EyetrackerAPI
-        except KeyError:
-            raise KeyError("Error in config file, could not find value eyetracker")
-        except FileNotFoundError:
-            raise FileNotFoundError("Config file not found")
-        api = api()
+        # Read config & Instantiate the api
+        api = EyetrackerAPI() if util.config('skeleton', 'MockAPI') == "True" else EyetrackerAPI()
+
         # add handlers
         ipi_handler = IpiHandler()
         api.add_subscriber(ipi_handler)

@@ -1,6 +1,7 @@
 from crunch.eyetracker.api import EyetrackerAPI, GazedataToFixationdata
 from crunch.eyetracker.handler import DataHandler, IpiHandler
-from crunch.eyetracker.measurements.perceived_difficulty import compute_perceived_difficulty
+from crunch.eyetracker.measurements.perceived_difficulty import \
+    compute_perceived_difficulty
 
 
 class TestGazeDataToFixAndAPI:
