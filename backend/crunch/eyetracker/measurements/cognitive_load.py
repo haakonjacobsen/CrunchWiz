@@ -1,6 +1,7 @@
 import math
-import pywt
+
 import numpy as np
+import pywt
 
 
 def compute_cognitive_load(initTime, endTime, lpup, rpup):

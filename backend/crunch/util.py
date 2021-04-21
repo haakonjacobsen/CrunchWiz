@@ -1,6 +1,6 @@
-import time
-import os
 import csv
+import os
+import time
 
 
 class Time:

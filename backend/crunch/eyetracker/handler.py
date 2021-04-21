@@ -1,9 +1,10 @@
-import csv
-import os
 import time
+
 import crunch.util as util
-from .measurements.information_processing_index import compute_information_processing_index, compute_ipi_thresholds
+
 from .measurements.cognitive_load import compute_cognitive_load
+from .measurements.information_processing_index import (compute_information_processing_index,
+                                                        compute_ipi_thresholds)
 
 
 class DataHandler:
@@ -31,7 +32,7 @@ class DataHandler:
         :type list_of_raw_data_subscribed_to: list of string
         """
         assert measurement_func and measurement_path and \
-               "Need to supply the required parameters"
+            "Need to supply the required parameters"
 
         self.measurement_func = measurement_func
         self.measurement_path = measurement_path

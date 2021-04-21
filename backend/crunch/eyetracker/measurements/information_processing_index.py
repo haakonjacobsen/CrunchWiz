@@ -103,4 +103,4 @@ def saccade_length(x1, y1, x2, y2):
     :return: the saccade length measured in euclidean distance
     :rtype: float
     """
-    return ((x2-x1)**2 + (y2-y1)**2)**0.5
+    return ((x2 - x1)**2 + (y2 - y1)**2)**0.5

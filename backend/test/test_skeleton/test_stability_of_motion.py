@@ -16,4 +16,3 @@ def test_stability_of_motion():
     exact1 = 0.417223
     assert np.abs(round(estimated, 6) - exact0) < tol
     assert np.abs(round(estimated2, 6) - exact1) < tol
- 

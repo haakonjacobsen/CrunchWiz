@@ -1,6 +1,6 @@
 from crunch.empatica.api import MockAPI, RealAPI  # noqa
 from crunch.empatica.handler import DataHandler
-from crunch.empatica.measurements import *
+from crunch.empatica.measurements import *  # noqa
 
 
 def start_empatica(api=MockAPI):
@@ -49,7 +49,8 @@ def start_empatica(api=MockAPI):
         window_length=20,
         window_step=10,
         baseline_length=30,
-        header_features=["mean", "var", "max", "min", "diff", "correlation", "auto-correlation", "approximate entropy", "fluctuations"]
+        header_features=["mean", "var", "max", "min", "diff", "correlation",
+                         "auto-correlation", "approximate entropy", "fluctuations"]
     )
     api.add_subscriber(entertainment_handler, "HR")
 

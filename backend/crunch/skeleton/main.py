@@ -2,17 +2,15 @@ import os
 
 from crunch.skeleton.api import MockAPI, RealAPI  # noqa
 from crunch.skeleton.handler import DataHandler
-from crunch.skeleton.measurements import *
+from crunch.skeleton.measurements import *  # noqa
 
 
 def start_skeleton(api=MockAPI):
-    """
-    start the eye tracker process control flow.
-    TODO change default api argument to realAPI, and use MockApi when integration testing only
-    """
-    print("Skeleton process id: ", os.getpid())
+    """ start the eye tracker process control flow. """
+
     # Instantiate the api
     api = api()
+
     stabilityHandler = DataHandler(measurement_func=stability_of_motion,
                                    measurement_path="stability_of_motion.csv",
                                    window_length=2,

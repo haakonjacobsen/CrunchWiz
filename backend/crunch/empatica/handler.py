@@ -1,5 +1,7 @@
-import numpy as np
 from collections import deque
+
+import numpy as np
+
 import crunch.util as util
 
 
@@ -10,7 +12,9 @@ class DataHandler:
     preprocessing the data,
     and calculating measurements from the data
     """
-    def __init__(self, measurement_func=None, measurement_path=None, window_length=None, window_step=None, baseline_length=None, header_features=[]):
+    def __init__(self, measurement_func=None, measurement_path=None,
+                 window_length=None, window_step=None,
+                 baseline_length=None, header_features=[]):
         """
         :param measurement_func: the function we call to compute measurements from the raw data
         :type measurement_func: (list) -> any
@@ -66,4 +70,6 @@ class DataHandler:
             if len(measurement) == 1:
                 util.write_csv(self.measurement_path, [self.time.delta_time(), normalized_measurement])
             else:
-                util.write_csv(self.measurement_path, [self.time.delta_time(), normalized_measurement, *measurement], header_features=self.header_features)
+                util.write_csv(self.measurement_path,
+                               [self.time.delta_time(), normalized_measurement, *measurement],
+                               header_features=self.header_features)

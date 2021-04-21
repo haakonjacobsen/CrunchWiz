@@ -1,5 +1,6 @@
 import time
 from collections import deque
+
 import crunch.util as util
 
 
@@ -70,6 +71,6 @@ class DataHandler:
         if self.data_counter % self.window_step == 0 and len(self.data_queue) == self.window_length:
             measurement = self.measurement_func(list(self.data_queue))
             if self.calculate_baseline:
-                measurement = round(measurement/self.baseline, 6)
+                measurement = round(measurement / self.baseline, 6)
             util.write_csv(self.measurement_path, [self.time.delta_time(), measurement])
         self.data_counter += 1
