@@ -6,19 +6,16 @@ from sys import platform
 import cv2
 import pandas as pd
 
+import crunch.util as util
 from crunch.skeleton.handler import DataHandler  # noqa
-import configparser
 
 
 class MockAPI:
     """
     Mock api that reads from csv files instead of getting data from devices
 
-    :type subscribers: list of (DataHandler, list of str)
+    :type subscribers: dict
     """
-
-    def __str__(self):
-        return "Skeleton MockAPI"
 
     skeleton_data = []
 
@@ -50,10 +47,8 @@ class MockAPI:
         :param data_handler: a data handler for a specific measurement that subscribes to a specific raw data
         :type data_handler: DataHandler
         :param requested_data: The specific raw data that the data handler subscribes to
-        :type requested_data: list(str)
+        :type requested_data: str
         """
-        print("Added subscriber: ", end="skeleton-")
-        print(data_handler)
         assert requested_data in self.subscribers.keys()
         self.subscribers[requested_data].append(data_handler)
 
@@ -86,9 +81,6 @@ class RealAPI:
     raw_data = ["body"]
     subscribers = {"body": []}
 
-    def __str__(self):
-        return "Skeleton RealAPI"
-
     def add_subscriber(self, data_handler, requested_data):
         """
         Adds a handler as a subscriber for a specific raw data
@@ -96,7 +88,7 @@ class RealAPI:
         :param data_handler: a data handler for a specific measurement that subscribes to a specific raw data
         :type data_handler: DataHandler
         :param requested_data: The specific raw data that the data handler subscribes to
-        :type requested_data: list(str)
+        :type requested_data: str
         """
         assert requested_data in self.subscribers.keys()
         self.subscribers[requested_data].append(data_handler)
@@ -129,10 +121,9 @@ class RealAPI:
             raise e
 
         # Custom Params (refer to include/openpose/flags.hpp for more parameters)
-        config = configparser.ConfigParser()
+        config = util.config("openpose")
         params = dict()
         params["model_folder"] = dir_path + "/openpose/models/"
-        config.read(CONFIG_PATH)
         try:
             for key in config["openpose"]:
                 params[key] = config["openpose"][key]
@@ -143,7 +134,6 @@ class RealAPI:
         opWrapper = op.WrapperPython(op.ThreadManagerMode.AsynchronousOut)
         opWrapper.configure(params)
         opWrapper.start()
-        print("OpenPose Process successfully started, press ESC to exit")
 
         user_wants_to_exit = False
         while not user_wants_to_exit:

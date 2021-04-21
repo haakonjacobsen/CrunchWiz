@@ -3,10 +3,8 @@ import socket
 import time
 import pandas as pd
 
+import crunch.util as util
 from crunch.empatica.handler import DataHandler  # noqa
-
-import configparser
-from config import CONFIG_PATH
 
 
 class MockAPI:
@@ -42,61 +40,69 @@ class MockAPI:
             self._mock_hr_datapoint(i)
 
             # simulate delay of new data points by sleeping
-            time.sleep(0.3)
+            time.sleep(0.1)
 
     def _mock_ibi_datapoint(self, index):
+        """ Simulate receiving and sending a ibi datapoint """
         if index < len(self.ibi_data):
             for handler in self.subscribers["IBI"]:
                 data_point = self.ibi_data[index]
                 handler.add_data_point(data_point)
 
     def _mock_eda_datapoint(self, index):
+        """ Simulate receiving and sending a eda datapoint """
         if index < len(self.eda_data):
             for handler in self.subscribers["EDA"]:
                 data_point = self.eda_data[index]
                 handler.add_data_point(data_point)
 
     def _mock_temp_datapoint(self, index):
+        """ Simulate receiving and sending a temp datapoint """
         if index < len(self.temp_data):
             for handler in self.subscribers["TEMP"]:
                 data_point = self.temp_data[index]
                 handler.add_data_point(data_point)
 
     def _mock_hr_datapoint(self, index):
+        """ Simulate receiving and sending a hr datapoint """
         if index < len(self.hr_data):
             for handler in self.subscribers["HR"]:
                 data_point = self.hr_data[index]
                 handler.add_data_point(data_point)
 
 
-# TODO proper error handling on missing connection etc. probably time.wait 5 sec and try again
 class RealAPI:
-    config = configparser.ConfigParser()
-    config.read(CONFIG_PATH)
-    if not config.sections():
-        raise FileNotFoundError("Config file not found")
-
-    try:
-        print(config.sections())
-        serverAddress = config['empatica']['address']
-        serverPort = int(config['empatica']['port'])
-        bufferSize = int(config['empatica']['buffersize'])
-        deviceID = config['empatica']['deviceid']
-    except KeyError:
-        raise KeyError("ERROR reading from config file setup.cfg[empatica]")
+    serverAddress = util.config('empatica', 'address')
+    serverPort = int(util.config('empatica', 'port'))
+    bufferSize = int(util.config('empatica', 'buffersize'))
+    deviceID = util.config('empatica', 'deviceid')
 
     socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     connected = False
 
     subscribers = {"EDA": [], "IBI": [], "TEMP": [], "HR": []}
 
-    def connect(self):
-        self.socket.settimeout(3)
-        self.connect_socket()
-        self.subscribe_to_socket()
-        self.stream()
+    def add_subscriber(self, data_handler, requested_data):
+        """
+        Adds a handler as a subscriber for a specific raw data
 
-    def connect_socket(self):
+        :param data_handler: a data handler for a specific measurement that subscribes to a specific raw data
+        :type data_handler: DataHandler
+        :param requested_data: The specific raw data that the data handler subscribes to
+        :type requested_data: str
+        """
+        assert requested_data in self.subscribers.keys()
+        self.subscribers[requested_data].append(data_handler)
+
+    def connect(self):
+        """ Connect to the empatica wristband """
+        self.socket.settimeout(3)
+        self._connect_socket()
+        self._subscribe_to_socket()
+        self._stream()
+
+    def _connect_socket(self):
+        """ Create the socket connection and connect the device to the socket """
         if not self.connected:
             self.socket.connect((self.serverAddress, self.serverPort))
             self.connected = True
@@ -105,7 +111,9 @@ class RealAPI:
         response = self.socket.recv(self.bufferSize)
 
         if self.deviceID not in response.decode("utf-8"):
-            print("throw error here, device not available")
+            print("Device not available, reconnecting in 10 sec...")
+            time.sleep(10)
+            return self.connect()
 
         self.socket.send(("device_connect " + self.deviceID + "\r\n").encode())
         self.socket.recv(self.bufferSize)
@@ -113,7 +121,8 @@ class RealAPI:
         self.socket.send("pause ON\r\n".encode())
         self.socket.recv(self.bufferSize)
 
-    def subscribe_to_socket(self):
+    def _subscribe_to_socket(self):
+        """ Subscribe to the data on the socket connection """
         self.socket.send(("device_subscribe " + 'gsr' + " ON\r\n").encode())
         self.socket.recv(self.bufferSize)
 
@@ -135,15 +144,18 @@ class RealAPI:
         self.socket.send("pause OFF\r\n".encode())
         self.socket.recv(self.bufferSize)
 
-    def stream(self):
+    def _stream(self):
+        """ Continuously receive data from the socket connection """
         while True:
             try:
                 response = self.socket.recv(self.bufferSize).decode("utf-8")
                 if "connection lost to device" in response:
-                    print("LOST CONNECTION TO DEVICE")
+                    print("Lost connection to device, reconnecting in 10 sec...")
+                    time.sleep(10)
                     return self.connect()
                 if "turned off via button" in response:
-                    print("The wristband was turned off, please reconnect it")
+                    print("The wristband was turned off, reconnecting in 10 sec...")
+                    time.sleep(10)
                     return self.connect()
 
                 samples = response.split("\n")
@@ -151,13 +163,13 @@ class RealAPI:
                     name = samples[i].split()[0]
                     data = float(samples[i].split()[2].replace(',', '.'))
                     if name == "E4_Temperature":
-                        self.send_data_to_subscriber("TEMP", data)
+                        self._send_data_to_subscriber("TEMP", data)
                     elif name == "E4_Gsr":
-                        self.send_data_to_subscriber("EDA", data)
+                        self._send_data_to_subscriber("EDA", data)
                     elif name == "E4_Hr":
-                        self.send_data_to_subscriber("HR", data)
+                        self._send_data_to_subscriber("HR", data)
                     elif name == "E4_Ibi":
-                        self.send_data_to_subscriber("IBI", data)
+                        self._send_data_to_subscriber("IBI", data)
 
                     """
                     UNUSED DATA POINTS
@@ -168,21 +180,18 @@ class RealAPI:
                     """
 
             except socket.timeout:
-                print("Socket timeout")
+                print("Socket timeout, reconnecting in 10 sec...")
+                time.sleep(10)
                 return self.connect()
 
-    def send_data_to_subscriber(self, name, data):
+    def _send_data_to_subscriber(self, name, data):
+        """
+        Sends the specified data to all handlers that are subscribing to it
+
+        :param name: The name of the data point we are sending
+        :type name: str
+        :param data: The datapoint we are sending
+        :type data: float
+        """
         for handler in self.subscribers[name]:
             handler.add_data_point(data)
-
-    def add_subscriber(self, data_handler, requested_data):
-        """
-        Adds a handler as a subscriber for a specific raw data
-
-        :param data_handler: a data handler for a specific measurement that subscribes to a specific raw data
-        :type data_handler: DataHandler
-        :param requested_data: The specific raw data that the data handler subscribes to
-        :type requested_data: str
-        """
-        assert requested_data in self.subscribers.keys()
-        self.subscribers[requested_data].append(data_handler)

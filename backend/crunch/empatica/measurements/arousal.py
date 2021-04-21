@@ -1,4 +1,4 @@
-def compute_arousal(eda) -> float:
+def compute_arousal(eda):
     """
     calculating arousal based on EDA positive change [1]
 
@@ -9,8 +9,9 @@ def compute_arousal(eda) -> float:
     Communication Methods and Measures, 6 (4), 237–250.
 
     :param eda: list of eda data points
-    :type eda: list
+    :type eda: list of float
     :return: positive_change - a measure for arousal
+    :rtype: list of float
     """
     positive_change = 0
     for i in range(len(eda) - 1):

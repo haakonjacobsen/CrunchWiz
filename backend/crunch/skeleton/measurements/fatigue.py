@@ -1,48 +1,72 @@
 import numpy as np
 import sympy as sym
 
-from crunch.skeleton.measurements.helpers import finite_diff
 
-
-def fatigue(n):
-    """Measures fatigue for every joint
-    by finding their functions, and applying
-    finite differences
-    :param n: Datapoints
-    :type n: list of 2d tuples
-    :return totalFatigue: Total fatigue
-    :type totalFatigue: float
-    :return fatigeArray: List of fatigue
-    :type fatigeArray: list
+def fatigue(pos):
     """
-    total_joints = 24
+    Measures fatigue for every joint by using finite differences
+
+    :param pos: positions of each joint
+    :type pos: list of list of tuple
+    :return: total fatigue
+    :rtype: float
+    """
+    total_joint = 24
     joint_fatigue = 0.0
-    for i in range(len(n) - 1):
-        joint_fatigue = 0.0
-        for j in range(len(n[i])):
-            if n[i][j] == (0.0, 0.0) or n[i + 1][j] == (0.0, 0.0):
-                continue
-            f = equation(n[i][j], n[i + 1][j])
+    for i in range(len(pos) - 1):
+        for j in range(len(pos[i])):
+            f = equation(pos[i][j], pos[i + 1][j])
             joint_fatigue += np.abs(finite_diff(f, i, i + 1))
-    frameFatigue = joint_fatigue / total_joints
-    return round(frameFatigue, 6)
+    frame_fatigue = joint_fatigue / total_joint
+    return round(frame_fatigue, 6)
 
 
-def equation(x, y):
-    """A helper function to calculate
-    the equation given two points
-    :param x: Datapoints for x
-    :type x: list
-    :param y: Datapoints for y
-    :type y: list
-    :return x: equation for x with respect to t
-    :type sympy: equation
-    :return x: equation for x with respect to t
-    :type sympy: equation
+def equation(pos1, pos2):
+    """
+    Creates a symbolic equation
+
+    :param pos1: x and y coordinate for first position
+    :type pos1: tuple
+    :param pos2: x and y coordinate for second position
+    :type pos2: tuple
+    :return: symbolic equation with respect to t
+    :rtype: equation
     """
     t = sym.symbols("t")
-    x1, y1 = x[0], x[1]
-    x2, y2 = y[0], y[1]
+    x1, y1 = pos1[0], pos1[1]
+    x2, y2 = pos2[0], pos2[1]
     m = (y2 - y1) / (x2 - x1)
     f = m * (t - x1) + y1
     return f
+
+
+def finite_diff(f, tstart, tend):
+    """
+    Uses finite difference of the third
+    derivate, of second order to estimate jerk
+    error. coefficient is ommited in this calculation
+    h is default set to 0.25, since an interval 1 second
+    it will get 4 evenly splits
+
+    :param f: function with respect to t
+    :type f: equation
+    :param tstart: start of interval
+    :type tstart: int
+    :param tend: end of interval
+    :type tend: int
+    :return: Estimated jerk
+    :rtype: float
+    """
+
+    t = sym.symbols("t")
+    h = 0.25
+    t0 = tstart
+    t1 = tstart + h
+    t2 = t1 + h
+    t3 = t2 + h
+    t4 = tend
+    numerator = (f.evalf(6, subs={t: t0}) / 2 + f.evalf(6, subs={t: t1})
+                 - f.evalf(6, subs={t: t3}) + f.evalf(6, subs={t: t4}) / 2)
+    denominator = h ** 3
+    diff = numerator / denominator
+    return diff
