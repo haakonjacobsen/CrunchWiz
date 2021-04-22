@@ -4,7 +4,7 @@ from crunch.empatica.api import RealAPI
 import random
 
 
-class MockSubscriber:
+class MockSubscriber():
     """ Mock subscriber to test that we receive data points from the api """
     nr_points_received = 0
 

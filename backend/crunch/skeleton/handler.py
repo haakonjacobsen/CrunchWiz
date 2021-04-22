@@ -42,10 +42,6 @@ class DataHandler:
         self.baseline_length = baseline_length
         self.time = util.Time()
 
-    def __str__(self):
-        return self.measurement_func.__name__
-
-    # TODO baseline parameter in init
     def baseline_phase(self):
         """
         Appends a value to be used for calculating the baseline, then checks if it is time to
