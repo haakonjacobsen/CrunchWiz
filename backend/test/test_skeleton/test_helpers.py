@@ -2,8 +2,8 @@
 import numpy as np
 import sympy as sym
 
-from crunch.skeleton.measurements.helpers import finite_diff, norm_by_array
-
+from crunch.skeleton.measurements.helpers import norm_by_array
+from crunch.skeleton.measurements.fatigue import finite_diff
 tol = 1e-5
 t = sym.symbols("t")
 

@@ -1,5 +1,7 @@
 # flake8: noqa
 import numpy as np
+from skeleton_util import get_n_skeleton_points
+
 
 from crunch.skeleton.measurements.stability_of_motion import \
     stability_of_motion
