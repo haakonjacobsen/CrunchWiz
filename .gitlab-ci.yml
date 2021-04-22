@@ -30,6 +30,14 @@ backend-test:
   image: python:3.6.13-buster
   before_script:
     - apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
+    - sudo apt-get install libcblas-dev
+    - sudo apt-get install libhdf5-dev
+    - sudo apt-get install libhdf5-serial-dev
+    - sudo apt-get install libatlas-base-dev
+    - sudo apt-get install libjasper-dev 
+    - sudo apt-get install libqtgui4 
+    - sudo apt-get install libqt4-test
+
     - cd backend
     - pip3 install -r requirements.txt
   script:
