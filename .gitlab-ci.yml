@@ -29,7 +29,7 @@ backend-test:
   stage: test
   image: python:3.6.13-buster
   before_script:
-    - apt-get update && apt-get install python3-opencv -y
+    - apt-get update && apt-get install python3-opencv -y && apt-get install libxcb-xinerama0
     - cd backend
     - pip3 install -r requirements.txt --no-cache-dir
   script:
