@@ -5,7 +5,7 @@
 
     https://www.tobiipro.com/product-listing/tobii-pro-x3-120/
 2. Interface with python and this project:
-    * python 3.5 is needed. Important, and not mentioned in link below
+    * python 3.6 is needed. Important, and not mentioned in link below
     * Follow instructions: http://developer.tobiipro.com/python/python-step-by-step-guide.html
 
 When running main and the eyetracker is not connected or appropriate software installed, the eyetracker will just print
