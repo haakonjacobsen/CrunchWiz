@@ -2,7 +2,7 @@ variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
 stages:
-  - analysis
+  #- analysis
   - test
 
 frontend-lint:
