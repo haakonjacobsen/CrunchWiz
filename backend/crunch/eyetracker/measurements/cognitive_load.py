@@ -18,7 +18,7 @@ def compute_cognitive_load(lpup, rpup):
     """
     assert len(lpup) == len(rpup)
     signal_dur = len(lpup) / 120
-    average_pupil_values = [(l + r) / 2 for l, r in zip(lpup, rpup)]
+    average_pupil_values = [(lp + rp) / 2 for lp, rp in zip(lpup, rpup)]
 
     return lhipa(average_pupil_values, signal_dur)
 
