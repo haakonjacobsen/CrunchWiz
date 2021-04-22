@@ -1,12 +1,14 @@
 import numpy as np
 
 from crunch.eyetracker.measurements.anticipation import compute_anticipation
-from crunch.eyetracker.measurements.cognitive_load import \
-    compute_cognitive_load
-from crunch.eyetracker.measurements.information_processing_index import (compute_information_processing_index,
-                                                                         compute_ipi_thresholds)
-from crunch.eyetracker.measurements.perceived_difficulty import \
-    compute_perceived_difficulty
+from crunch.eyetracker.measurements.cognitive_load import compute_cognitive_load
+from crunch.eyetracker.measurements.information_processing_index import (
+    compute_information_processing_index,
+    compute_ipi_thresholds,
+)
+from crunch.eyetracker.measurements.perceived_difficulty import (
+    compute_perceived_difficulty,
+)
 
 
 class TestCrunch:
@@ -17,7 +19,12 @@ class TestCrunch:
 
     def test_compute_information_processing_index(self):
         short, long = compute_ipi_thresholds(self.init, self.end, self.fx, self.fy)
-        assert compute_information_processing_index(self.init, self.end, self.fx, self.fy, short, long) > 0
+        assert (
+            compute_information_processing_index(
+                self.init, self.end, self.fx, self.fy, short, long
+            )
+            > 0
+        )
 
     def test_compute_anticipation(self):
         assert True

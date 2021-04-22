@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 
+
 def get_n_skeleton_points(n):
     """
     :param n: number of points to return
