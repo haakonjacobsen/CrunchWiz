@@ -36,5 +36,5 @@ backend-test:
     - pip3 install -r requirements.txt
     - cd ..
   script:
-    - python -m pytest backend/test/ --cov=crunch/
+    - python -m pytest backend/tests/ --cov=crunch/
 
