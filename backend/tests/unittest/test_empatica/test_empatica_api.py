@@ -1,7 +1,8 @@
+import random
+
 import pytest
 
 from crunch.empatica.api import RealAPI
-import random
 
 
 class MockSubscriber():

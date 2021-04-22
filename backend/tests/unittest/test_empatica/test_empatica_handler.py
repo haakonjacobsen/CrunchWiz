@@ -1,5 +1,7 @@
-import pytest
 import random
+
+import pytest
+
 from crunch.empatica.handler import DataHandler
 
 

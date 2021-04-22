@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def saccade_duration(start_time, end_time):
     """
     Finds the duration of a saccade
@@ -137,4 +138,3 @@ def compute_anticipation(initTime, endTime, fx, fy):
         return "low"
     else:
         return "high"
-

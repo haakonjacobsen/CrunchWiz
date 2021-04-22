@@ -1,9 +1,12 @@
 # flake8: noqa
-import pytest
-import pandas as pd
 import os
 
-from crunch.skeleton.measurements import fatigue, stability_of_motion, most_used_joints, amount_of_motion
+import pandas as pd
+import pytest
+
+from crunch.skeleton.measurements import (amount_of_motion, fatigue,
+                                          most_used_joints,
+                                          stability_of_motion)
 
 
 @pytest.fixture(scope="module")

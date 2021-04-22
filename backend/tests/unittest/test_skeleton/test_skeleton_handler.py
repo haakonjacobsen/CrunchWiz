@@ -1,6 +1,6 @@
-import pandas as pd
 import os
 
+import pandas as pd
 import pytest
 
 from crunch.skeleton.handler import DataHandler

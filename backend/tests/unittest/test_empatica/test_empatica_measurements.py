@@ -1,9 +1,14 @@
 # flake8: noqa
-import pytest
-import pandas as pd
 import os
 
-from crunch.empatica.measurements import compute_stress, compute_entertainment, compute_emotional_regulation, compute_arousal, compute_engagement
+import pandas as pd
+import pytest
+
+from crunch.empatica.measurements import (compute_arousal,
+                                          compute_emotional_regulation,
+                                          compute_engagement,
+                                          compute_entertainment,
+                                          compute_stress)
 
 
 @pytest.fixture(scope="module")

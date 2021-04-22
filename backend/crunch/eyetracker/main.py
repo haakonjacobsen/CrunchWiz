@@ -1,8 +1,10 @@
 from crunch import util
-
 from crunch.eyetracker.api import EyetrackerAPI
 from crunch.eyetracker.handler import DataHandler, ThresholdDataHandler
-from crunch.eyetracker.measurements import compute_perceived_difficulty, compute_ipi, compute_cognitive_load, compute_anticipation
+from crunch.eyetracker.measurements import (compute_anticipation,
+                                            compute_cognitive_load,
+                                            compute_ipi,
+                                            compute_perceived_difficulty)
 
 
 def start_eyetracker():
