@@ -40,7 +40,7 @@ def start_eyetracker(api=EyetrackerAPI):
 
         anticipation_handler = DataHandler(
             compute_anticipation, "anticipation.csv", ["initTime", "endTime", "fx", "fy"],
-            window_length=10, window_step=10
+            window_length=10, window_step=10, calculate_baseline=False
         )
         api.add_subscriber(anticipation_handler)
 
