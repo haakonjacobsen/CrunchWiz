@@ -71,8 +71,8 @@ class DataHandler:
 
     def transition_to_csv_phase(self):
         self.baseline = float(sum(self.list_of_baseline_values) / len(self.list_of_baseline_values))
-        assert 0 <= self.baseline < float('inf') and type(self.baseline) == float
         self.phase_func = self.csv_phase
+        assert 0 <= self.baseline < float('inf') and type(self.baseline) == float
 
     def csv_phase(self):
         measurement = self.measurement_func(**{key: list(queue) for key, queue in self.data_queues.items()})

@@ -18,7 +18,7 @@ def fatigue(pos):
             f = equation(pos[i][j], pos[i + 1][j])
             joint_fatigue += np.abs(finite_diff(f, i, i + 1))
     frame_fatigue = joint_fatigue / total_joint
-    return round(frame_fatigue, 6)
+    return float(frame_fatigue)
 
 
 def equation(pos1, pos2):

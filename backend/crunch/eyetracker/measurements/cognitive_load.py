@@ -23,12 +23,19 @@ def compute_cognitive_load(lpup, rpup):
     return lhipa(average_pupil_values, signal_dur)
 
 
+"""modmax (Duchowski, Krejtz, Krejtz, Biele, Niedzielska, Kiefer, Raubal, Giannopoulos) https://dl.acm.
+org/doi/pdf/10.1145/
+3173574.3173856?casa_token=G1ECXzSt_
+-oAAAAA:fr5dMZxCJtCn4s_
+7o0kaMabcJ-N1K7BeFOjtb34FQfGrj_8T_ZHKB9BePDdRPz-ye8HJ8u5yjc_S
+"""
+
+
 def modmax(d):
     # compute signal modulus
     m = [0.0] * len(d)
     for i in range(len(d)):
         m[i] = math.fabs(d[i])
-
     # if value is larger than both neighbours , and strictly
     # larger than either , then it is a local maximum
     t = [0.0] * len(d)
@@ -42,6 +49,12 @@ def modmax(d):
         else:
             t[i] = 0.0
     return t
+
+
+"""lhipa (Duchowski, Krejtz, Gehrer, Bafna, Bækgaard): https://dl.acm.org/doi/abs/10.
+1145/3313831.3376394?casa_token=Iv6GjF1lZBgAAAAA%3A_rk95bvQKtzGZ_
+0oHbj0KdsrCMZA-GqaRF5Y-YSc9Z_HFXzn-Yyhz86wg9_McV3pafKL2XGzRBNO
+"""
 
 
 def lhipa(d, signal_dur):
