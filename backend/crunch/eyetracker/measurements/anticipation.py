@@ -1,3 +1,5 @@
+import numpy as np
+
 def saccade_duration(start_time, end_time):
     """
     Finds the duration of a saccade
@@ -129,7 +131,10 @@ def compute_anticipation(initTime, endTime, fx, fy):
         sacc_speed = sacc_len / sacc_dur
         sum_cube_difference += (sacc_speed - avg_speed) ** 3
         count += 1
-    try:
-        return sum_cube_difference / ((count - 1) * (var ** 0.5) ** 3)
-    except ZeroDivisionError:
-        return 0
+    if sum_cube_difference == 0:
+        return "medium"
+    elif np.sign(sum_cube_difference) == np.sign(((count - 1) * (var ** 0.5) ** 3)):
+        return "low"
+    else:
+        return "high"
+

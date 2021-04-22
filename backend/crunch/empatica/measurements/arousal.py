@@ -18,4 +18,4 @@ def compute_arousal(eda):
         if eda[i + 1] > eda[i]:
             positive_change += eda[i + 1] - eda[i]
 
-    return positive_change
+    return float(positive_change)

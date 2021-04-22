@@ -10,7 +10,7 @@ from crunch.skeleton.measurements import fatigue, stability_of_motion, most_used
 def skeleton_fixture():
     def _skeleton_fixture_factory(n, m):
         skeleton_data = []
-        df = pd.pandas.read_csv(os.path.join(os.path.dirname(__file__), "test_data.csv"), header=None)
+        df = pd.pandas.read_csv(os.path.join(os.path.dirname(__file__), "mock_data/test_data.csv"), header=None)
         n = min(n, len(df))
         for i in range(n, m):
             temp_array = []

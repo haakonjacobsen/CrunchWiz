@@ -9,7 +9,7 @@ from crunch.skeleton.handler import DataHandler
 @pytest.fixture(scope="module")
 def skeleton_fixture():
     skeleton_data = []
-    df = pd.pandas.read_csv(os.path.join(os.path.dirname(__file__), "test_data.csv"), header=None)
+    df = pd.pandas.read_csv(os.path.join(os.path.dirname(__file__), "mock_data/test_data.csv"), header=None)
     row = df.iloc[0].tolist()
     for j in range(0, len(row) - 1, 2):
         skeleton_data.append((float(row[j].strip().strip("[]()")), float(row[j + 1].strip().strip("[]()"))))

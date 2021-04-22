@@ -30,9 +30,8 @@ def test_compute_information_processing_index(fixation_fixture):
     assert compute_ipi(**fixation_fixture, short_threshold=short, long_threshold=long) > 0
 
 
-# TODO change to in ["low" ....]
 def test_compute_anticipation(fixation_fixture):
-    assert compute_anticipation(**fixation_fixture) < 0
+    assert compute_anticipation(**fixation_fixture) in ["low", "medium", "high"]
 
 
 def test_compute_cognitive_load(gaze_fixture):
