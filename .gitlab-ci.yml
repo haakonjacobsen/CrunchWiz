@@ -29,7 +29,7 @@ backend-test:
   stage: test
   image: python:3.6.13-buster
   before_script:
-    - apt-get update && apt-get install -y python3-opencv
+    - apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
     - cd backend
     - pip3 install -r requirements.txt
   script:
