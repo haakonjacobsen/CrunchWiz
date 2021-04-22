@@ -1,6 +1,6 @@
 from crunch.eyetracker.handler import (CognitiveLoadHandler, DataHandler,
                                        IpiHandler)
-from crunch.eyetracker.measurements.anticipation import compute_anticipation
+from crunch.eyetracker.measurements import compute_perceived_difficulty
 
 
 class TestCrunch:
@@ -16,7 +16,7 @@ class TestCrunch:
             5.221226103401899, 6.750097979894939]
 
     def test_DataHandler(self):
-        handler = DataHandler(compute_anticipation, "anticipation.csv", ["initTime", "endTime", "fx", "fy"])
+        handler = DataHandler(compute_perceived_difficulty, "anticipation.csv", ["initTime", "endTime", "fx", "fy"])
         for i in range(1, 20):
             handler.send_data_window({"initTime": self.init, "endTime": self.end, "fx": self.fx, "fy": self.fy})
             assert len(handler.list_of_baseline_values) == i
