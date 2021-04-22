@@ -2,28 +2,28 @@ variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
 stages:
-  #- analysis
+  - analysis
   - test
 
-frontend-lint:
-  stage: analysis
-  image: node:alpine
-  before_script:
-    - cd frontend
-    - apk add --no-cache git
-    - yarn
-  script:
-    - yarn lint
-
-lint-python:
-  stage: analysis
-  image: python:3.8.7-buster
-  before_script:
-    - cd backend
-    - pip3 install isort flake8
-  script:
-    - flake8
-    - isort -rc .
+#frontend-lint:
+#  stage: analysis
+#  image: node:alpine
+#  before_script:
+#    - cd frontend
+#    - apk add --no-cache git
+#    - yarn
+#  script:
+#    - yarn lint
+#
+#lint-python:
+#  stage: analysis
+#  image: python:3.8.7-buster
+#  before_script:
+#    - cd backend
+#    - pip3 install isort flake8
+#  script:
+#    - flake8
+#    - isort -rc .
 
 backend-test:
   stage: test
