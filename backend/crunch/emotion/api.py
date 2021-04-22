@@ -1,6 +1,8 @@
-from PyEmotion import *
-import cv2 as cv
 import time
+
+import cv2 as cv
+import PyEmotion
+
 import crunch.util as util
 
 
@@ -8,7 +10,7 @@ def start_emotion():
     # Open you default camera
     cap = cv.VideoCapture(0)
     cap.set(cv.CAP_PROP_BUFFERSIZE, 1)
-    er = DetectFace(device='cpu', gpu_id=0)
+    er = PyEmotion.DetectFace(device='cpu', gpu_id=0)
 
     timer = util.Time()
 

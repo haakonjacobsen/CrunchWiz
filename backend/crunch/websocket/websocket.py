@@ -2,13 +2,13 @@ import asyncio
 import functools
 import json
 import socket
+from datetime import datetime
 
 import pandas as pd
 import websockets
 from watchgod import awatch
 
 import crunch.util as util
-from datetime import datetime
 
 
 async def watcher(queue):

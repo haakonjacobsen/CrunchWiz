@@ -1,7 +1,6 @@
-import time
 from math import isnan
 
-from crunch.eyetracker.handler import DataHandler, IpiHandler  # noqa
+import tobii_research as tr
 
 
 class GazedataToFixationdata:
@@ -20,23 +19,20 @@ class GazedataToFixationdata:
     screen_proportions = (1920, 1080)
     velocity_threshold = 0.05
     first_time_stamp = None
-    last_valid_pupil_data = (0.5, 0.5)
     # d temp, used for debugging and should be deleted:
     list_of_velocities = []
     list_of_high_velocities = []
 
-    def insert_new_gaze_data(self, left_eye_fx, left_eye_fy, right_eye_fx, right_eye_fy, lpup, rpup, timestamp):
+    def insert_new_gaze_data(self, left_eye_fx, left_eye_fy, right_eye_fx, right_eye_fy, timestamp):
         """
         Called from RealAPI
         All parameters are float, but can be nan.
         return: fixation point or None
 
         """
-
         fixation_point = None
         fx = self.preprocess_eyetracker_gazepoint(left_eye_fx, right_eye_fx, is_fx=True) * self.screen_proportions[0]
         fy = self.preprocess_eyetracker_gazepoint(left_eye_fy, right_eye_fy, is_fx=False) * self.screen_proportions[1]
-        lpup, rpup = self.preprocess_eyetracker_pupils(lpup, rpup)
 
         if self.last_gaze_data_point is not None:
             velocity = self.velocity(fx, fy, timestamp, self.last_gaze_data_point['fx'],
@@ -54,17 +50,13 @@ class GazedataToFixationdata:
             # If not a saccade, this is a fixation
             else:
                 self.last_velocity_was_fixation = True
-                self.list_of_gaze_data_points_in_a_fixation.append(
-                    {"fx": fx, "fy": fy, "lpup": lpup, "rpup": rpup, "timestamp": timestamp}
-                )
+                self.list_of_gaze_data_points_in_a_fixation.append({"fx": fx, "fy": fy, "timestamp": timestamp})
 
-        self.last_gaze_data_point = {"fx": fx, "fy": fy, "lpup": lpup, "rpup": rpup, "timestamp": timestamp}
+        self.last_gaze_data_point = {"fx": fx, "fy": fy, "timestamp": timestamp}
         if self.first_time_stamp is None:
             self.first_time_stamp = timestamp
 
         return fixation_point
-
-        # still a fixation:
 
     def end_fixation(self):
         number_of_gazepoints = len(self.list_of_gaze_data_points_in_a_fixation)
@@ -73,11 +65,7 @@ class GazedataToFixationdata:
         endTime = (self.list_of_gaze_data_points_in_a_fixation[-1]["timestamp"] - self.first_time_stamp) / 1000
         fx = sum(gazepoint['fx'] for gazepoint in self.list_of_gaze_data_points_in_a_fixation) / number_of_gazepoints
         fy = sum(gazepoint['fy'] for gazepoint in self.list_of_gaze_data_points_in_a_fixation) / number_of_gazepoints
-        lpup = sum(
-            gazepoint['lpup'] for gazepoint in self.list_of_gaze_data_points_in_a_fixation) / number_of_gazepoints
-        rpup = sum(
-            gazepoint['rpup'] for gazepoint in self.list_of_gaze_data_points_in_a_fixation) / number_of_gazepoints
-        fixation_point = {"initTime": initTime, "endTime": endTime, "fx": fx, "fy": fy, "lpup": lpup, "rpup": rpup}
+        fixation_point = {"initTime": initTime, "endTime": endTime, "fx": fx, "fy": fy}
         self.list_of_gaze_data_points_in_a_fixation = []
 
         return fixation_point
@@ -89,9 +77,6 @@ class GazedataToFixationdata:
     def velocity(self, fx1, fy1, timestamp1, fx2, fy2, timestamp2):
         """Velocity measures how fast the eyes move from gazepoint 1 to gazepoint 2. euclidean distance/time"""
         return self.distance(fx1, fy1, fx2, fy2) / (abs(timestamp2 - timestamp1))
-
-    def set_screen_proportions(self, width=1920, height=1080):
-        self.screen_proportions = (width, height)
 
     def preprocess_eyetracker_gazepoint(self, left_eye_fx_or_fy, right_eye_fx_or_fy, is_fx=True):
         """
@@ -113,89 +98,71 @@ class GazedataToFixationdata:
             right_eye_fx_or_fy = left_eye_fx_or_fy
         return (left_eye_fx_or_fy + right_eye_fx_or_fy) / 2
 
-    def preprocess_eyetracker_pupils(self, lpup, rpup):
-        """If pupil data is invalid, use previous pupil data, or the other valid pupil"""
-        if isnan(lpup) and isnan(rpup):
-            return self.last_valid_pupil_data[0], self.last_valid_pupil_data[1]
-        elif isnan(lpup) and not isnan(rpup):
-            self.last_valid_pupil_data = (rpup, rpup)
-            return rpup, rpup
-        elif not isnan(lpup) and isnan(rpup):
-            self.last_valid_pupil_data = (lpup, lpup)
-            return lpup, lpup
-
-        else:
-            self.last_valid_pupil_data = (lpup, rpup)
-            return lpup, rpup
-            # use previous values
-
-    def print_debug(self):
-        print(self.list_of_high_velocities, self.list_of_velocities, self.list_of_gaze_data_points_in_a_fixation)
-
-    def coordinate_is_valid(self, c):
-        if type(c) == float and not isnan(c):
-            return min(0, max(1, c))
-
 
 class EyetrackerAPI:
     """
     Responsible for receiving data from the eyetracker, cleaning it, and send a 10 second time window
     of fixation data to every handler.
     """
-    list_of_raw_data_names = ["initTime", "endTime", "fx", "fy", "lpup", "rpup"]
-    dict_of_lists_of_fixation_data = {"initTime": [], "endTime": [], "fx": [], "fy": [], "lpup": [], "rpup": []}
-    list_of_handlers = []
-    window_size_in_sec = 10
-    last_window_time = time.time()
-    gaze_to_fixation = GazedataToFixationdata()
+    subscribers = {"gaze": [], "fixation": []}
+    last_valid_pupil_data = (0.5, 0.5)
 
-    # handle preprocessing
+    def __init__(self):
+        self.gaze_to_fixation = GazedataToFixationdata()
 
-    def insert_new_gaze_data(self, left_eye_fx, left_eye_fy, right_eye_fx, right_eye_fy, lpup, rpup, timestamp):
-        fixation_point_or_none = self.gaze_to_fixation.insert_new_gaze_data(left_eye_fx, left_eye_fy,
-                                                                            right_eye_fx, right_eye_fy,
-                                                                            lpup, rpup, timestamp)
-        if fixation_point_or_none is not None:
-            # print("realAPI fixation: ", self.dict_of_lists_of_fixation_data)
-            self.insert_new_fixation_data(fixation_point_or_none['initTime'],
-                                          fixation_point_or_none['endTime'],
-                                          fixation_point_or_none['lpup'],
-                                          fixation_point_or_none['rpup'],
-                                          fixation_point_or_none['fx'],
-                                          fixation_point_or_none['fy'])
-            if self.is_time_to_send_next_window():
-                self.send_data_to_handlers()
+    def connect(self):
+        """ Connect the eyetracket to the callback function """
+        eyetrackers = tr.find_all_eyetrackers()
+        if len(eyetrackers) == 0:
+            print("No eyetracker was found")
+        else:
+            my_eyetracker = eyetrackers[0]
+            my_eyetracker.subscribe_to(tr.EYETRACKER_GAZE_DATA, self.gaze_data_callback, as_dictionary=True)
 
-    def is_time_to_send_next_window(self):
-        return (time.time() > self.last_window_time + self.window_size_in_sec and
-                len(self.dict_of_lists_of_fixation_data["initTime"]) > 5)
+    def gaze_data_callback(self, gaze_data):
+        """Callback function that the eyetracker device calls 120 times a second. Inserts data to EyetrackerAPI"""
+        left_eye_fx, left_eye_fy = gaze_data['left_gaze_point_on_display_area']
+        right_eye_fx, right_eye_fy = gaze_data['right_gaze_point_on_display_area']
+        timestamp = gaze_data['device_time_stamp']
+        lpup = gaze_data['left_pupil_diameter']
+        rpup = gaze_data['right_pupil_diameter']
 
-    def send_data_to_handlers(self):
+        # handle fixation data
+        fixation_point = self.gaze_to_fixation.insert_new_gaze_data(left_eye_fx,
+                                                                    left_eye_fy,
+                                                                    right_eye_fx,
+                                                                    right_eye_fy,
+                                                                    timestamp)
+        if fixation_point is not None:
+            self.send_data_to_handlers("fixation", fixation_point)
+
+        # handle gaze data
+        gaze_point = self.preprocess_eyetracker_pupils(lpup, rpup)
+        self.send_data_to_handlers("gaze", gaze_point)
+
+    def preprocess_eyetracker_pupils(self, lpup, rpup):
+        """If pupil data is invalid, use previous pupil data, or the other valid pupil"""
+        if isnan(lpup) and not isnan(rpup):
+            self.last_valid_pupil_data = (rpup, rpup)
+        elif not isnan(lpup) and isnan(rpup):
+            self.last_valid_pupil_data = (lpup, lpup)
+        else:
+            self.last_valid_pupil_data = (lpup, rpup)
+        lpup, rpup = self.last_valid_pupil_data
+        return {"lpup": lpup, "rpup": rpup}
+
+    def send_data_to_handlers(self, name, data):
         """Send data to all handlers, reset lists raw data lists, update timer """
-        for handler in self.list_of_handlers:
-            handler.send_data_window(
-                {key: self.dict_of_lists_of_fixation_data[key] for key in handler.get_data_subscribtions()}
-            )
-        self.last_window_time = time.time()
-        self.reset_fixation_data_lists()
+        for handler in self.subscribers[name]:
+            handler.add_data_point(data)
 
-    def insert_new_fixation_data(self, initTime, endTime, lpup, rpup, fx, fy):
-        self.dict_of_lists_of_fixation_data["initTime"].append(initTime)
-        self.dict_of_lists_of_fixation_data["endTime"].append(endTime)
-        self.dict_of_lists_of_fixation_data["lpup"].append(lpup)
-        self.dict_of_lists_of_fixation_data["rpup"].append(rpup)
-        self.dict_of_lists_of_fixation_data["fx"].append(fx)
-        self.dict_of_lists_of_fixation_data["fy"].append(fy)
-
-    def reset_fixation_data_lists(self):
-        self.dict_of_lists_of_fixation_data = {"initTime": [], "endTime": [], "fx": [], "fy": [], "lpup": [],
-                                               "rpup": []}
-
-    def add_subscriber(self, handler):
+    def add_subscriber(self, handler, requested_data):
         """
-        Adds a handler as a subscriber for a specific raw data
+        Adds a handler as a subscriber for a specific requested data
 
-        :param data_handler: a data handler for a specific measurement that subscribes to a specific raw data
-        :type data_handler: DataHandler
+        :param handler: a data handler for a specific measurement that subscribes to a specific raw data
+        :type handler: DataHandler
+        :param requested_data: name of the requested data
+        :type requested_data: str
         """
-        self.list_of_handlers.append(handler)
+        self.subscribers[requested_data].append(handler)

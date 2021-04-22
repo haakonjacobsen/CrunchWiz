@@ -4,15 +4,11 @@ import numpy as np
 import pywt
 
 
-def compute_cognitive_load(initTime, endTime, lpup, rpup):
+def compute_cognitive_load(lpup, rpup):
     """
     Computes the cognitive load based on the size of the pupils in a time window
     The modmax and lhipa algorithm are taken directly from this paper: https://doi.org/10.1145/3313831.3376394
 
-    :param initTime: timestamps for start time of each data point
-    :type initTime: list of int
-    :param endTime: timestamps for end time of each data point
-    :type endTime: list of int
     :param lpup: values for left pupil size
     :type lpup: list of int
     :param rpup: values for right pupil size
@@ -21,8 +17,7 @@ def compute_cognitive_load(initTime, endTime, lpup, rpup):
     :rtype: float
     """
     assert len(lpup) == len(rpup)
-    # TODO remove inittime and endtime, find signalduration by len(lpup)/120
-    signal_dur = endTime[-1] - initTime[0]
+    signal_dur = len(lpup) / 120
     average_pupil_values = [(l + r) / 2 for l, r in zip(lpup, rpup)]
 
     return lhipa(average_pupil_values, signal_dur)
