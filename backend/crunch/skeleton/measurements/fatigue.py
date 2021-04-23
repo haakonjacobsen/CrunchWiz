@@ -17,7 +17,7 @@ def fatigue(pos):
         for j in range(len(pos[i])):
             x1, x2 = pos[i][j]
             y1, y2 = pos[i+1][j]
-            if x1 - x2 == 0 or y1-y2 == 0:
+            if x1 - x2 == 0 or y1 - y2 == 0:
                 continue
             f = equation(pos[i][j], pos[i + 1][j])
             joint_fatigue += np.abs(finite_diff(f, i, i + 1))
