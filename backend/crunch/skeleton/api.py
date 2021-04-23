@@ -3,7 +3,6 @@ import sys
 import time
 from sys import platform
 
-import cv2
 import pandas as pd
 
 import crunch.util as util
@@ -109,9 +108,11 @@ class RealAPI:
                 y = dir_path + "/openpose/build/x64/Release;"
                 z = dir_path + "/openpose/build/bin;"
                 os.environ["PATH"] = os.environ["PATH"] + ";" + y + z
+                import cv2
                 import pyopenpose as op
             else:
                 sys.path.append("/openpose/build/python")
+                import cv2
                 from openpose import pyopenpose as op
         except ImportError as e:
             print(
