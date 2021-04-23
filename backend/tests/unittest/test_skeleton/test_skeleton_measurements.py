@@ -45,6 +45,7 @@ def test_stability_of_motion(skeleton_fixture, index):
 @pytest.mark.parametrize('index', range(0, 10))
 def test_fatigue(skeleton_fixture, index):
     test_array = skeleton_fixture(index, index + 2)
+    print(skeleton_fixture(index, index + 2))
     measurement = fatigue(test_array)
 
     assert type(measurement) == float and measurement > 0
