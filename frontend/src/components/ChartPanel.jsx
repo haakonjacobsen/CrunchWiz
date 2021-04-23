@@ -33,11 +33,17 @@ export default function ChartPanel({ name, graphData, dataStats }) {
         <BarGraph dataStats={formatJointStats(dataStats[name])} stat="value" />
       </div>
     );
+  } if (name === 'emotion') {
+    return (
+      <div className="Extended-graph-container Box">
+        <BarGraph dataStats={formatJointStats(dataStats[name])} stat="value" />
+      </div>
+    );
   }
   return (
     <div className="Extended-graph-container Box">
       <div className="Extended-graph-header">
-        <div className="Graph-panel Box">
+        <div className="Graph-panel Box" style={{ visibility: graph === 'line' ? 'visible' : 'hidden' }}>
           <button type="button" className={`Graph-panel-choice Left ${time === 5 ? 'selected' : ''}`} onClick={() => setTime(5)} onKeyDown={() => setTime(5)}>1 min</button>
           <button type="button" className={`Graph-panel-choice Center ${time === 10 ? 'selected' : ''}`} onClick={() => setTime(10)} onKeyDown={() => setTime(10)}>5 min</button>
           <button type="button" className={`Graph-panel-choice Center ${time === 20 ? 'selected' : ''}`} onClick={() => setTime(20)} onKeyDown={() => setTime(20)}>10 min</button>

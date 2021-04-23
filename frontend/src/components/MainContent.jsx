@@ -91,8 +91,9 @@ const MainContent = () => {
         console.log(measurment, value);
         handleJointStats(measurment, value);
         break;
-      case 'emotions':
+      case 'emotion':
         console.log(measurment);
+        handleJointStats(measurment, value);
         break;
       default:
         handleDefaultStats(measurment, value);
