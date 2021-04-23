@@ -64,7 +64,7 @@ const MainContent = () => {
     });
   }
 
-  function handleJointStats(measurement, value) {
+  function handleSpecialStats(measurement, value) {
     addStats((prevState) => {
       const copy = prevState[measurement];
       if (Object.prototype.hasOwnProperty.call(prevState, measurement)) {
@@ -85,18 +85,11 @@ const MainContent = () => {
     });
   }
 
-  function handleStats(measurment, value) {
-    switch (measurment) {
-      case 'most_used_joints':
-        console.log(measurment, value);
-        handleJointStats(measurment, value);
-        break;
-      case 'emotion':
-        console.log(measurment);
-        handleJointStats(measurment, value);
-        break;
-      default:
-        handleDefaultStats(measurment, value);
+  function handleStats(measurment, value, special) {
+    if (special) {
+      handleSpecialStats(measurment, value);
+    } else {
+      handleDefaultStats(measurment, value);
     }
   }
 
@@ -141,14 +134,14 @@ const MainContent = () => {
       if (specialMeasurements.includes(measurement.name)) {
         const dataPoint = { value: measurement.value, time: measurement.time };
         handleAdd(measurement.name, dataPoint);
-        handleStats(measurement.name, dataPoint.value);
+        handleStats(measurement.name, dataPoint.value, true);
       } else {
         const dataPoint = {
           value: parseFloat(measurement.value.toFixed(2)),
           time: measurement.time,
         };
         handleAdd(measurement.name, dataPoint);
-        handleStats(measurement.name, dataPoint.value);
+        handleStats(measurement.name, dataPoint.value, false);
       }
     } catch (error) {
       console.log(error);
