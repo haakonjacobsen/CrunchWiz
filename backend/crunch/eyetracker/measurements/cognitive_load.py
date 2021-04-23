@@ -63,8 +63,6 @@ def lhipa(d, signal_dur):
     maxlevel = pywt.dwt_max_level(len(d), filter_len=w.dec_len)
     # set high and low frequency band indeces
     hif, lof = 1, int(maxlevel / 2)
-    print(hif)
-    print(lof)
 
     # get detail coefficients of pupil diameter signal d
     cD_H = pywt.downcoef("d", d, "sym16", "per", level=hif)
@@ -95,5 +93,4 @@ def lhipa(d, signal_dur):
         if math.fabs(cD_LHt[i]) > 0:
             ctr += 1
     LHIPA = float(ctr) / tt
-
     return LHIPA

@@ -118,10 +118,10 @@ class EyetrackerAPI:
             print("No eyetracker was found")
         else:
             my_eyetracker = tr.find_all_eyetrackers()[0]
-            my_eyetracker.subscribe_to(tr.EYETRACKER_GAZE_DATA, gaze_data_callback, as_dictionary=True)
+            my_eyetracker.subscribe_to(tr.EYETRACKER_GAZE_DATA, self.gaze_data_callback, as_dictionary=True)
             #  TODO: the following snippet stops the program after x seconds. Remove this when finished developing
             time.sleep(150)  # change to how long you want the program to run
-            my_eyetracker.unsubscribe_from(tr.EYETRACKER_GAZE_DATA, gaze_data_callback)
+            # my_eyetracker.unsubscribe_from(tr.EYETRACKER_GAZE_DATA, self.gaze_data_callback)
 
 
     def gaze_data_callback(self, gaze_data):
@@ -147,7 +147,9 @@ class EyetrackerAPI:
 
     def preprocess_eyetracker_pupils(self, lpup, rpup):
         """If pupil data is invalid, use previous pupil data, or the other valid pupil"""
-        if isnan(lpup) and not isnan(rpup):
+        if isnan(lpup) and isnan(rpup):
+            pass
+        elif isnan(lpup) and not isnan(rpup):
             self.last_valid_pupil_data = (rpup, rpup)
         elif not isnan(lpup) and isnan(rpup):
             self.last_valid_pupil_data = (lpup, lpup)

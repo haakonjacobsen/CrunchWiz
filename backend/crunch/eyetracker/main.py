@@ -47,8 +47,8 @@ def start_eyetracker():
     cognitive_load_handler = DataHandler(
         measurement_func=compute_cognitive_load,
         measurement_path="cognitive_load.csv",
-        subscribed_to=["initTime", "endTime", "lpup", "rpup"],
-        window_length=500,
+        subscribed_to=["lpup", "rpup"],
+        window_length=1000,
         window_step=250,
         baseline_length=5
     )

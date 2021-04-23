@@ -15,8 +15,8 @@ def fatigue(pos):
     joint_fatigue = 0.0
     for i in range(len(pos) - 1):
         for j in range(len(pos[i])):
-            x1, x2 = pos[i][j]
-            y1, y2 = pos[i+1][j]
+            x1, y1 = pos[i][j]
+            x2, y2 = pos[i+1][j]
             if x1 - x2 == 0 or y1 - y2 == 0:
                 continue
             f = equation(pos[i][j], pos[i + 1][j])

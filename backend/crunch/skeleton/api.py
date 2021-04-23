@@ -147,3 +147,10 @@ class RealAPI:
                 break
         print("OpenPose Exited")
 
+    def display(self, datums):
+        import cv2
+        data = datums[0]
+        cv2.imshow("OpenPose 1.7.0 - CrunchWiz", data.cvOutputData)
+        key = cv2.waitKey(1)
+        return key == 27
+
