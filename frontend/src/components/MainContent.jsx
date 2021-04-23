@@ -16,7 +16,7 @@ const MainContent = () => {
   const [selectedMeasurment, setMeasurment] = useState('');
   const [graphData, addMoreData] = useState({});
   const [dataStats, addStats] = useState({});
-  const specialMeasurements = ['most_used_joints', 'emotion'];
+  const specialMeasurements = ['most_used_joints', 'emotion', 'anticipation'];
 
   function isValidIpv4Addr(ipAddress) {
     return /^(?=\d+\.\d+\.\d+\.\d+$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}$/.test(ipAddress);
@@ -48,18 +48,17 @@ const MainContent = () => {
           copy.min = value;
         }
         copy.avg = value;
-        copy.count += 1;
         return {
           ...prevState,
           [measurement]: {
-            max: copy.max, min: copy.min, avg: copy.avg, count: copy.count,
+            max: copy.max, min: copy.min, avg: copy.avg,
           },
         };
       }
       return {
         ...prevState,
         [measurement]: {
-          max: value, min: value, avg: value, count: 1,
+          max: value, min: value, avg: value,
         },
       };
     });
