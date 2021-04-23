@@ -3,7 +3,6 @@ import sys
 import time
 from sys import platform
 
-import cv2
 import pandas as pd
 
 import crunch.util as util
@@ -66,13 +65,6 @@ class MockAPI:
                 subscriber.add_data_point(self.skeleton_data[index])
 
 
-def display(datums):
-    data = datums[0]
-    cv2.imshow("OpenPose 1.7.0 - CrunchWiz", data.cvOutputData)
-    key = cv2.waitKey(1)
-    return key == 27
-
-
 class RealAPI:
     """
     Mock api that reads from csv files instead of getting data from devices
@@ -92,15 +84,23 @@ class RealAPI:
         """
         assert requested_data in self.subscribers.keys()
         self.subscribers[requested_data].append(data_handler)
+    prev_frame = [(0.0, 0.0) for _ in range(25)]
+
+    def preprocess(self, frame):
+        self.prev_frame = [(i, j) if i != 0 and j != 0 else self.prev_frame[m] for m, (i,j) in enumerate(frame)]
+        print(self.prev_frame)
+        return self.prev_frame
 
     def add_datapoint(self, datums):
         datum = datums[0]
         if datum.poseKeypoints is not None:
             fixed_data = [(row[0], row[1]) for row in datum.poseKeypoints[0]]
+            data = self.preprocess(fixed_data)
             for handler in self.subscribers["body"]:
-                handler.add_data_point(fixed_data)
+                handler.add_data_point(data)
 
     def connect(self):
+        print("connected to realapi")
         dir_path = os.path.dirname(os.path.realpath(__file__))
         try:
             if platform == "win32":
@@ -125,10 +125,10 @@ class RealAPI:
         params = dict()
         params["model_folder"] = dir_path + "/openpose/models/"
         try:
-            for key in config["openpose"]:
-                params[key] = config["openpose"][key]
-        except ValueError as e:
-            raise ValueError(e)
+            for key, value in config.items():
+                params[key] = value
+        except KeyError as e:
+            raise KeyError(e)
 
         # Starting OpenPose
         opWrapper = op.WrapperPython(op.ThreadManagerMode.AsynchronousOut)
@@ -138,10 +138,19 @@ class RealAPI:
         user_wants_to_exit = False
         while not user_wants_to_exit:
             dataframe = op.VectorDatum()
+            time.sleep(1)
+            opWrapper.setDefaultMaxSizeQueues(1)
             if opWrapper.waitAndPop(dataframe):
                 if "no_display" not in params:
-                    user_wants_to_exit = display(dataframe)
+                    user_wants_to_exit = self.display(dataframe)
                 self.add_datapoint(dataframe)
             else:
                 break
         print("OpenPose Exited")
+
+    def display(self, datums):
+        import cv2
+        data = datums[0]
+        cv2.imshow("OpenPose 1.7.0 - CrunchWiz", data.cvOutputData)
+        key = cv2.waitKey(1)
+        return key == 27
