@@ -3,7 +3,7 @@ import functools
 import json
 import socket
 from datetime import datetime
-
+import os
 import pandas as pd
 import websockets
 from watchgod import awatch
@@ -12,6 +12,8 @@ import crunch.util as util
 
 
 async def watcher(queue):
+    if not os.path.exists("crunch/output"):
+        os.makedirs("crunch/output")
     async for changes in awatch('./crunch/output/'):
         for a in changes:
             file_path = a[1]
