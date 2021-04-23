@@ -15,14 +15,14 @@ def fatigue(pos):
     joint_fatigue = 0.0
     for i in range(len(pos) - 1):
         for j in range(len(pos[i])):
-            x1, x2 = pos[i][j]
-            y1, y2 = pos[i+1][j]
-            if x1 - x2 == 0 or y1-y2 == 0:
+            x1, y1 = pos[i][j]
+            x2, y2 = pos[i+1][j]
+            if x1 - x2 == 0 or y1 - y2 == 0:
                 continue
             f = equation(pos[i][j], pos[i + 1][j])
             joint_fatigue += np.abs(finite_diff(f, i, i + 1))
     frame_fatigue = joint_fatigue / total_joint
-    return round(frame_fatigue, 6)
+    return float(frame_fatigue)
 
 
 def equation(pos1, pos2):

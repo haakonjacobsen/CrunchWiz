@@ -8,4 +8,4 @@ def compute_stress(temps_list):
     for i, temp in enumerate(temps_list[:-1]):
         change = temps_list[i+1] - temp
         temperature_sum += change
-    return temperature_sum
+    return float(temperature_sum)

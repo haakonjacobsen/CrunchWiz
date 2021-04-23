@@ -88,7 +88,6 @@ class RealAPI:
 
     def preprocess(self, frame):
         self.prev_frame = [(i, j) if i != 0 and j != 0 else self.prev_frame[m] for m, (i,j) in enumerate(frame)]
-        print(self.prev_frame)
         return self.prev_frame
 
     def add_datapoint(self, datums):
@@ -109,9 +108,11 @@ class RealAPI:
                 y = dir_path + "/openpose/build/x64/Release;"
                 z = dir_path + "/openpose/build/bin;"
                 os.environ["PATH"] = os.environ["PATH"] + ";" + y + z
+                import cv2
                 import pyopenpose as op
             else:
                 sys.path.append("/openpose/build/python")
+                import cv2
                 from openpose import pyopenpose as op
         except ImportError as e:
             print(
@@ -138,8 +139,6 @@ class RealAPI:
         user_wants_to_exit = False
         while not user_wants_to_exit:
             dataframe = op.VectorDatum()
-            time.sleep(1)
-            opWrapper.setDefaultMaxSizeQueues(1)
             if opWrapper.waitAndPop(dataframe):
                 if "no_display" not in params:
                     user_wants_to_exit = self.display(dataframe)
@@ -154,3 +153,4 @@ class RealAPI:
         cv2.imshow("OpenPose 1.7.0 - CrunchWiz", data.cvOutputData)
         key = cv2.waitKey(1)
         return key == 27
+

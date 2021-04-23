@@ -17,16 +17,17 @@ class Time:
 
 def write_csv(path, row, header_features=[]):
     """ write result to csv file """
-    if not os.path.exists("crunch/output"):
-        os.makedirs("crunch/output")
+    if path is not None:
+        if not os.path.exists("crunch/output"):
+            os.makedirs("crunch/output")
 
-    file_exists = os.path.isfile("crunch/output/" + path)
-    with open("crunch/output/" + path, "a", newline="") as csvfile:
-        writer = csv.writer(csvfile, delimiter=",")
-        if not file_exists:
-            header = ['time', 'value']
-            writer.writerow(header + header_features)
-        writer.writerow(row)
+        file_exists = os.path.isfile("crunch/output/" + path)
+        with open("crunch/output/" + path, "a", newline="") as csvfile:
+            writer = csv.writer(csvfile, delimiter=",")
+            if not file_exists:
+                header = ['time', 'value']
+                writer.writerow(header + header_features)
+            writer.writerow(row)
 
 
 def to_list(x):
