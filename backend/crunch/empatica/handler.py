@@ -28,7 +28,7 @@ class DataHandler:
         :param baseline_length: Amount of data points required to calculate baseline
         :type baseline_length: int
         """
-        assert window_length and window_step and measurement_func and measurement_path and baseline_length, \
+        assert window_length and window_step and measurement_func and baseline_length, \
             "Need to supply the required parameters"
 
         self.data_queue = deque(maxlen=window_length)
@@ -46,8 +46,8 @@ class DataHandler:
     def add_data_point(self, datapoint):
         """ Receive a new data point, and call appropriate measurement function when we have enough points """
         self.data_queue.append(datapoint)
-        self._handle_datapoint()
         self.data_counter += 1
+        self._handle_datapoint()
 
     def _calculate_baseline(self):
         """ Calculates a baseline if we have received enough data points """
@@ -58,7 +58,7 @@ class DataHandler:
             else:
                 for baseline_feature, feature in zip(self.baseline, measurement):
                     baseline_feature.append(feature)
-        if self.data_counter > self.baseline_length:
+        if self.data_counter >= self.baseline_length:
             self.baseline = [sum(feature) / len(feature) for feature in self.baseline]
             self._handle_datapoint = self._calculate_measurement
 

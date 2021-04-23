@@ -1,10 +1,10 @@
 from multiprocessing import Process
 
+from crunch.emotion import start_emotion
 from crunch.empatica import start_empatica
 from crunch.eyetracker import start_eyetracker
 from crunch.skeleton import start_skeleton
 from crunch.websocket import start_websocket
-from crunch.emotion import start_emotion
 
 
 def start_processes(mobile):

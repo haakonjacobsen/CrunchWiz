@@ -16,4 +16,4 @@ def amount_of_motion(pos):
     for j in range(len(pos[0])):
         joint_Total += norm_by_array(pos[0][j], pos[1][j])
         total += joint_Total / total_joints
-    return round(total, 6)
+    return float(total)

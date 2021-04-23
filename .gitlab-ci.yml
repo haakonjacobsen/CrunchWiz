@@ -27,14 +27,12 @@ lint-python:
 
 backend-test:
   stage: test
-  image: python:3.6.13-buster
+  image: python:3.6
   before_script:
+    - apt-get update && apt-get install -y python3-opencv
     - cd backend
-    - pip install virtualenv
-    - virtualenv venv
-    - source venv/bin/activate
     - pip3 install -r requirements.txt
-    - cd ..
   script:
-    - python -m pytest backend/test/ --cov=crunch/
+    - python -m pytest tests/
+
 
