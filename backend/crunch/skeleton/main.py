@@ -28,12 +28,12 @@ def start_skeleton():
                                   baseline_length=2)
     api.add_subscriber(fatigue_handler, "body")
 
-    motion_handler = DataHandler(measurement_func=amount_of_motion,
-                                 measurement_path="amount_of_motion.csv",
-                                 window_length=2,
-                                 window_step=2,
-                                 baseline_length=2)
-    api.add_subscriber(motion_handler, "body")
+    amount_of_motion_handler = DataHandler(measurement_func=amount_of_motion,
+                                           measurement_path="amount_of_motion.csv",
+                                           window_length=20,
+                                           window_step=20,
+                                           baseline_length=2)
+    api.add_subscriber(amount_of_motion_handler, "body")
 
     most_used_joint_handler = DataHandler(measurement_func=most_used_joints,
                                           measurement_path="most_used_joints.csv",
@@ -44,5 +44,5 @@ def start_skeleton():
 
     # start up the api
     api.connect()
-   # except Exception:
-   #     print("Skeleton API connection failed")
+# except Exception:
+#     print("Skeleton API connection failed")
