@@ -6,7 +6,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Legend, Tooltip, ResponsiveContainer,
 } from 'recharts';
 
-export default function BarGraph({ dataStats }) {
+export default function BarGraph({ dataStats, stat }) {
   return (
     <div className="Extended-graph">
       <ResponsiveContainer width="100%" height="100%">
@@ -20,8 +20,7 @@ export default function BarGraph({ dataStats }) {
         >
           <Tooltip />
           <Legend />
-          <Bar dataKey="max" fill="#8884d8" />
-          <Bar dataKey="min" fill="#82ca9d" />
+          <Bar dataKey={stat} fill="#8884d8" />
           <XAxis dataKey="name" />
           <YAxis />
         </BarChart>
