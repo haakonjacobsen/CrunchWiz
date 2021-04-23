@@ -43,7 +43,6 @@ def start_skeleton():
     api.add_subscriber(most_used_joint_handler, "body")
 
     # start up the api
-    try:
-        api.connect()
-    except Exception:
-        print("Skeleton API connection failed")
+    api.connect()
+   # except Exception:
+   #     print("Skeleton API connection failed")
