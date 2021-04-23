@@ -1,54 +1,57 @@
-import time
-
-import tobii_research as tr
-
-import crunch.util as util
-
-from .api import EyetrackerAPI
-from .handler import CognitiveLoadHandler, DataHandler, IpiHandler
-from .measurements.anticipation import compute_anticipation
-from .measurements.perceived_difficulty import compute_perceived_difficulty
+from crunch import util
+from crunch.eyetracker.api import EyetrackerAPI
+from crunch.eyetracker.handler import DataHandler, ThresholdDataHandler
+from crunch.eyetracker.measurements import (compute_anticipation,
+                                            compute_cognitive_load,
+                                            compute_ipi,
+                                            compute_perceived_difficulty)
 
 
-def start_eyetracker(api=EyetrackerAPI):
+def start_eyetracker():
     """Defines the callback function, try to connect to eye tracker, create EyetrackerAPI and add handlers to api"""
 
-    def gaze_data_callback(gaze_data):
-        """Callback function that the eyetracker device calls 120 times a second. Inserts data to EyetrackerAPI"""
-        left_eye_fx, left_eye_fy = gaze_data['left_gaze_point_on_display_area']
-        right_eye_fx, right_eye_fy = gaze_data['right_gaze_point_on_display_area']
-        api.insert_new_gaze_data(left_eye_fx, left_eye_fy, right_eye_fx, right_eye_fy,
-                                 gaze_data['left_pupil_diameter'], gaze_data['right_pupil_diameter'],
-                                 gaze_data['device_time_stamp'])
+    # Read config & Instantiate the api
+    api = EyetrackerAPI() if util.config('eyetracker', 'MockAPI') == "True" else EyetrackerAPI()
 
-    #  Try to connect to eyetracker
-    if len(tr.find_all_eyetrackers()) == 0:
-        print("No eyetracker was found")
-    else:
-        my_eyetracker = tr.find_all_eyetrackers()[0]
-        print("Now connected to eyetracker model: " + my_eyetracker.model + " with address: " + my_eyetracker.address)
+    ipi_handler = ThresholdDataHandler(
+        measurement_func=compute_ipi,
+        measurement_path="information_processing_index.csv",
+        subscribed_to=["initTime", "endTime", "fx", "fy"],
+        window_length=10,
+        window_step=10,
+        baseline_length=10,
+        threshold_length=20
+    )
+    api.add_subscriber(ipi_handler, "fixation")
 
-        # TODO: fix this when MockAPI is back
-        # Read config & Instantiate the api
-        api = EyetrackerAPI() if util.config('skeleton', 'MockAPI') == "True" else EyetrackerAPI()
+    perceived_difficulty_handler = DataHandler(
+        measurement_func=compute_perceived_difficulty,
+        measurement_path="perceived_difficulty.csv",
+        subscribed_to=["initTime", "endTime", "fx", "fy"],
+        window_length=10,
+        window_step=10,
+        baseline_length=5
+    )
+    api.add_subscriber(perceived_difficulty_handler, "fixation")
 
-        # add handlers
-        ipi_handler = IpiHandler()
-        api.add_subscriber(ipi_handler)
+    anticipation_handler = DataHandler(
+        measurement_func=compute_anticipation,
+        measurement_path="anticipation.csv",
+        subscribed_to=["initTime", "endTime", "fx", "fy"],
+        window_length=10,
+        window_step=10,
+        calculate_baseline=False
+    )
+    api.add_subscriber(anticipation_handler, "fixation")
 
-        perceived_difficulty_handler = DataHandler(
-            compute_perceived_difficulty, "perceived_difficulty.csv", ["initTime", "endTime", "fx", "fy"]
-        )
-        api.add_subscriber(perceived_difficulty_handler)
-        anticipation_handler = DataHandler(
-            compute_anticipation, "anticipation.csv", ["initTime", "endTime", "fx", "fy"]
-        )
-        api.add_subscriber(anticipation_handler)
+    cognitive_load_handler = DataHandler(
+        measurement_func=compute_cognitive_load,
+        measurement_path="cognitive_load.csv",
+        subscribed_to=["lpup", "rpup"],
+        window_length=1000,
+        window_step=250,
+        baseline_length=5
+    )
+    api.add_subscriber(cognitive_load_handler, "gaze")
 
-        cognitive_load_handler = CognitiveLoadHandler()
-        api.add_subscriber(cognitive_load_handler)
-
-        my_eyetracker.subscribe_to(tr.EYETRACKER_GAZE_DATA, gaze_data_callback, as_dictionary=True)
-        #  TODO: the following snippet stops the program after x seconds. Remove this when finished developing
-        time.sleep(150)  # change to how long you want the program to run
-        my_eyetracker.unsubscribe_from(tr.EYETRACKER_GAZE_DATA, gaze_data_callback)
+    api.connect()

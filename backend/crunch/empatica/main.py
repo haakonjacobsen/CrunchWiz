@@ -14,7 +14,7 @@ def start_empatica():
     start the empatica process control flow.
     """
     # Read config & Instantiate the api
-    api = MockAPI() if util.config('skeleton', 'MockAPI') == "True" else RealAPI()
+    api = MockAPI() if util.config('empatica', 'MockAPI') == "True" else RealAPI()
 
     # Instantiate the arousal data handler and subscribe to the api
     arousal_handler = DataHandler(

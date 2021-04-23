@@ -16,4 +16,4 @@ def stability_of_motion(pos):
         euclid = norm_by_array(pos[0][j], pos[1][j])
         joint_distance += 1 / (1 + euclid)
         stability += joint_distance
-    return round(stability, 6)
+    return float(stability)
