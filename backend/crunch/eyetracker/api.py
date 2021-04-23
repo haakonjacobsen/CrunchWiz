@@ -1,7 +1,7 @@
+import time
 from math import isnan
 
 import tobii_research as tr
-import time
 
 
 class GazedataToFixationdata:
