@@ -4,7 +4,7 @@ import './MeasurementStat.css';
 
 export default function MeasurementStat({ name, value }) {
   return (
-    <div className="Measurement-stat">
+    <div className="Measurement-stat Box">
       <div className="Measurement-stat-header">
         <h2>{name}</h2>
       </div>

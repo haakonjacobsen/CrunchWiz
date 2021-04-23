@@ -16,6 +16,7 @@ const MainContent = () => {
   const [selectedMeasurment, setMeasurment] = useState('');
   const [graphData, addMoreData] = useState({});
   const [dataStats, addStats] = useState({});
+  const specialMeasurements = ['most_used_joints', 'emotion'];
 
   function isValidIpv4Addr(ipAddress) {
     return /^(?=\d+\.\d+\.\d+\.\d+$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}$/.test(ipAddress);
@@ -37,7 +38,7 @@ const MainContent = () => {
     }
   }
 
-  function handleStats(measurement, value) {
+  function handleDefaultStats(measurement, value) {
     addStats((prevState) => {
       if (Object.prototype.hasOwnProperty.call(prevState, measurement)) {
         const copy = prevState[measurement];
@@ -46,7 +47,7 @@ const MainContent = () => {
         } else if (copy.min > value) {
           copy.min = value;
         }
-        copy.avg += (copy.avg * copy.count + value) / (copy.count + 1);
+        copy.avg = value;
         copy.count += 1;
         return {
           ...prevState,
@@ -62,6 +63,41 @@ const MainContent = () => {
         },
       };
     });
+  }
+
+  function handleJointStats(measurement, value) {
+    addStats((prevState) => {
+      const copy = prevState[measurement];
+      if (Object.prototype.hasOwnProperty.call(prevState, measurement)) {
+        if (Object.prototype.hasOwnProperty.call(copy, value)) {
+          return {
+            ...prevState,
+            [measurement]: { ...prevState[measurement], [value]: copy[value] + 1 },
+          };
+        } return {
+          ...prevState,
+          [measurement]: { ...prevState[measurement], [value]: 1 },
+        };
+      }
+      return {
+        ...prevState,
+        [measurement]: { [value]: 1 },
+      };
+    });
+  }
+
+  function handleStats(measurment, value) {
+    switch (measurment) {
+      case 'most_used_joints':
+        console.log(measurment, value);
+        handleJointStats(measurment, value);
+        break;
+      case 'emotions':
+        console.log(measurment);
+        break;
+      default:
+        handleDefaultStats(measurment, value);
+    }
   }
 
   function handleAdd(measurement, newValue) {
@@ -100,10 +136,24 @@ const MainContent = () => {
   }
 
   const receiveMessage = (message) => {
-    const measurement = JSON.parse(message.data)[0];
-    const dataPoint = { value: parseFloat(measurement.value.toFixed(2)), time: measurement.time };
-    handleAdd(measurement.name, dataPoint);
-    handleStats(measurement.name, dataPoint.value);
+    try {
+      const measurement = JSON.parse(message.data)[0];
+      if (specialMeasurements.includes(measurement.name)) {
+        const dataPoint = { value: measurement.value, time: measurement.time };
+        handleAdd(measurement.name, dataPoint);
+        handleStats(measurement.name, dataPoint.value);
+      } else {
+        const dataPoint = {
+          value: parseFloat(measurement.value.toFixed(2)),
+          time: measurement.time,
+        };
+        handleAdd(measurement.name, dataPoint);
+        handleStats(measurement.name, dataPoint.value);
+      }
+    } catch (error) {
+      console.log(error);
+      setError(error);
+    }
   };
 
   useEffect(() => {
@@ -138,7 +188,7 @@ const MainContent = () => {
           <MeasurmentExpansion
             name={selectedMeasurment}
             graphData={graphData[selectedMeasurment]}
-            dataStats={dataStats[selectedMeasurment]}
+            dataStats={dataStats}
             changeExtended={changeExtended}
             number={graphData[selectedMeasurment][graphData[selectedMeasurment].length - 1].value}
           />
