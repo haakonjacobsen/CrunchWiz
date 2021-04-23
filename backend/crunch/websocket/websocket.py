@@ -43,7 +43,7 @@ def start_websocket():
     queue = asyncio.Queue(loop=loop)
 
     local_ip = socket.gethostbyname(socket.gethostname())
-    ip = "127.0.0.1" if util.config("websocket", "use_localhost") else local_ip
+    ip = "127.0.0.1" if util.config("websocket", "use_localhost") == "True" else local_ip
     port = int(util.config("websocket", "port"))
 
     print("##################################################################")
