@@ -11,9 +11,8 @@ def stability_of_motion(pos):
     :rtype: float
     """
     stability = 0
-    joint_distance = 0
-    for j in range(len(pos[0])):
-        euclid = norm_by_array(pos[0][j], pos[1][j])
-        joint_distance += 1 / (1 + euclid)
-        stability += joint_distance
-    return float(stability)
+    for i in range(len(pos)-1):
+        for j in range(len(pos[0])):
+            euclid = norm_by_array(pos[i][j], pos[i+1][j])
+            stability += 1 / (1 + euclid)
+    return float(stability/len(pos[0]))
