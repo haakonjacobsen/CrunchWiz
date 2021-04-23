@@ -188,7 +188,7 @@ const MainContent = () => {
           <MeasurmentExpansion
             name={selectedMeasurment}
             graphData={graphData[selectedMeasurment]}
-            dataStats={dataStats[selectedMeasurment]}
+            dataStats={dataStats}
             changeExtended={changeExtended}
             number={graphData[selectedMeasurment][graphData[selectedMeasurment].length - 1].value}
           />

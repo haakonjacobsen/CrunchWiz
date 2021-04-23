@@ -9,7 +9,7 @@ export default function Stickman({ name }) {
         <h2>{name}</h2>
       </div>
       <div className="Stickman-svg">
-        <svg width="220" height="498" viewBox="0 0 220 498" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="100%" height="100%" viewBox="0 0 220 498" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M86.3456 30.2465L99.2461 17.8068L109.382 30.7073M109.382 30.7073L119.058 17.8068L132.88 30.7073M109.382 30.7073V96.592M109.382 96.592H159.141L178.492 165.702L191.393 234.812M109.382 96.592H59.6231L40.2723 165.702L24.6074 234.812M109.382 96.592V234.812M109.382 234.812H141.633V336.173V442.602M109.382 234.812H74.3665V336.173V442.602M141.633 442.602L132.419 453.199M141.633 442.602L159.141 474.393L168.356 465.178M74.3665 442.602L84.0419 453.199M74.3665 442.602L59.6231 474.393L50.4084 468.864" stroke="black" strokeWidth="2" />
           <circle cx="99" cy="18" r={name === 'Right Eye' ? 10 : 5} fill={name === 'Right Eye' ? 'red' : 'black'} />
           <circle cx="85" cy="30.6392" r={name === 'Right Ear' ? 10 : 5} fill={name === 'Right Ear' ? 'red' : 'black'} />

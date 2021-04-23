@@ -1,11 +1,8 @@
 .Measurement-stat{
-    background-color: #F2F2F2;
     margin-bottom: 20px;
-    border-radius: 8px;
     padding: 10px;
-    margin: 20px 20px 10px 20px;
-    -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+    margin: 15px;
+    flex: 1;
 }
 .Measurement-stat-header{
     display: flex;
