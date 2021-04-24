@@ -28,7 +28,7 @@ class SkeletonAPI:
     prev_frame = [(0.0, 0.0) for _ in range(25)]
 
     def preprocess(self, frame):
-        self.prev_frame = [(i, j) if i != 0 and j != 0 else self.prev_frame[m] for m, (i,j) in enumerate(frame)]
+        self.prev_frame = [(i, j) if i != 0 and j != 0 else self.prev_frame[m] for m, (i, j) in enumerate(frame)]
         return self.prev_frame
 
     def add_datapoint(self, datums):
@@ -49,11 +49,9 @@ class SkeletonAPI:
                 y = dir_path + "/openpose/build/x64/Release;"
                 z = dir_path + "/openpose/build/bin;"
                 os.environ["PATH"] = os.environ["PATH"] + ";" + y + z
-                import cv2
                 import pyopenpose as op
             else:
                 sys.path.append("/openpose/build/python")
-                import cv2
                 from openpose import pyopenpose as op
         except ImportError as e:
             print(
@@ -94,4 +92,3 @@ class SkeletonAPI:
         cv2.imshow("OpenPose 1.7.0 - CrunchWiz", data.cvOutputData)
         key = cv2.waitKey(1)
         return key == 27
-
