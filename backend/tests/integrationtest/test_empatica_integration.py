@@ -1,8 +1,9 @@
 import os
+from unittest.mock import patch
+
 import pandas as pd
 
 from crunch.empatica.main import start_empatica
-from unittest.mock import patch
 
 
 class MockAPI:

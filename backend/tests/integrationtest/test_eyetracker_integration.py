@@ -1,8 +1,9 @@
-import pandas as pd
 import os
+from unittest.mock import patch
+
+import pandas as pd
 
 from crunch.eyetracker.main import start_eyetracker
-from unittest.mock import patch
 
 
 class MockAPI:
