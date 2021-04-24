@@ -113,7 +113,7 @@ class EyetrackerAPI:
 
     def connect(self):
         """ Connect the eyetracket to the callback function """
-         #  Try to connect to eyetracker
+        # Try to connect to eyetracker
         if len(tr.find_all_eyetrackers()) == 0:
             print("No eyetracker was found")
         else:
@@ -122,7 +122,6 @@ class EyetrackerAPI:
             #  TODO: the following snippet stops the program after x seconds. Remove this when finished developing
             time.sleep(150)  # change to how long you want the program to run
             # my_eyetracker.unsubscribe_from(tr.EYETRACKER_GAZE_DATA, self.gaze_data_callback)
-
 
     def gaze_data_callback(self, gaze_data):
         """Callback function that the eyetracker device calls 120 times a second. Inserts data to EyetrackerAPI"""
