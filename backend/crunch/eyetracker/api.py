@@ -1,8 +1,6 @@
 import time
 from math import isnan
 
-import tobii_research as tr
-
 
 class GazedataToFixationdata:
     """
@@ -114,6 +112,7 @@ class EyetrackerAPI:
     def connect(self):
         """ Connect the eyetracket to the callback function """
         # Try to connect to eyetracker
+        import tobii_research as tr
         if len(tr.find_all_eyetrackers()) == 0:
             print("No eyetracker was found")
         else:
