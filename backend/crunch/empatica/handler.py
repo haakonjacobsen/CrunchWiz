@@ -40,7 +40,6 @@ class DataHandler:
         self.baseline_length = baseline_length
         self.baseline = None
         self.header_features = header_features
-        self.time = util.Time()
         self._handle_datapoint = self._calculate_baseline
 
     def add_data_point(self, datapoint):
@@ -68,8 +67,8 @@ class DataHandler:
             measurement = util.to_list(self.measurement_func(list(self.data_queue)))
             normalized_measurement = np.dot(measurement, np.reciprocal(self.baseline)) / len(self.baseline)
             if len(measurement) == 1:
-                util.write_csv(self.measurement_path, [self.time.delta_time(), normalized_measurement])
+                util.write_csv(self.measurement_path, [normalized_measurement])
             else:
                 util.write_csv(self.measurement_path,
-                               [self.time.delta_time(), normalized_measurement, *measurement],
+                               [normalized_measurement, *measurement],
                                header_features=self.header_features)

@@ -48,7 +48,6 @@ class DataHandler:
         self.baseline = 0
         self.list_of_baseline_values = []
         self.baseline_length = baseline_length
-        self.time = util.Time()
 
     def add_data_point(self, datapoint):
         """ Receive a new data point, and call appropriate measurement function when we have enough points """
@@ -78,7 +77,7 @@ class DataHandler:
         measurement = self.measurement_func(**{key: list(queue) for key, queue in self.data_queues.items()})
         if self.calculate_baseline:
             measurement = round(measurement / self.baseline, 6)
-        util.write_csv(self.measurement_path, [self.time.delta_time(), measurement])
+        util.write_csv(self.measurement_path, [measurement])
 
 
 class ThresholdDataHandler(DataHandler):
@@ -186,4 +185,4 @@ class ThresholdDataHandler(DataHandler):
             measurement = self.measurement_func(**argument_dictionary)
             if self.calculate_baseline:
                 measurement = round(measurement / self.baseline, 6)
-            util.write_csv(self.measurement_path, [self.time.delta_time(), measurement])
+            util.write_csv(self.measurement_path, [measurement])
