@@ -1,4 +1,3 @@
-# flake8: noqa
 import os
 
 import pandas as pd
@@ -13,7 +12,7 @@ from crunch.skeleton.measurements import (amount_of_motion, fatigue,
 def skeleton_fixture():
     def _skeleton_fixture_factory(n, m):
         skeleton_data = []
-        df = pd.pandas.read_csv(os.path.join(os.path.dirname(__file__), "mock_data/test_data.csv"), header=None)
+        df = pd.pandas.read_csv(os.path.join(os.path.dirname(__file__), "../../mock_data/skeleton.csv"), header=None)
         n = min(n, len(df))
         for i in range(n, m):
             temp_array = []
@@ -58,27 +57,28 @@ def test_most_used_joints(skeleton_fixture, index):
 
     joint_map = ["Nose",
                  "Neck",
-                 "RShoulder",
-                 "RElbow",
-                 "RWrist",
-                 "LShoulder",
-                 "LElbow",
-                 "LWrist",
+                 "Right Shoulder",
+                 "Right Elbow",
+                 "Right Wrist",
+                 "Left Shoulder",
+                 "Left Elbow",
+                 "Left Wrist",
                  "MidHip",
-                 "RHip",
-                 "RKnee",
-                 "RAnkle",
-                 "LHip",
-                 "LKnee",
-                 "LAnkle",
-                 "REye",
-                 "LEye",
-                 "REar",
-                 "LEar",
-                 "LBigToe",
-                 "LSmallToe",
-                 "LHeel",
-                 "RBigToe",
-                 "RSmallToe",
-                 "RHeel"]
+                 "Right Hip",
+                 "Right Knee",
+                 "Right Ankle",
+                 "Left Hip",
+                 "Left Knee",
+                 "Left Ankle",
+                 "Right Eye",
+                 "Left Eye",
+                 "Right Ear",
+                 "Left Ear",
+                 "Left BigToe",
+                 "Left SmallToe",
+                 "Left Heel",
+                 "Right BigToe",
+                 "Right SmallToe",
+                 "Right Heel"
+                 ]
     assert measurement in joint_map

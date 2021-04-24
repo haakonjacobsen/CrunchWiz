@@ -2,7 +2,7 @@ import random
 
 import pytest
 
-from crunch.empatica.api import RealAPI
+from crunch.empatica.api import EmpaticaAPI
 
 
 class MockSubscriber():
@@ -22,7 +22,7 @@ def wristband_fixture():
 def test_empatica_api(expected, type):
     """ Test that the api sends the gaze data that it receives to its subscribers """
     mock_subscriber = MockSubscriber()
-    api = RealAPI()
+    api = EmpaticaAPI()
     api.add_subscriber(mock_subscriber, type)
     for i in range(expected):
         api._send_data_to_subscriber(type, wristband_fixture)

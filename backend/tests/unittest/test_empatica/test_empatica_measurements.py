@@ -1,4 +1,3 @@
-# flake8: noqa
 import os
 
 import pandas as pd
@@ -14,7 +13,7 @@ from crunch.empatica.measurements import (compute_arousal,
 @pytest.fixture(scope="module")
 def empatica_fixture():
     def _empatica_fixture_factory(n, m, name):
-        data = pd.read_csv(os.path.join(os.path.dirname(__file__), "mock_data/" + name + ".csv"))[name]
+        data = pd.read_csv(os.path.join(os.path.dirname(__file__), "../../mock_data/" + name + ".csv"))[name]
         return [data[i] for i in range(n, m)]
 
     return _empatica_fixture_factory

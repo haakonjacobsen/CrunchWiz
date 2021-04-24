@@ -1,6 +1,6 @@
 import pytest
 
-from crunch.skeleton.api import RealAPI
+from crunch.skeleton.api import SkeletonAPI
 
 
 class DatumMock:
@@ -19,7 +19,7 @@ class MockSubscriber:
 def test_skeleton_api(expected):
     """ Test that the api sends the gaze data that it receives to its subscribers """
     mock_subscriber = MockSubscriber()
-    api = RealAPI()
+    api = SkeletonAPI()
     api.add_subscriber(mock_subscriber, "body")
     for i in range(expected):
         datum = DatumMock()
