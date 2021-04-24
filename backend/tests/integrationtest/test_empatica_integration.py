@@ -58,5 +58,3 @@ def test_empatica_integration():
     assert 'emotional_regulation.csv' in mock_csv.measurements_written
     assert 'arousal.csv' in mock_csv.measurements_written
     assert 'entertainment.csv' in mock_csv.measurements_written
-
-
