@@ -16,7 +16,7 @@ const MainContent = () => {
   const [selectedMeasurment, setMeasurment] = useState('');
   const [graphData, addMoreData] = useState({});
   const [dataStats, addStats] = useState({});
-  const specialMeasurements = ['most_used_joints', 'emotion', 'anticipation'];
+  const specialMeasurements = ['Most used joints', 'Emotion', 'Anticipation'];
 
   function isValidIpv4Addr(ipAddress) {
     return /^(?=\d+\.\d+\.\d+\.\d+$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}$/.test(ipAddress);
@@ -27,7 +27,7 @@ const MainContent = () => {
       if (`${ipAddr}:${port}` === ip) {
         setIP(null);
         toggleLoading(!loading);
-        console.log(ip);
+        setIP(`${ipAddr}:${port}`);
       } else {
         toggleLoading(!loading);
         setIP(`${ipAddr}:${port}`);
@@ -42,23 +42,23 @@ const MainContent = () => {
     addStats((prevState) => {
       if (Object.prototype.hasOwnProperty.call(prevState, measurement)) {
         const copy = prevState[measurement];
-        if (copy.max < value) {
-          copy.max = value;
-        } else if (copy.min > value) {
-          copy.min = value;
+        if (copy.Max < value) {
+          copy.Max = value;
+        } else if (copy.Min > value) {
+          copy.Min = value;
         }
-        copy.avg = value;
+        copy.Average = (copy.Average * copy.Count + value) / (copy.Count + 1);
         return {
           ...prevState,
           [measurement]: {
-            max: copy.max, min: copy.min, avg: copy.avg,
+            Max: copy.Max, Min: copy.Min, Average: copy.Average, Count: (copy.Count + 1),
           },
         };
       }
       return {
         ...prevState,
         [measurement]: {
-          max: value, min: value, avg: value,
+          Max: value, Min: value, Average: value, Count: 1,
         },
       };
     });
@@ -85,14 +85,6 @@ const MainContent = () => {
     });
   }
 
-  function handleStats(measurment, value, special) {
-    if (special) {
-      handleSpecialStats(measurment, value);
-    } else {
-      handleDefaultStats(measurment, value);
-    }
-  }
-
   function handleAdd(measurement, newValue) {
     // Check if measurement already exist in graphData, adds to array if true, creates new if false
     addMoreData((prevState) => (Object.prototype.hasOwnProperty.call(prevState, measurement) ? {
@@ -111,7 +103,6 @@ const MainContent = () => {
 
   function handleError() {
     setError('Websocket error, try again');
-    console.log('ERROR WHEN TRYINT OT CONNECT TO ', ip);
     toggleLoading(false);
     setIP(null);
     setStatus(3);
@@ -127,24 +118,27 @@ const MainContent = () => {
       }
     }
   }
+  function fixText(text) {
+    const copy = text.split('_').join(' ');
+    return copy.charAt(0).toUpperCase() + copy.slice(1);
+  }
 
   const receiveMessage = (message) => {
     try {
       const measurement = JSON.parse(message.data)[0];
-      if (specialMeasurements.includes(measurement.name)) {
+      if (specialMeasurements.includes(fixText(measurement.name))) {
         const dataPoint = { value: measurement.value, time: measurement.time };
-        handleAdd(measurement.name, dataPoint);
-        handleStats(measurement.name, dataPoint.value, true);
+        handleAdd(fixText(measurement.name), dataPoint);
+        handleSpecialStats(fixText(measurement.name), dataPoint.value);
       } else {
         const dataPoint = {
           value: parseFloat(measurement.value.toFixed(2)),
           time: measurement.time,
         };
-        handleAdd(measurement.name, dataPoint);
-        handleStats(measurement.name, dataPoint.value, false);
+        handleAdd(fixText(measurement.name), dataPoint);
+        handleDefaultStats(fixText(measurement.name), dataPoint.value);
       }
     } catch (error) {
-      console.log(error);
       setError(error);
     }
   };
@@ -184,6 +178,9 @@ const MainContent = () => {
             dataStats={dataStats}
             changeExtended={changeExtended}
             number={graphData[selectedMeasurment][graphData[selectedMeasurment].length - 1].value}
+            hasTextValue={specialMeasurements.includes(selectedMeasurment)}
+            specialMeasurements={specialMeasurements}
+            setMeasurment={setMeasurment}
           />
         )
         : null}
@@ -199,6 +196,7 @@ const MainContent = () => {
                   number={graphData[name][graphData[name].length - 1].value}
                   showExtended={toggleExtended}
                   key={name}
+                  specialMeasurements={specialMeasurements}
                 />
               ))}
           </div>

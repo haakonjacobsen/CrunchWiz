@@ -1,14 +1,27 @@
+/* eslint no-nested-ternary: 0 */
 /* eslint react/prop-types: 0 */
 import React from 'react';
 import './MeasurementExpansion.css';
 import Indicator from './Indicator';
-import MeasurmentStat from './MeasurementStat';
+import MeasurementStat from './MeasurementStat';
 import Stickman from './Stickman';
 import ChartPanel from './ChartPanel';
 
 export default function MeasurmentExpansion({
-  name, graphData, dataStats, changeExtended, number,
+  name, graphData, dataStats, changeExtended, number, hasTextValue, specialMeasurements,
+  setMeasurment,
 }) {
+  function getSpecialStats(stats) {
+    const specialStats = {};
+    specialStats['Most common'] = Object.keys(stats).reduce((a, b) => (stats[a] > stats[b] ? a : b));
+    specialStats['Least common'] = Object.keys(stats).reduce((a, b) => (stats[a] < stats[b] ? a : b));
+    return (
+      Object.entries(specialStats).map(([key, value]) => (
+        <MeasurementStat key={key} name={key} value={value} />
+      ))
+    );
+  }
+
   return (
     <div className="Extended-panel">
       <div className="Extended-header">
@@ -17,7 +30,9 @@ export default function MeasurmentExpansion({
             {name}
           </h3>
           <div className="SVG-indicator">
-            <Indicator number={number} />
+            {hasTextValue
+              ? null
+              : <Indicator number={number} />}
           </div>
         </div>
         <button type="button" className="SVG-close" onClick={() => changeExtended(false)} onKeyDown={() => changeExtended(false)}>
@@ -30,11 +45,20 @@ export default function MeasurmentExpansion({
         <div className="Extended-stats">
           { name === 'most_used_joints'
             ? <Stickman name={graphData[graphData.length - 1].value} />
-            : Object.entries(dataStats[name]).map(([key, value]) => (
-              <MeasurmentStat name={key} value={value} />
-            ))}
+            : hasTextValue
+              ? getSpecialStats(dataStats[name])
+              : Object.entries(dataStats[name]).map(([key, value]) => (
+                <MeasurementStat key={key} name={key} value={value} />
+              ))}
         </div>
-        <ChartPanel name={name} graphData={graphData} dataStats={dataStats} />
+        <ChartPanel
+          name={name}
+          graphData={graphData}
+          dataStats={dataStats}
+          hasTextValue={hasTextValue}
+          specialMeasurements={specialMeasurements}
+          setMeasurment={setMeasurment}
+        />
       </div>
     </div>
   );

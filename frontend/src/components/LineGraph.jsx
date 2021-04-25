@@ -28,8 +28,8 @@ export default function LineGraph({ graphData, time }) {
           <Line isAnimationActive={false} animationEasing="ease-in-out" strokeWidth={3} type="monotone" dataKey="value" />
           <Tooltip />
           <ReferenceLine strokeWidth={3} y={1} label="Baseline" stroke="#959595" strokeDasharray="7" />
-          <ReferenceLine strokeWidth={3} y={1.1} label="High" stroke="#F6C273" strokeDasharray="7" />
-          <ReferenceLine strokeWidth={3} y={0.9} label="Low" stroke="#C1E4AB" strokeDasharray="7" />
+          <ReferenceLine strokeWidth={3} y={1.25} label="High" stroke="#F6C273" strokeDasharray="7" />
+          <ReferenceLine strokeWidth={3} y={0.75} label="Low" stroke="#C1E4AB" strokeDasharray="7" />
         </LineChart>
       </ResponsiveContainer>
     </div>
