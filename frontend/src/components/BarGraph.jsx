@@ -7,7 +7,7 @@ import {
 } from 'recharts';
 
 export default function BarGraph({
-  dataStats, stat, name, setMeasurment,
+  dataStats, stat, name, specialMeasurements, setMeasurment,
 }) {
   return (
     <div className="Extended-graph">
@@ -22,12 +22,14 @@ export default function BarGraph({
         >
           <Tooltip />
           <Legend />
-          <Bar dataKey={stat} fill="#959595" onClick={() => setMeasurment(name)}>
+          <Bar dataKey={stat} fill="#959595">
             {
               dataStats.map((key, index) => (
                 <Cell
                   key={key}
                   fill={dataStats[index].Name === name ? '#769CFF' : '#A1A1A1'}
+                  onClick={() => (specialMeasurements.includes(name)
+                    ? null : setMeasurment(key.Name))}
                 />
               ))
             }

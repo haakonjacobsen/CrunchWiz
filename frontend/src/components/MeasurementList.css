@@ -1,0 +1,13 @@
+.Measurements{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    height: fit-content;
+    padding-bottom: 100px;
+}
+.Measurements-list-header{
+    display: flex;
+    align-items: center;
+    margin: 15px;
+}

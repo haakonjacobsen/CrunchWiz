@@ -43,7 +43,7 @@ export default function MeasurmentExpansion({
       </div>
       <div className="Extended-main">
         <div className="Extended-stats">
-          { name === 'most_used_joints'
+          { name === 'Most used joints'
             ? <Stickman name={graphData[graphData.length - 1].value} />
             : hasTextValue
               ? getSpecialStats(dataStats[name])

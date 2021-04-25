@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ConnectingPanel from './ConnectingPanel';
 import './MainContent.css';
-import Measurement from './Measurement';
 import MeasurmentExpansion from './MeasurementExpansion';
 import LoadingMeasurements from './LoadingMeasurements';
+import MeasurementList from './MeasurementList';
 
 const MainContent = () => {
-  const renderCount = useRef(1);
   const webSocket = useRef(null);
   const [connectioError, setError] = useState('');
   const [ip, setIP] = useState(null);
@@ -16,7 +15,7 @@ const MainContent = () => {
   const [selectedMeasurment, setMeasurment] = useState('');
   const [graphData, addMoreData] = useState({});
   const [dataStats, addStats] = useState({});
-  const specialMeasurements = ['Most used joints', 'Emotion', 'Anticipation'];
+  const specialMeasurements = ['Most used joints', 'Emotion', 'Anticipation', 'Mock emotion', 'Mock anticipation'];
 
   function isValidIpv4Addr(ipAddress) {
     return /^(?=\d+\.\d+\.\d+\.\d+$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}$/.test(ipAddress);
@@ -47,7 +46,8 @@ const MainContent = () => {
         } else if (copy.Min > value) {
           copy.Min = value;
         }
-        copy.Average = (copy.Average * copy.Count + value) / (copy.Count + 1);
+        copy.Average = ((copy.Average * copy.Count + value) / (copy.Count + 1)).toFixed(2);
+        console.log(measurement, copy.Average);
         return {
           ...prevState,
           [measurement]: {
@@ -144,10 +144,6 @@ const MainContent = () => {
   };
 
   useEffect(() => {
-    renderCount.current += 1;
-  });
-
-  useEffect(() => {
     if (ip !== null) {
       webSocket.current = new WebSocket(`ws://${ip}/`);
       webSocket.current.onmessage = (message) => receiveMessage(message);
@@ -160,7 +156,6 @@ const MainContent = () => {
 
   return (
     <div className="Main-content">
-      <h1>{renderCount.current}</h1>
       { wsStatus === 3 && Object.keys(graphData).length === 0
         ? (
           <ConnectingPanel
@@ -186,21 +181,16 @@ const MainContent = () => {
         : null}
       { wsStatus === 1 && Object.keys(graphData).length === 0
         ? <LoadingMeasurements />
-        : (
-          <div className="Measurements-info">
-            { Object.keys(graphData).length === 0 && wsStatus === 1
-              ? <LoadingMeasurements />
-              : Object.keys(graphData).map((name) => (
-                <Measurement
-                  name={name}
-                  number={graphData[name][graphData[name].length - 1].value}
-                  showExtended={toggleExtended}
-                  key={name}
-                  specialMeasurements={specialMeasurements}
-                />
-              ))}
-          </div>
-        )}
+        : null}
+      {wsStatus === 1 && Object.keys(graphData).length >= 0
+        ? (
+          <MeasurementList
+            graphData={graphData}
+            toggleExtended={toggleExtended}
+            specialMeasurements={specialMeasurements}
+          />
+        )
+        : null}
     </div>
   );
 };

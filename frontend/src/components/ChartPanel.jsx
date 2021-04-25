@@ -1,6 +1,5 @@
 /* eslint react/prop-types: 0 */
 import React, { useState } from 'react';
-import './Stickman.css';
 import './MeasurementExpansion.css';
 import BarGraph from './BarGraph';
 import LineGraph from './LineGraph';
@@ -11,6 +10,7 @@ export default function ChartPanel({
 }) {
   const [time, setTime] = useState(5);
   const [graph, setGraph] = useState(1);
+  const [barStat, setBarStat] = useState('Max');
 
   function formatStats(stats) {
     const copy = (
@@ -29,7 +29,7 @@ export default function ChartPanel({
     return (
       <div className="Extended-graph-container Box">
         <div className="Extended-graph-header">
-          <div className="Box">
+          <div className="Graph-panel Box">
             <button type="button" className={`Graph-panel-choice Left ${graph === 1 ? 'selected' : ''}`} onClick={() => setGraph(1)} onKeyDown={() => setGraph(1)}>
               <div className="SVG-close">
                 <svg width="100%" height="100%" viewBox="0 0 65 75" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -56,20 +56,38 @@ export default function ChartPanel({
         </div>
         {graph === 1
           ? <RadarGraph dataStats={formatTextStats(dataStats[name])} stat="Count" />
-          : <BarGraph dataStats={formatTextStats(dataStats[name])} stat="Count" />}
+          : (
+            <BarGraph
+              dataStats={formatTextStats(dataStats[name])}
+              stat="Count"
+              name={name}
+              setMeasurment={setMeasurment}
+              specialMeasurements={specialMeasurements}
+            />
+          )}
       </div>
     );
   }
   return (
     <div className="Extended-graph-container Box">
       <div className="Extended-graph-header">
-        <div className="Graph-panel Box" style={{ visibility: graph === 1 ? 'visible' : 'hidden' }}>
-          <button type="button" className={`Graph-panel-choice Left ${time === 5 ? 'selected' : ''}`} onClick={() => setTime(5)} onKeyDown={() => setTime(5)}>1 min</button>
-          <button type="button" className={`Graph-panel-choice Center ${time === 10 ? 'selected' : ''}`} onClick={() => setTime(10)} onKeyDown={() => setTime(10)}>5 min</button>
-          <button type="button" className={`Graph-panel-choice Center ${time === 20 ? 'selected' : ''}`} onClick={() => setTime(20)} onKeyDown={() => setTime(20)}>10 min</button>
-          <button type="button" className={`Graph-panel-choice Right ${time === 10000 ? 'selected' : ''}`} onClick={() => setTime(10000)} onKeyDown={() => setTime(10000)}>All</button>
-        </div>
-        <div className="Box">
+        {graph === 1
+          ? (
+            <div className="Button-panel Box">
+              <button type="button" className={`Graph-panel-choice Left ${time === 5 ? 'selected' : ''}`} onClick={() => setTime(5)} onKeyDown={() => setTime(5)}>Last 5</button>
+              <button type="button" className={`Graph-panel-choice Center ${time === 10 ? 'selected' : ''}`} onClick={() => setTime(10)} onKeyDown={() => setTime(10)}>Last 10</button>
+              <button type="button" className={`Graph-panel-choice Center ${time === 20 ? 'selected' : ''}`} onClick={() => setTime(20)} onKeyDown={() => setTime(20)}>Last 20</button>
+              <button type="button" className={`Graph-panel-choice Right ${time === 10000 ? 'selected' : ''}`} onClick={() => setTime(10000)} onKeyDown={() => setTime(10000)}>All</button>
+            </div>
+          )
+          : (
+            <div className="Button-panel Box">
+              <button type="button" className={`Graph-panel-choice Left ${barStat === 'Max' ? 'selected' : ''}`} onClick={() => setBarStat('Max')} onKeyDown={() => setBarStat('Max')}>Max</button>
+              <button type="button" className={`Graph-panel-choice Center ${barStat === 'Min' ? 'selected' : ''}`} onClick={() => setBarStat('Min')} onKeyDown={() => setBarStat('Max')}>Min</button>
+              <button type="button" className={`Graph-panel-choice Right ${barStat === 'Average' ? 'selected' : ''}`} onClick={() => setBarStat('Average')} onKeyDown={() => setBarStat('Max')}>Average</button>
+            </div>
+          )}
+        <div className="Graph-panel Box">
           <button type="button" className={`Graph-panel-choice Left ${graph === 1 ? 'selected' : ''}`} onClick={() => setGraph(1)} onKeyDown={() => setGraph(1)}>
             <div className="SVG-close">
               <svg width="100%" height="100%" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -90,7 +108,15 @@ export default function ChartPanel({
       </div>
       { graph === 1
         ? <LineGraph graphData={graphData} time={time} />
-        : <BarGraph stat="Max" dataStats={formatStats(dataStats, 'Max')} name={name} setMeasurment={setMeasurment} />}
+        : (
+          <BarGraph
+            stat={barStat}
+            dataStats={formatStats(dataStats)}
+            name={name}
+            specialMeasurements={specialMeasurements}
+            setMeasurment={setMeasurment}
+          />
+        )}
     </div>
   );
 }
