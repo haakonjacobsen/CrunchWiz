@@ -3,7 +3,7 @@
 CrunchWiz
 </h1>
   <br>
-  <img src=".docs/img/logo.png" alt="LOGO" width="200">
+  <img src="./docs/img/logo.png" alt="LOGO" width="200">
 <br>
 <br>
 CrunchWiz is a full-stack application for calculating and displaying measurements from sensors.
