@@ -59,7 +59,7 @@ class DataHandler:
                 for baseline_feature, feature in zip(self.baseline, measurement):
                     baseline_feature.append(feature)
         if self.data_counter >= self.baseline_length:
-            self.baseline = [sum(feature) / len(feature) for feature in self.baseline]
+            self.baseline = [abs(sum(feature)) / len(feature) for feature in self.baseline]
             self._handle_datapoint = self._calculate_measurement
 
     def _calculate_measurement(self):
