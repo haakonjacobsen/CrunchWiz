@@ -19,16 +19,61 @@ CrunchWiz is a full-stack application for calculating measurements from sensors,
 
 ### Prerequisites
 - [Python 3.6.x](https://www.python.org/downloads/) (Python 3.6.x is mandatory for eyetracker to work)
-- TODO node, pip, etc
+- [pip](https://pypi.org/project/pip/)
+- [NodeJS](https://nodejs.org/en/)
 
 
 ### Setting up the backend
-TODO links to the device md files.
+```bash
+# Navigate to the backend folder
+$ cd backend
+
+# Install the required python dependencies
+$ pip install -r requirements.txt
+```
+
+In addition to installing the python dependencies, you will need to follow the instructions to set up the
+[Empatica e4 wristband](docs/empatica_setup.md), [Tobii eyetracker](docs/eyetracker_setup.md) and
+[OpenPose](docs/openpose_setup.md), which can be found in the docs folder.
 
 ### Setting up the frontend
+```bash
+# Navigate to the backend folder
+$ cd frontend
+
+# Install the node dependencies
+$ npm install
+```
 
 # Running the program
-small guide with picture on setup of ip etc
+After following the instructions above, and having set up the devices, you can start the program.
+```bash
+# Navigate to the backend folder
+$ cd backend
+
+# Run the backend program
+$ python main.py
+```
+```bash
+# Navigate to the frontend folder
+$ cd frontend
+
+# Run the frontend program
+$ npm start
+```
+The dashboard website should now show up. You can now enter the IP and port address
+belonging to the backend program. If you are running both the backend and the frontend on the
+same computer, these will be *127.0.0.1* and *8888* respectively. Otherwise the IP adress
+will be printed in the python terminal window.
+
+![image here](docs/img/frontend-connect.png)
+
+After starting the backend and frontend, and inputting the IP and port address, a websocket connection
+will be established. The calculated measurements will now be shown in the dashboard, and you can
+view more detailed information about them by clicking them.
+
+TODO image of measurements on dashboard
+![image here](docs/img/)
 
 # Running tests
 TODO format better
@@ -38,7 +83,6 @@ TODO format better
 * backend check import order `isort`
 
 # Links (?)
-[link to measurement](docs/new_measurement.md)
-link to new_measurement md file
-link to project report?
-
+- [link to create new measurement](docs/new_measurement.md)
+- link to project report?
+- link to architecture readme?
