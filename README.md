@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://i.imgur.com/MJT7kl6.png" alt="crunchwiz-logo" width="200">
+  <img src="https://i.imgur.com/MJT7kl6.png" alt="crunchwiz-logo" width="300">
 <br>
 <br>
 CrunchWiz is a full-stack application for calculating measurements from sensors, and displaying them in a dashboard.
