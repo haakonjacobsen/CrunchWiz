@@ -1,27 +1,19 @@
 <div align="center">
-<h1>
-CrunchWiz
-</h1>
-  <br>
-  <img src="./docs/img/logo.png" alt="LOGO" width="200">
+  <img src="https://i.imgur.com/MJT7kl6.png" alt="crunchwiz-logo" width="200">
 <br>
 <br>
-CrunchWiz is a full-stack application for calculating and displaying measurements from sensors.
+CrunchWiz is a full-stack application for calculating measurements from sensors, and displaying them in a dashboard.
 <br>
 <br>
 <p align="center">
   <a href="#getting-started">Getting started</a> •
+  <a href="#running-the-program">Running the program</a> •
   <a href="#running-tests">Running tests</a> •
-  <a href="#deployment">Deployment</a> •
-  <a href="#license">License</a> •
   <a href="#links">Links</a>
 </p>
 </div>
 
 ---
-
-# Project description
-describe in a bit more detail what our backend does, what our frontend shows etc.
 
 # Getting started
 
@@ -31,8 +23,6 @@ describe in a bit more detail what our backend does, what our frontend shows etc
 
 
 ### Setting up the backend
-
-### Setting up the devices
 TODO links to the device md files.
 
 ### Setting up the frontend
@@ -48,6 +38,7 @@ TODO format better
 * backend check import order `isort`
 
 # Links (?)
+[link to measurement](docs/new_measurement.md)
 link to new_measurement md file
 link to project report?
 
