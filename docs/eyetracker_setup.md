@@ -5,7 +5,10 @@
 
     https://www.tobiipro.com/product-listing/tobii-pro-x3-120/
 
-    At this point you should have installed "firmware without EPU. I also would recommend to install the eyetracker manager:
+    At this point you should have installed "Installation and Configuration Tool for Tobii Pro X2 and X3 eye trackers", which can be found below the video that is linked above.
+
+
+    I also would recommend to install the eyetracker manager:
 
     https://www.tobiipro.com/product-listing/eye-tracker-manager/
 
