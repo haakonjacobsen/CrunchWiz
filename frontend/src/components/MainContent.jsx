@@ -6,15 +6,18 @@ import LoadingMeasurements from './LoadingMeasurements';
 import MeasurementList from './MeasurementList';
 
 const MainContent = () => {
+  // Websocket & connection
   const webSocket = useRef(null);
-  const [connectioError, setError] = useState('');
+  const [connectionError, setError] = useState('');
   const [ip, setIP] = useState(null);
   const [wsStatus, setStatus] = useState(3);
   const [loading, toggleLoading] = useState(false);
+
+  // Measurement data
+  const [graphData, addData] = useState({});
+  const [dataStats, addStats] = useState({});
   const [showExtended, changeExtended] = useState(false);
   const [selectedMeasurment, setMeasurment] = useState('');
-  const [graphData, addMoreData] = useState({});
-  const [dataStats, addStats] = useState({});
   const specialMeasurements = ['Most used joints', 'Emotion', 'Anticipation', 'Mock emotion', 'Mock anticipation'];
 
   function isValidIpv4Addr(ipAddress) {
@@ -33,7 +36,6 @@ const MainContent = () => {
       }
     } else {
       setError(`${ipAddr}:${port} is not a valid IPv4 address`);
-      console.log(`${ipAddr}:${port} is not a valid IPv4 address`);
     }
   }
 
@@ -41,17 +43,13 @@ const MainContent = () => {
     addStats((prevState) => {
       if (Object.prototype.hasOwnProperty.call(prevState, measurement)) {
         const copy = prevState[measurement];
-        if (copy.Max < value) {
-          copy.Max = value;
-        } else if (copy.Min > value) {
-          copy.Min = value;
-        }
-        copy.Average = ((copy.Average * copy.Count + value) / (copy.Count + 1)).toFixed(2);
-        console.log(measurement, copy.Average);
         return {
           ...prevState,
           [measurement]: {
-            Max: copy.Max, Min: copy.Min, Average: copy.Average, Count: (copy.Count + 1),
+            Max: copy.Max < value ? value : copy.Max,
+            Min: copy.Min > value ? value : copy.Min,
+            Average: (copy.Average * copy.Count + value) / (copy.Count + 1),
+            Count: (copy.Count + 1),
           },
         };
       }
@@ -87,7 +85,7 @@ const MainContent = () => {
 
   function handleAdd(measurement, newValue) {
     // Check if measurement already exist in graphData, adds to array if true, creates new if false
-    addMoreData((prevState) => (Object.prototype.hasOwnProperty.call(prevState, measurement) ? {
+    addData((prevState) => (Object.prototype.hasOwnProperty.call(prevState, measurement) ? {
       ...prevState,
       [measurement]: [...prevState[measurement], newValue],
     } : {
@@ -118,7 +116,7 @@ const MainContent = () => {
       }
     }
   }
-  function fixText(text) {
+  function convertSnakeCase(text) {
     const copy = text.split('_').join(' ');
     return copy.charAt(0).toUpperCase() + copy.slice(1);
   }
@@ -126,17 +124,17 @@ const MainContent = () => {
   const receiveMessage = (message) => {
     try {
       const measurement = JSON.parse(message.data)[0];
-      if (specialMeasurements.includes(fixText(measurement.name))) {
-        const dataPoint = { value: measurement.value, time: measurement.time };
-        handleAdd(fixText(measurement.name), dataPoint);
-        handleSpecialStats(fixText(measurement.name), dataPoint.value);
+      if (specialMeasurements.includes(convertSnakeCase(measurement.name))) {
+        const dataPoint = { Value: measurement.value, Time: measurement.time };
+        handleAdd(convertSnakeCase(measurement.name), dataPoint);
+        handleSpecialStats(convertSnakeCase(measurement.name), dataPoint.value);
       } else {
         const dataPoint = {
           value: parseFloat(measurement.value.toFixed(2)),
           time: measurement.time,
         };
-        handleAdd(fixText(measurement.name), dataPoint);
-        handleDefaultStats(fixText(measurement.name), dataPoint.value);
+        handleAdd(convertSnakeCase(measurement.name), dataPoint);
+        handleDefaultStats(convertSnakeCase(measurement.name), dataPoint.value);
       }
     } catch (error) {
       setError(error);
@@ -160,7 +158,7 @@ const MainContent = () => {
         ? (
           <ConnectingPanel
             connectWebsocket={connectWebsocket}
-            errorMsg={connectioError}
+            errorMsg={connectionError}
             isLoading={loading}
           />
         )
@@ -182,7 +180,7 @@ const MainContent = () => {
       { wsStatus === 1 && Object.keys(graphData).length === 0
         ? <LoadingMeasurements />
         : null}
-      {wsStatus === 1 && Object.keys(graphData).length >= 0
+      {wsStatus === 1 || Object.keys(graphData).length >= 0
         ? (
           <MeasurementList
             graphData={graphData}

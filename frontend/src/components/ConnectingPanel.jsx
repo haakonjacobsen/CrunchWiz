@@ -7,7 +7,7 @@ export default function ConnectingPanel({ errorMsg, isLoading, connectWebsocket 
   const [portPart, changePort] = useState('');
 
   return (
-    <div className="Connecting-panel">
+    <div className="Connecting-panel Box">
       <h1 className="Connecting-panel-title"> Connect to server </h1>
       <div className="Connecting-input">
         <div className="SVG-container">
