@@ -81,23 +81,40 @@ frontend only uses linter. The reason for this is that the frontend was a low pr
 and more of a way to showcase what we have developed.
 
 ### Unit and integration tests
+We achieved 80% test coverage of our backend. Most of the code is tested with our test suite, with the
+exception of the connections to the devices, which we thoroughly tested manually.
 ```bash
 # Navigate to the backend folder
 $ cd backend
 
-# Run the test suite
-$ python -m pytest
-
-# Optional: run the test suite with coverage report
+# Run the test suite with coverage report
 $ python -m pytest --cov=crunch/
 ```
-TODO format better
-* backend test `pytest --cov=backend/` 
-* frontend lint `yarn lint`
-* backend lint `flake8`
-* backend check import order `isort`
 
-# Links (?)
-- [link to create new measurement](docs/new_measurement.md)
-- link to project report?
-- link to architecture readme?
+### Linter backend
+```bash
+# Navigate to the backend folder
+$ cd backend
+
+# Run the linter
+$ flake8
+
+# Optional: run the "import formatter"
+$ isort -rc . --skip venv openpose
+```
+
+### Linter frontend
+```bash
+# Navigate to the frontend folder
+$ cd frontend
+
+# Run the linter
+$ npm run lint
+```
+
+# Links
+- [How to simply add a new measurement to the pipeline](docs/new_measurement.md)
+- [Architecture description](docs/architecture.md)
+- [Empatica E4 wristband setup](docs/eyetracker_setup.md)
+- [Tobii eyetracker setup](docs/eyetracker_setup.md)
+- [OpenPose setup](docs/openpose_setup.md)
