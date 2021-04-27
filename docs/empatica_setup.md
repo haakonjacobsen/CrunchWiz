@@ -7,7 +7,7 @@ Download and install the bluetooth drivers found [here](https://www.silabs.com/d
 Follow the instructions in the zip file.
 
 ### Aquire the API key for the wristband
-If you do not have an account at empatica, you can create one [here](http://get.empatica.com/win/EmpaticaBLEServer.html).
+If you do not have an account at empatica, you can create one [here](https://www.empatica.com/connect/login.php).
 After it has been created, click on *become a developer* on the top right of the site. Here you need to input a `purchase key`, 
 so that your account can interact with the device. On this page you will also find the `API key`, which we will use later.
 
