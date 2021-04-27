@@ -27,7 +27,7 @@ def write_csv(path, row, header_features=[]):
             if not file_exists:
                 header = ['time', 'value']
                 writer.writerow(header + header_features)
-            writer.writerow(row)
+            writer.writerow([time.time()] + row)
 
 
 def to_list(x):

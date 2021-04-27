@@ -1,12 +1,11 @@
 import time
 
-import PyEmotion
-
 import crunch.util as util
 
 
 def start_emotion():
     import cv2 as cv
+    import PyEmotion
 
     # Open you default camera
     cap = cv.VideoCapture(0)
