@@ -76,6 +76,21 @@ TODO image of measurements on dashboard
 ![image here](docs/img/)
 
 # Running tests
+Our test suite consists of unit tests, integration tests and linter for the backend, whereas the
+frontend only uses linter. The reason for this is that the frontend was a low priority,
+and more of a way to showcase what we have developed.
+
+### Unit and integration tests
+```bash
+# Navigate to the backend folder
+$ cd backend
+
+# Run the test suite
+$ python -m pytest
+
+# Optional: run the test suite with coverage report
+$ python -m pytest --cov=crunch/
+```
 TODO format better
 * backend test `pytest --cov=backend/` 
 * frontend lint `yarn lint`
