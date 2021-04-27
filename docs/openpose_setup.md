@@ -5,7 +5,7 @@
 - Nvidia Pascal GPU
 - CUDA v11.1
 - cuDNN v8.0.5 for CUDA v11.1
-- python v3.7
+- python v3.6
 - Visual Studio 2019 Enterprise
 
 Refer to the [official documentation](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/installation/0_index.md) for further reading
@@ -28,7 +28,7 @@ Refer to the [official documentation](https://github.com/CMU-Perceptual-Computin
 	
 	To install cuDNN unzip and copy the content into the CUDA folder (`C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1`)
 
-5. Install python version `3.7.x` (`3.8` and `3.9` will likely cause compilation failure)
+5. Install python version `3.6.x` (if not already installed)
 
 6. Install `opencv-python (pip install opencv-python)`
 
@@ -68,4 +68,4 @@ git submodule update --init --recursive --remote
 
 #### Running the python API
 Follow the [official documenation](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/03_python_api.md#installation)
-1. Make sure there is a filed named `pyopenpose.cpXX-win_amd64.pyd` in `openpose\build\python\openpose\Release` and that the numbers match the python version you are trying to run (3.7). 
+1. Make sure there is a filed named `pyopenpose.cpXX-win_amd64.pyd` in `openpose\build\python\openpose\Release` and that the numbers match the python version you are trying to run (3.6). 

@@ -114,7 +114,7 @@ $ npm run lint
 
 # Links
 - [How to simply add a new measurement to the pipeline](docs/new_measurement.md)
-- [Architecture description](docs/architecture.md)
+- [Architecture and implementation](docs/architecture.md)
 - [Empatica E4 wristband setup](docs/eyetracker_setup.md)
 - [Tobii eyetracker setup](docs/eyetracker_setup.md)
 - [OpenPose setup](docs/openpose_setup.md)
