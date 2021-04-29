@@ -39,7 +39,6 @@ class DataHandler:
         self.baseline = 0
         self.list_of_baseline_values = []
         self.baseline_length = baseline_length
-        self.time = util.Time()
 
     def baseline_phase(self):
         """
@@ -68,4 +67,4 @@ class DataHandler:
             measurement = self.measurement_func(list(self.data_queue))
             if self.calculate_baseline:
                 measurement = round(measurement / self.baseline, 6)
-            util.write_csv(self.measurement_path, [self.time.delta_time(), measurement])
+            util.write_csv(self.measurement_path, [measurement])
