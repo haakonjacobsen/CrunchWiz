@@ -18,23 +18,3 @@ def start_emotion():
         util.write_csv("emotion.csv", [timer.delta_time(), emotion])
         # only find emotion once every second
         time.sleep(1)
-
-
-def mock_emotion():
-    import random
-    vals = ['Neutral', 'Sad', 'Fear', 'Angry', 'Surprise', 'Happy']
-    timer = util.Time()
-    while True:
-        val = random.choice(vals)
-        util.write_csv("mock_emotion.csv", [timer.delta_time(), val])
-        time.sleep(1)
-
-
-def mock_anticipation():
-    import random
-    vals = ['high', 'medium', 'low']
-    timer = util.Time()
-    while True:
-        val = random.choice(vals)
-        util.write_csv("mock_anticipation.csv", [timer.delta_time(), val])
-    time.sleep(1)
