@@ -8,9 +8,6 @@ from crunch.websocket import start_websocket
 
 
 def start_processes(mobile):
-    p4 = Process(target=start_websocket)
-    p4.start()
-
     p1 = Process(target=start_empatica)
     p1.start()
 
@@ -21,7 +18,7 @@ def start_processes(mobile):
         p3 = Process(target=start_skeleton)
         p3.start()
     else:
-        p3 = Process(target=start_emotion())
+        p3 = Process(target=start_emotion)
         p3.start()
 
     start_websocket()
