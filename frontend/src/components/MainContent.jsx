@@ -1,22 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ConnectingPanel from './ConnectingPanel';
 import './MainContent.css';
-import Measurement from './Measurement';
 import MeasurmentExpansion from './MeasurementExpansion';
 import LoadingMeasurements from './LoadingMeasurements';
+import MeasurementList from './MeasurementList';
 
 const MainContent = () => {
-  const renderCount = useRef(1);
+  // Websocket & connection
   const webSocket = useRef(null);
-  const [connectioError, setError] = useState('');
+  const [connectionError, setError] = useState('');
   const [ip, setIP] = useState(null);
   const [wsStatus, setStatus] = useState(3);
   const [loading, toggleLoading] = useState(false);
+
+  // Measurement data
+  const [graphData, addData] = useState({});
+  const [dataStats, addStats] = useState({});
   const [showExtended, changeExtended] = useState(false);
   const [selectedMeasurment, setMeasurment] = useState('');
-  const [graphData, addMoreData] = useState({});
-  const [dataStats, addStats] = useState({});
-  const specialMeasurements = ['most_used_joints', 'emotion', 'anticipation'];
+  const specialMeasurements = ['Most used joints', 'Emotion', 'Anticipation', 'Mock emotion', 'Mock anticipation'];
 
   function isValidIpv4Addr(ipAddress) {
     return /^(?=\d+\.\d+\.\d+\.\d+$)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.?){4}$/.test(ipAddress);
@@ -27,14 +29,13 @@ const MainContent = () => {
       if (`${ipAddr}:${port}` === ip) {
         setIP(null);
         toggleLoading(!loading);
-        console.log(ip);
+        setIP(`${ipAddr}:${port}`);
       } else {
         toggleLoading(!loading);
         setIP(`${ipAddr}:${port}`);
       }
     } else {
       setError(`${ipAddr}:${port} is not a valid IPv4 address`);
-      console.log(`${ipAddr}:${port} is not a valid IPv4 address`);
     }
   }
 
@@ -42,29 +43,26 @@ const MainContent = () => {
     addStats((prevState) => {
       if (Object.prototype.hasOwnProperty.call(prevState, measurement)) {
         const copy = prevState[measurement];
-        if (copy.max < value) {
-          copy.max = value;
-        } else if (copy.min > value) {
-          copy.min = value;
-        }
-        copy.avg = value;
         return {
           ...prevState,
           [measurement]: {
-            max: copy.max, min: copy.min, avg: copy.avg,
+            Max: copy.Max < value ? value : copy.Max,
+            Min: copy.Min > value ? value : copy.Min,
+            Average: (copy.Average * copy.Count + value) / (copy.Count + 1),
+            Count: (copy.Count + 1),
           },
         };
       }
       return {
         ...prevState,
         [measurement]: {
-          max: value, min: value, avg: value,
+          Max: value, Min: value, Average: value, Count: 1,
         },
       };
     });
   }
 
-  function handleJointStats(measurement, value) {
+  function handleSpecialStats(measurement, value) {
     addStats((prevState) => {
       const copy = prevState[measurement];
       if (Object.prototype.hasOwnProperty.call(prevState, measurement)) {
@@ -85,23 +83,9 @@ const MainContent = () => {
     });
   }
 
-  function handleStats(measurment, value) {
-    switch (measurment) {
-      case 'most_used_joints':
-        console.log(measurment, value);
-        handleJointStats(measurment, value);
-        break;
-      case 'emotions':
-        console.log(measurment);
-        break;
-      default:
-        handleDefaultStats(measurment, value);
-    }
-  }
-
   function handleAdd(measurement, newValue) {
     // Check if measurement already exist in graphData, adds to array if true, creates new if false
-    addMoreData((prevState) => (Object.prototype.hasOwnProperty.call(prevState, measurement) ? {
+    addData((prevState) => (Object.prototype.hasOwnProperty.call(prevState, measurement) ? {
       ...prevState,
       [measurement]: [...prevState[measurement], newValue],
     } : {
@@ -117,7 +101,6 @@ const MainContent = () => {
 
   function handleError() {
     setError('Websocket error, try again');
-    console.log('ERROR WHEN TRYINT OT CONNECT TO ', ip);
     toggleLoading(false);
     setIP(null);
     setStatus(3);
@@ -133,31 +116,30 @@ const MainContent = () => {
       }
     }
   }
+  function convertSnakeCase(text) {
+    const copy = text.split('_').join(' ');
+    return copy.charAt(0).toUpperCase() + copy.slice(1);
+  }
 
   const receiveMessage = (message) => {
     try {
       const measurement = JSON.parse(message.data)[0];
-      if (specialMeasurements.includes(measurement.name)) {
-        const dataPoint = { value: measurement.value, time: measurement.time };
-        handleAdd(measurement.name, dataPoint);
-        handleStats(measurement.name, dataPoint.value);
+      if (specialMeasurements.includes(convertSnakeCase(measurement.name))) {
+        const dataPoint = { Value: measurement.value, Time: measurement.time };
+        handleAdd(convertSnakeCase(measurement.name), dataPoint);
+        handleSpecialStats(convertSnakeCase(measurement.name), dataPoint.value);
       } else {
         const dataPoint = {
           value: parseFloat(measurement.value.toFixed(2)),
           time: measurement.time,
         };
-        handleAdd(measurement.name, dataPoint);
-        handleStats(measurement.name, dataPoint.value);
+        handleAdd(convertSnakeCase(measurement.name), dataPoint);
+        handleDefaultStats(convertSnakeCase(measurement.name), dataPoint.value);
       }
     } catch (error) {
-      console.log(error);
       setError(error);
     }
   };
-
-  useEffect(() => {
-    renderCount.current += 1;
-  });
 
   useEffect(() => {
     if (ip !== null) {
@@ -172,12 +154,11 @@ const MainContent = () => {
 
   return (
     <div className="Main-content">
-      <h1>{renderCount.current}</h1>
       { wsStatus === 3 && Object.keys(graphData).length === 0
         ? (
           <ConnectingPanel
             connectWebsocket={connectWebsocket}
-            errorMsg={connectioError}
+            errorMsg={connectionError}
             isLoading={loading}
           />
         )
@@ -190,25 +171,24 @@ const MainContent = () => {
             dataStats={dataStats}
             changeExtended={changeExtended}
             number={graphData[selectedMeasurment][graphData[selectedMeasurment].length - 1].value}
+            hasTextValue={specialMeasurements.includes(selectedMeasurment)}
+            specialMeasurements={specialMeasurements}
+            setMeasurment={setMeasurment}
           />
         )
         : null}
       { wsStatus === 1 && Object.keys(graphData).length === 0
         ? <LoadingMeasurements />
-        : (
-          <div className="Measurements-info">
-            { Object.keys(graphData).length === 0 && wsStatus === 1
-              ? <LoadingMeasurements />
-              : Object.keys(graphData).map((name) => (
-                <Measurement
-                  name={name}
-                  number={graphData[name][graphData[name].length - 1].value}
-                  showExtended={toggleExtended}
-                  key={name}
-                />
-              ))}
-          </div>
-        )}
+        : null}
+      {wsStatus === 1 || Object.keys(graphData).length >= 0
+        ? (
+          <MeasurementList
+            graphData={graphData}
+            toggleExtended={toggleExtended}
+            specialMeasurements={specialMeasurements}
+          />
+        )
+        : null}
     </div>
   );
 };
