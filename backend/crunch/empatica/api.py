@@ -7,8 +7,8 @@ from crunch.empatica.handler import DataHandler  # noqa
 
 class EmpaticaAPI:
     """
-    EmpaticaAPI is responsible for connecting to and receiving data from the 
-    empatica E4 wristband, and then the API sends the data to all subscribed 
+    EmpaticaAPI is responsible for connecting to and receiving data from the
+    empatica E4 wristband, and then the API sends the data to all subscribed
     handlers. The class communicates with a streaming server to get the data
     """
     serverAddress = util.config('empatica', 'address')
