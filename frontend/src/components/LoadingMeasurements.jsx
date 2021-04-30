@@ -4,7 +4,7 @@ import './LoadingMeasurements.css';
 
 export default function LoadingMeasurements() {
   return (
-    <div className="Connecting-panel">
+    <div className="Connecting-panel Box">
       <h1 className="Connecting-panel-title">Calculating baseline</h1>
       <div className="Baseline-loader">
         <svg className="SVG" width="100%" height="100%" viewBox="0 0 105 105" xmlns="http://www.w3.org/2000/svg" fill="#C4C4C4">

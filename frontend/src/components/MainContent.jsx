@@ -125,7 +125,7 @@ const MainContent = () => {
     try {
       const measurement = JSON.parse(message.data)[0];
       if (specialMeasurements.includes(convertSnakeCase(measurement.name))) {
-        const dataPoint = { Value: measurement.value, Time: measurement.time };
+        const dataPoint = { value: measurement.value, time: measurement.time };
         handleAdd(convertSnakeCase(measurement.name), dataPoint);
         handleSpecialStats(convertSnakeCase(measurement.name), dataPoint.value);
       } else {
@@ -149,7 +149,8 @@ const MainContent = () => {
       webSocket.current.onclose = () => setStatus(3);
       webSocket.current.onerror = () => handleError();
       return () => webSocket.current.close();
-    } return () => null;
+    } console.log(Object.keys(graphData).length);
+    return () => null;
   }, [ip]);
 
   return (
@@ -180,7 +181,7 @@ const MainContent = () => {
       { wsStatus === 1 && Object.keys(graphData).length === 0
         ? <LoadingMeasurements />
         : null}
-      {wsStatus === 1 || Object.keys(graphData).length >= 0
+      {wsStatus === 1 || Object.keys(graphData).length > 0
         ? (
           <MeasurementList
             graphData={graphData}

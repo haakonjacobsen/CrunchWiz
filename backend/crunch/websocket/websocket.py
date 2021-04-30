@@ -20,7 +20,8 @@ async def watcher(queue):
             # get last row of changed file
             df = pd.read_csv(file_path).iloc[-1]
             # format how we send it to frontend
-            time = datetime.utcfromtimestamp(int(df.time)).strftime("%H:%M:%S")
+            time = datetime.now().strftime("%H:%M:%S")
+            #time = datetime.utcfromtimestamp(int(df.time)).strftime("%H:%M:%S")
             data = {"name": file_path[16:-4], "value": df.value, "time": time}
             print("reading from csv:", data)
             # put it queue so web socket can read
