@@ -8,15 +8,15 @@ import RadarGraph from './RadarGraph';
 export default function ChartPanel({
   name, graphData, dataStats, hasTextValue, specialMeasurements, setMeasurment,
 }) {
-  const [time, setTimeIndex] = useState(100000000000);
-  const [minutes, setMinutes] = useState(100000000000);
+  const [time, setTimeIndex] = useState(Infinity);
+  const [minutes, setMinutes] = useState(Infinity);
   const [graph, setGraph] = useState(1);
   const [barStat, setBarStat] = useState('Max');
 
   function getLastMinutes(lastMinutes) {
-    if (lastMinutes === 100000000000) {
-      setTimeIndex(100000000000);
-      setMinutes(100000000000);
+    if (lastMinutes === Infinity) {
+      setTimeIndex(Infinity);
+      setMinutes(Infinity);
       return;
     }
     const timer = new Date(Date.now() - lastMinutes * 60000).toLocaleTimeString();
@@ -30,7 +30,7 @@ export default function ChartPanel({
       }
       // console.log(timer, dataTime, dataTime < timer);
     }
-    setTimeIndex(100000000000);
+    setTimeIndex(Infinity);
     setMinutes(lastMinutes);
   }
   useEffect(() => {
@@ -99,10 +99,10 @@ export default function ChartPanel({
         {graph === 1
           ? (
             <div className="Button-panel Box">
-              <button type="button" className={`Graph-panel-choice Left ${minutes === 1 ? 'selected' : ''}`} onClick={() => getLastMinutes(1)} onKeyDown={() => getLastMinutes(1)}>Last 5</button>
-              <button type="button" className={`Graph-panel-choice Center ${minutes === 3 ? 'selected' : ''}`} onClick={() => getLastMinutes(3)} onKeyDown={() => getLastMinutes(3)}>Last 10</button>
-              <button type="button" className={`Graph-panel-choice Center ${minutes === 5 ? 'selected' : ''}`} onClick={() => getLastMinutes(5)} onKeyDown={() => getLastMinutes(5)}>Last 20</button>
-              <button type="button" className={`Graph-panel-choice Right ${minutes === 100000000000 ? 'selected' : ''}`} onClick={() => getLastMinutes(100000000000)} onKeyDown={() => getLastMinutes(100000000000)}>All</button>
+              <button type="button" className={`Graph-panel-choice Left ${minutes === 1 ? 'selected' : ''}`} onClick={() => getLastMinutes(1)} onKeyDown={() => getLastMinutes(1)}>1 min</button>
+              <button type="button" className={`Graph-panel-choice Center ${minutes === 3 ? 'selected' : ''}`} onClick={() => getLastMinutes(3)} onKeyDown={() => getLastMinutes(3)}>3 min</button>
+              <button type="button" className={`Graph-panel-choice Center ${minutes === 5 ? 'selected' : ''}`} onClick={() => getLastMinutes(5)} onKeyDown={() => getLastMinutes(5)}>5 min</button>
+              <button type="button" className={`Graph-panel-choice Right ${minutes === Infinity ? 'selected' : ''}`} onClick={() => getLastMinutes(Infinity)} onKeyDown={() => getLastMinutes(Infinity)}>All</button>
             </div>
           )
           : (
