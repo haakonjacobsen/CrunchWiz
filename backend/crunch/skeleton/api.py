@@ -7,9 +7,7 @@ from crunch.skeleton.handler import DataHandler  # noqa
 
 
 class SkeletonAPI:
-    """
-    Mock api that reads from csv files instead of getting data from devices
-    """
+    """Responsible for connecting to openpose and sending skeletal data to all subscribed handlers"""
 
     raw_data = ["body"]
     subscribers = {"body": []}
