@@ -13,6 +13,7 @@ def start_processes(mobile):
 
     p2 = Process(target=start_eyetracker)
     p2.start()
+
     if mobile:
         p3 = Process(target=start_skeleton)
         p3.start()

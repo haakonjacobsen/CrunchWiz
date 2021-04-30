@@ -7,6 +7,11 @@ class GazedataToFixationdata:
     Class that takes in gaze data points from the EyetrackerAPI, preprocesses the gaze points,
      and computes fixation_data.
 
+     The class attribute velocity_threshold is very important and determines how sensitive
+     the class is to eyemovement. The higher the value is, the more gaze points will be
+     classified as part of a fixation. The value 0.05 was set based on 10 minutes of
+     experimentation, but should probably be adjusted.
+
     RealAPI calls insert_new_gaze_data, the rest is helper functions.
     For more information on gaze data and fixation data, see:
     https://www.tobiipro.com/learn-and-support/learn/eye-tracking-essentials/types-of-eye-movements/
@@ -18,16 +23,18 @@ class GazedataToFixationdata:
     screen_proportions = (1920, 1080)
     velocity_threshold = 0.05
     first_time_stamp = None
-    # d temp, used for debugging and should be deleted:
-    list_of_velocities = []
-    list_of_high_velocities = []
 
     def insert_new_gaze_data(self, left_eye_fx, left_eye_fy, right_eye_fx, right_eye_fy, timestamp):
         """
-        Called from RealAPI
+        Called from RealAPI. Preprocesses the gaze data and classifies the gaze point
+        as part of a saccade or a part of a fixation by checking if  velocity is
+        above or below the threshold.
+        The condition for returning a fixation point is that:
+            1. At least the 2 previous gaze points had low velocity (part of a fixation)
+            2. The current gaze point has high velocity (part of a saccade)
+
         All parameters are float, but can be nan.
         return: fixation point or None
-
         """
         fixation_point = None
         fx = self.preprocess_eyetracker_gazepoint(left_eye_fx, right_eye_fx, is_fx=True) * self.screen_proportions[0]
@@ -38,10 +45,9 @@ class GazedataToFixationdata:
                                      self.last_gaze_data_point['fy'],
                                      self.last_gaze_data_point['timestamp'])
 
-            self.list_of_velocities.append(velocity)  # d
-
             # Check if this is a saccade
             if velocity > self.velocity_threshold:
+                # check if last
                 if self.last_velocity_was_fixation and len(self.list_of_gaze_data_points_in_a_fixation) > 2:
                     fixation_point = self.end_fixation()
                 self.last_velocity_was_fixation = False
@@ -58,6 +64,7 @@ class GazedataToFixationdata:
         return fixation_point
 
     def end_fixation(self):
+        """Ends the fixation by setting initTime, endTime, fx and fy"""
         number_of_gazepoints = len(self.list_of_gaze_data_points_in_a_fixation)
 
         initTime = (self.list_of_gaze_data_points_in_a_fixation[0]["timestamp"] - self.first_time_stamp) / 1000
@@ -80,6 +87,7 @@ class GazedataToFixationdata:
     def preprocess_eyetracker_gazepoint(self, left_eye_fx_or_fy, right_eye_fx_or_fy, is_fx=True):
         """
         Takes in either a left and a right fx value, or a left and a right fy value
+
         :return fx or fy: average of the left and right eye coordinate
         :type fx or fy: float
         """
@@ -100,8 +108,12 @@ class GazedataToFixationdata:
 
 class EyetrackerAPI:
     """
-    Responsible for receiving data from the eyetracker, cleaning it, and send a 10 second time window
-    of fixation data to every handler.
+    Responsible for connecting to and receiving gaze data from the eyetracker,
+    and then the API sends the data to all handlers that are subscribed.
+
+    The API cleans pupil data (gaze data) which is sent to gaze subscribers.
+    The API sends gaze data to GazedataToFixationdata which irregularly returns
+    fixation data that is sent to fixation subscribers.
     """
     subscribers = {"gaze": [], "fixation": []}
     last_valid_pupil_data = (0.5, 0.5)
@@ -110,16 +122,16 @@ class EyetrackerAPI:
         self.gaze_to_fixation = GazedataToFixationdata()
 
     def connect(self):
-        """ Connect the eyetracket to the callback function """
-        # Try to connect to eyetracker
+        """ Connect the eyetracker to the callback function """
+        #  Need to import here instead of top of file because of CI
         import tobii_research as tr
         if len(tr.find_all_eyetrackers()) == 0:
             print("No eyetracker was found")
         else:
             my_eyetracker = tr.find_all_eyetrackers()[0]
             my_eyetracker.subscribe_to(tr.EYETRACKER_GAZE_DATA, self.gaze_data_callback, as_dictionary=True)
-            #  TODO: the following snippet stops the program after x seconds. Remove this when finished developing
-            time.sleep(150)  # change to how long you want the program to run
+            #  For some reason we get crashes if this time.sleep is removed
+            time.sleep(150)
             # my_eyetracker.unsubscribe_from(tr.EYETRACKER_GAZE_DATA, self.gaze_data_callback)
 
     def gaze_data_callback(self, gaze_data):
@@ -144,7 +156,7 @@ class EyetrackerAPI:
         self.send_data_to_handlers("gaze", gaze_point)
 
     def preprocess_eyetracker_pupils(self, lpup, rpup):
-        """If pupil data is invalid, use previous pupil data, or the other valid pupil"""
+        """If pupil data is invalid, use other valid pupil or the previous valid pupil data"""
         if isnan(lpup) and isnan(rpup):
             pass
         elif isnan(lpup) and not isnan(rpup):
@@ -157,7 +169,7 @@ class EyetrackerAPI:
         return {"lpup": lpup, "rpup": rpup}
 
     def send_data_to_handlers(self, name, data):
-        """Send data to all handlers, reset lists raw data lists, update timer """
+        """Send data to all handlers"""
         for handler in self.subscribers[name]:
             handler.add_data_point(data)
 

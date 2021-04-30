@@ -3,10 +3,12 @@ import React from 'react';
 import './Stickman.css';
 import './MeasurementExpansion.css';
 import {
-  BarChart, Bar, XAxis, YAxis, Legend, Tooltip, ResponsiveContainer,
+  BarChart, Bar, Cell, XAxis, YAxis, Legend, Tooltip, ResponsiveContainer,
 } from 'recharts';
 
-export default function BarGraph({ dataStats, stat }) {
+export default function BarGraph({
+  dataStats, stat, name, specialMeasurements, setMeasurment,
+}) {
   return (
     <div className="Extended-graph">
       <ResponsiveContainer width="100%" height="100%">
@@ -20,8 +22,20 @@ export default function BarGraph({ dataStats, stat }) {
         >
           <Tooltip />
           <Legend />
-          <Bar dataKey={stat} fill="#8884d8" />
-          <XAxis dataKey="name" />
+          <Bar dataKey={stat} fill="#959595">
+            {
+              dataStats.map((key, index) => (
+                <Cell
+                  key={key}
+                  fill={dataStats[index].Name === name ? '#769CFF' : '#A1A1A1'}
+                  onClick={() => (specialMeasurements.includes(name)
+                    ? null : setMeasurment(key.Name))}
+                />
+              ))
+            }
+          </Bar>
+          <XAxis dataKey="Name" />
+          <XAxis dataKey="SelectedName" />
           <YAxis />
         </BarChart>
       </ResponsiveContainer>
