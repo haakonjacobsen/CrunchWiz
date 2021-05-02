@@ -4,17 +4,6 @@ import os
 import time
 
 
-class Time:
-    def __init__(self):
-        self.curr_time = time.time()
-
-    def delta_time(self):
-        new_time = time.time()
-        delta = new_time - self.curr_time
-        self.curr_time = new_time
-        return delta
-
-
 def write_csv(path, row, header_features=[]):
     """ write result to csv file """
     if path is not None:

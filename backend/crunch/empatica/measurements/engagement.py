@@ -1,7 +1,6 @@
 import numpy as np
 
 """ Constants """
-DT = 20  # delta time, 20 second moving time window
 FQ = 4  # frequency of data points, 4 per seconds
 MEAN_KERNEL_WIDTH = 5 * FQ  # The width (data points) of the mean kernel
 ONSET_THRESHOLD = 0.01  # the threshold in microsiemens required to classify an onset of a peak
@@ -131,4 +130,4 @@ def _area_under_curve(tonic):
         area_triangle = dy * dx / 2
         auc += area_square + area_triangle
 
-    return auc / DT
+    return auc
