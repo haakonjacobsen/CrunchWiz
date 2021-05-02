@@ -131,7 +131,8 @@ class EyetrackerAPI:
             my_eyetracker = tr.find_all_eyetrackers()[0]
             my_eyetracker.subscribe_to(tr.EYETRACKER_GAZE_DATA, self.gaze_data_callback, as_dictionary=True)
             #  For some reason we get crashes if this time.sleep is removed
-            time.sleep(150)
+            while True:
+                time.sleep(15)
             # my_eyetracker.unsubscribe_from(tr.EYETRACKER_GAZE_DATA, self.gaze_data_callback)
 
     def gaze_data_callback(self, gaze_data):
