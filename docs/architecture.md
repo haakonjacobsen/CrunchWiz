@@ -8,10 +8,10 @@ then write the computed measurements to a csv file, which the websocket reads, a
 to the react frontend.
 
 ### Logical view
-![Image of logical view](img/processview.png)
+![Image of logical view](https://i.imgur.com/ooD6DHf.png)
 
 ### Physical view
-![Image of physical view](img/physicalview.png)
+![Image of physical view](https://i.imgur.com/pJegVv5.png)
 
 # Implementation
 We will describe how the three device processes works, since they are the most complex part of our
