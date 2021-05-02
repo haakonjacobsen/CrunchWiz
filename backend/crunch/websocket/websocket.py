@@ -33,7 +33,7 @@ async def handler(websocket, path, queue):
             data = await queue.get()
             await websocket.send(json.dumps(data))
     finally:
-        pass
+        print("Lost connection with websocket client")
 
 
 def start_websocket():
