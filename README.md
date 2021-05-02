@@ -66,7 +66,7 @@ belonging to the backend program. If you are running both the backend and the fr
 same computer, these will be *127.0.0.1* and *8888* respectively. Otherwise the IP adress
 will be printed in the python terminal window.
 
-![view of connect screen on frontend](docs/img/frontend-connect.png)
+![view of connect screen on frontend](https://i.imgur.com/BXb53p7.png)
 
 After starting the backend and frontend, and inputting the IP and port address, a websocket connection
 will be established. The calculated measurements will now be shown in the dashboard.
