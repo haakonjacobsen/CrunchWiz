@@ -66,15 +66,16 @@ belonging to the backend program. If you are running both the backend and the fr
 same computer, these will be *127.0.0.1* and *8888* respectively. Otherwise the IP adress
 will be printed in the python terminal window.
 
-![image here](docs/img/frontend-connect.png)
+![view of connect screen on frontend](docs/img/frontend-connect.png)
 
 After starting the backend and frontend, and inputting the IP and port address, a websocket connection
-will be established. The calculated measurements will now be shown in the dashboard, and you can
-view more detailed information about them by clicking them.
+will be established. The calculated measurements will now be shown in the dashboard.
 
-TODO image of measurements on dashboard
-![image here](docs/img/)
+![view of all the measurements](https://i.gyazo.com/3a7458ad4ace07be39424004e57da077.png)
 
+You can
+view more detailed information about them by clicking on a measurement.
+![detailed view of one measurements](https://i.gyazo.com/a93fd032f0a677b711ef972245f060ef.png)
 # Running tests
 Our test suite consists of unit tests, integration tests and linter for the backend, whereas the
 frontend only uses linter. The reason for this is that the frontend was a low priority,
