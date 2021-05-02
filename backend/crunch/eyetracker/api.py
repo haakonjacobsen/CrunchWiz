@@ -123,7 +123,7 @@ class EyetrackerAPI:
 
     def connect(self):
         """ Connect the eyetracker to the callback function """
-        #  CI on gitlab cant run if this import is called
+        #  Need to import here instead of top of file because of CI
         import tobii_research as tr
         if len(tr.find_all_eyetrackers()) == 0:
             print("No eyetracker was found")

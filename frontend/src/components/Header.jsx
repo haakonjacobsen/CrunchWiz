@@ -27,7 +27,7 @@ const Header = () => (
             </defs>
           </svg>
         </div>
-        <h2 className="Device-title">Empirica E4</h2>
+        <h2 className="Device-title">Empatica E4</h2>
       </div>
       <div className="Device-status-wrapper">
         <div className="Device-logo">
