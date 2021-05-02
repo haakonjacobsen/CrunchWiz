@@ -1,9 +1,10 @@
 import asyncio
 import functools
 import json
+import os
 import socket
 from datetime import datetime
-import os
+
 import pandas as pd
 import websockets
 from watchgod import awatch

@@ -1,4 +1,3 @@
-# flake8: noqa
 import os
 
 import pandas as pd
@@ -13,7 +12,7 @@ from crunch.skeleton.measurements import (amount_of_motion, fatigue,
 def skeleton_fixture():
     def _skeleton_fixture_factory(n, m):
         skeleton_data = []
-        df = pd.pandas.read_csv(os.path.join(os.path.dirname(__file__), "mock_data/test_data.csv"), header=None)
+        df = pd.pandas.read_csv(os.path.join(os.path.dirname(__file__), "../../mock_data/skeleton.csv"), header=None)
         n = min(n, len(df))
         for i in range(n, m):
             temp_array = []

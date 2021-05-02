@@ -1,4 +1,3 @@
-from crunch import util
 from crunch.eyetracker.api import EyetrackerAPI
 from crunch.eyetracker.handler import DataHandler, ThresholdDataHandler
 from crunch.eyetracker.measurements import (compute_anticipation,
@@ -7,12 +6,13 @@ from crunch.eyetracker.measurements import (compute_anticipation,
                                             compute_perceived_difficulty)
 
 
-def start_eyetracker():
+def start_eyetracker(api=EyetrackerAPI):
     """Defines the callback function, try to connect to eye tracker, create EyetrackerAPI and add handlers to api"""
 
-    # Read config & Instantiate the api
-    api = EyetrackerAPI() if util.config('eyetracker', 'MockAPI') == "True" else EyetrackerAPI()
+    # Instantiate the api
+    api = api()
 
+    # Instantiate the information processing index data handler and subscribe to the api
     ipi_handler = ThresholdDataHandler(
         measurement_func=compute_ipi,
         measurement_path="information_processing_index.csv",
@@ -24,6 +24,7 @@ def start_eyetracker():
     )
     api.add_subscriber(ipi_handler, "fixation")
 
+    # Instantiate the perceived difficulty data handler and subscribe to the api
     perceived_difficulty_handler = DataHandler(
         measurement_func=compute_perceived_difficulty,
         measurement_path="perceived_difficulty.csv",
@@ -34,6 +35,7 @@ def start_eyetracker():
     )
     api.add_subscriber(perceived_difficulty_handler, "fixation")
 
+    # # Instantiate the anticipation data handler and subscribe to the api
     anticipation_handler = DataHandler(
         measurement_func=compute_anticipation,
         measurement_path="anticipation.csv",
@@ -44,6 +46,7 @@ def start_eyetracker():
     )
     api.add_subscriber(anticipation_handler, "fixation")
 
+    # Instantiate the cognital load data handler and subscribe to the api
     cognitive_load_handler = DataHandler(
         measurement_func=compute_cognitive_load,
         measurement_path="cognitive_load.csv",
@@ -54,4 +57,5 @@ def start_eyetracker():
     )
     api.add_subscriber(cognitive_load_handler, "gaze")
 
+    # start up the api
     api.connect()

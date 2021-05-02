@@ -1,74 +1,13 @@
 import os
 import sys
-import time
 from sys import platform
-
-import pandas as pd
 
 import crunch.util as util
 from crunch.skeleton.handler import DataHandler  # noqa
 
 
-class MockAPI:
-    """
-    Mock api that reads from csv files instead of getting data from devices
-
-    :type subscribers: dict
-    """
-
-    skeleton_data = []
-
-    # Get test data from scuffed CSV
-    df = pd.pandas.read_csv(
-        os.path.join(os.path.dirname(__file__), "mock_data/test_data.csv"), header=None
-    )
-    for i in range(len(df)):
-        temp_array = []
-        row = df.iloc[i].tolist()
-        tuple = set()
-        i = 0
-        while i < len(row):
-            number = (
-                float(row[i].strip().strip("[]()")),
-                float(row[i + 1].strip().strip("[]()")),
-            )
-            i += 2
-            temp_array.append(number)
-        skeleton_data.append(temp_array)
-
-    raw_data = ["body"]
-    subscribers = {"body": []}
-
-    def add_subscriber(self, data_handler, requested_data):
-        """
-        Adds a handler as a subscriber for a specific raw data
-
-        :param data_handler: a data handler for a specific measurement that subscribes to a specific raw data
-        :type data_handler: DataHandler
-        :param requested_data: The specific raw data that the data handler subscribes to
-        :type requested_data: str
-        """
-        assert requested_data in self.subscribers.keys()
-        self.subscribers[requested_data].append(data_handler)
-
-    def connect(self):
-        """ Simulates connecting to the device, starts reading from csv files and push data to handlers """
-        for i in range(1000):
-            self._mock_datapoint(i)
-
-            # simulate delay of new data points by sleeping
-            time.sleep(1)
-
-    def _mock_datapoint(self, index):
-        if index < len(self.skeleton_data):
-            for subscriber in self.subscribers["body"]:
-                subscriber.add_data_point(self.skeleton_data[index])
-
-
-class RealAPI:
-    """
-    Mock api that reads from csv files instead of getting data from devices
-    """
+class SkeletonAPI:
+    """Responsible for connecting to openpose and sending skeletal data to all subscribed handlers"""
 
     raw_data = ["body"]
     subscribers = {"body": []}
