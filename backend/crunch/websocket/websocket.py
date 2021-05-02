@@ -23,20 +23,17 @@ async def watcher(queue):
             # format how we send it to frontend
             time = datetime.utcfromtimestamp(int(df.time)).strftime("%H:%M:%S")
             data = {"name": file_path[16:-4], "value": df.value, "time": time}
-            print("reading from csv:", data)
             # put it queue so web socket can read
             await queue.put([data])
 
 
 async def handler(websocket, path, queue):
     try:
-        print("Established connection with client")
         while True:
             data = await queue.get()
-            print("Sending:", data)
             await websocket.send(json.dumps(data))
     finally:
-        print("CONNECTION WITH CLIENT LOST")
+        print("Lost connection with websocket client")
 
 
 def start_websocket():
