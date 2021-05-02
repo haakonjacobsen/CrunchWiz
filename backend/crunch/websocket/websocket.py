@@ -21,9 +21,9 @@ async def watcher(queue):
             # get last row of changed file
             df = pd.read_csv(file_path).iloc[-1]
             # format how we send it to frontend
-            time = datetime.utcfromtimestamp(int(df.time)).strftime("%H:%M:%S")
+            time = datetime.fromtimestamp(int(df.time)).strftime("%H:%M:%S")
             data = {"name": file_path[16:-4], "value": df.value, "time": time}
-            print("reading from csv:", data)
+            # print("reading from csv:", data)
             # put it queue so web socket can read
             await queue.put([data])
 
@@ -33,7 +33,7 @@ async def handler(websocket, path, queue):
         print("Established connection with client")
         while True:
             data = await queue.get()
-            print("Sending:", data)
+            # print("Sending:", data)
             await websocket.send(json.dumps(data))
     finally:
         print("CONNECTION WITH CLIENT LOST")
