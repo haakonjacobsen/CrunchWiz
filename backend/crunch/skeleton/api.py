@@ -38,7 +38,6 @@ class SkeletonAPI:
                 handler.add_data_point(data)
 
     def connect(self):
-        print("connected to realapi")
         dir_path = os.path.dirname(os.path.realpath(__file__))
         try:
             if platform == "win32":
@@ -82,7 +81,6 @@ class SkeletonAPI:
                 self.add_datapoint(dataframe)
             else:
                 break
-        print("OpenPose Exited")
 
     def display(self, datums):
         import cv2
