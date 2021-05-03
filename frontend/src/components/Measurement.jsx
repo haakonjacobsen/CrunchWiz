@@ -21,8 +21,6 @@ export default function Measurment({
       <div className="Measurment-number-wrapper">
         <h3 className="Measurment-number">
           {number}
-          {' '}
-          %
         </h3>
         <Indicator number={number} />
       </div>
