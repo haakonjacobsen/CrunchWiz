@@ -1,7 +1,7 @@
 import React from 'react';
 import './Measurement.css';
 import PropTypes from 'prop-types';
-import Indicator from './Indicator';
+import Indicator from './SVG/Indicator';
 
 export default function Measurment({
   name, number, showExtended, specialMeasurements,
