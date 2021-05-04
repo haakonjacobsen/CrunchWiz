@@ -2,7 +2,7 @@
 /* eslint react/prop-types: 0 */
 import React from 'react';
 import './MeasurementExpansion.css';
-import Indicator from './Indicator';
+import Indicator from './SVG/Indicator';
 import MeasurementStat from './MeasurementStat';
 import Stickman from './Stickman';
 import ChartPanel from './ChartPanel';
