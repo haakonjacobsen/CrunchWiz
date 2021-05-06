@@ -37,6 +37,7 @@ If you face any issues with this refer to the [official documentation](https://g
 
 #### Clone openpose 
 ```
+cd backend/crunch/skeleton/
 git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose
 cd openpose/
 git submodule update --init --recursive --remote
